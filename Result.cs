@@ -52,11 +52,28 @@ public class Result<T>
             return _data;
         }
     }
+
+    private Result(T? data, IError? error, bool failed)
+    {
+        _data = data;
+        _error = error;
+        _failed = failed;
+    }
+
+    public static Result<T> Ok(T data)
+    {
+        return new Result<T>(data, null, false);
+    }
+
+    public static Result<T> Fail(IError error)
+    {
+        return new Result<T>(null, error, true);
+    }
 }
 
 public class Result
 {
-    private readonly IError _error;
+    private readonly IError? _error;
     private readonly bool _failed;
 
     public bool Failed
@@ -89,4 +106,21 @@ public class Result
             return _error;
         }
     }
+
+    private Result(bool failed, IError? error)
+    {
+        _failed = failed;
+        _error = error;
+    }
+
+    public static Result Ok()
+    {
+        return new Result(false, null);
+    }
+
+    public static Result Fail(IError error)
+    {
+        return new Result(true, error);
+    }
+
 }
