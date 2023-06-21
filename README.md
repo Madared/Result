@@ -34,22 +34,19 @@ This also allows for more functionality within error with an IError interface wh
     }
 ```
 
-Which can then be thrown by your service and consumed appropriately inside of your controller :
+Which can then be returned by your service and consumed appropriately inside of your controller :
 
 ```csharp
     public class ItemService
     {
         private IDatabase _db;
-        public ItemService(IDatabase db)
-        {
-            _db = db;
-        }
+        public ItemService(IDatabase db) => _db = db;
         
         public Result<Item> GetItem(Guid id)
         {
             Item? item = db.Item.Find(id);
             return item is null
-                ? Result<Item>.Fail(new NotFoundInDatabase(id)
+                ? Result<Item>.Fail(new NotFoundInDatabase(id))
                 : Result<Item>.Ok(item);
         }
     }
