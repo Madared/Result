@@ -45,9 +45,7 @@ Which can then be returned by your service and consumed appropriately inside of 
         public Result<Item> GetItem(Guid id)
         {
             Item? item = db.Item.Find(id);
-            return item is null
-                ? Result<Item>.Fail(new NotFoundInDatabase(id))
-                : Result<Item>.Ok(item);
+            return Result<Item>.Unknown(item, new NotFoundInDatabase(id));
         }
     }
 
