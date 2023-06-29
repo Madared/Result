@@ -2,13 +2,6 @@ namespace Results;
 
 public static class HelpfulExtensions
 {
-    public static Result<TOut> Pipe<TIn, TOut>(this TIn? i, Func<TIn, Result<TOut>> function) where TIn : class where TOut : class
-    {
-        if (i is null)
-            return Result<TOut>.Fail(new UnknownError());
-        return function(i);
-    }
-
     public static TOut? Pipe<TIn, TOut>(this TIn? i, Func<TIn, TOut?> function)
         where TIn : class
         where TOut : class
