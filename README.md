@@ -65,3 +65,18 @@ Which can then be returned by your service and consumed appropriately inside of 
     }
 
 ```
+
+The extension methods can be used to parse null values to results in a simpler style:
+
+```csharp
+
+    public class ItemService
+    {
+        private IDatabase _db;
+        public ItemService(IDatabase db) => _db = db;
+        
+        public Result<Item> GetById(Guid id) => _db.Item
+            .Find(id)
+            .ToResult(new NotFoundInDatabase(id));
+    }
+```
