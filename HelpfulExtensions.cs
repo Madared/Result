@@ -10,13 +10,6 @@ public static class HelpfulExtensions
             return null;
         return function(i);
     }
-    
-    public static Result Pipe(this Result i, Func<Result> action)
-    {
-        if (i.Failed)
-            return i;
-        return action();
-    }
 
     public static Result<TIn> ToResult<TIn>(this TIn? i, IError error)
         where TIn : class =>
