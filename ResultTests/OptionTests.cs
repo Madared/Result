@@ -9,8 +9,10 @@ public class OptionTests
         Option<string> stringOption = Option<string>.Maybe(null);
         //When
         bool isNone = stringOption.IsNone();
+        bool isSome = stringOption.IsSome();
         //Then
         Assert.True(isNone);
+        Assert.False(isSome);
     }
 
     [Fact]
@@ -20,8 +22,10 @@ public class OptionTests
         Option<string> stringOption = Option<string>.Maybe("hello");
         //When
         bool isSome = stringOption.IsSome();
+        bool isNone = stringOption.IsNone();
         //Then
         Assert.True(isSome);
+        Assert.False(isNone);
     }
 
     [Fact]
