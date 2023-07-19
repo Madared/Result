@@ -89,9 +89,9 @@ Which can then be returned by your service and consumed appropriately inside of 
                 return Ok(result.Data);
 
             IHttpParsableError? parsableError = result.Error as IHttpParsableError;
-            if (parsableError is null)
-                return Bad(result.Error.Message);
-            return parsableError.GetHttpResponse();
+            return parsableError is null
+                ? Bad(result.Error.Message)
+                : parsableError.GetHttpResponse();
         }
     }
 
