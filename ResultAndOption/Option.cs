@@ -1,11 +1,11 @@
 namespace Results;
 
-public struct Option<T>
+public class Option<T>
 {
     private readonly T? _data;
     private readonly bool _isNone;
 
-    public readonly T Data => _data is null || _isNone
+    public T Data => _data is null || _isNone
         ? throw new InvalidOperationException()
         : _data;
 

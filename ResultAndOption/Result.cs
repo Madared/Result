@@ -1,6 +1,6 @@
 ﻿namespace Results;
 
-public struct Result
+public class Result
 {
     private readonly bool _failed;
     private readonly IError? _error;
