@@ -85,13 +85,27 @@ public static class ReferenceExtensions
     }
 
     /// <summary>
+    /// Converts a simple list of results to the more specific ResultList.
+    /// </summary>
+    /// <param name="results">The list of results to convert</param>
+    /// <typeparam name="TIn">The type of data carried by the result</typeparam>
+    /// <returns>A ResultList</returns>
+    public static ResultList<TIn> ToResult<TIn>(this List<Result<TIn>> results)
+        where TIn : notnull
+    {
+        ResultList<TIn> resultList = new();
+        resultList.AddResults(results);
+        return resultList;
+    }
+
+    /// <summary>
     /// Applies a mapping function to each element in a list and returns a list of the mapped results.
     /// </summary>
     /// <typeparam name="TIn">The type of the elements in the input list.</typeparam>
     /// <typeparam name="TOut">The type of the elements in the output list.</typeparam>
     /// <param name="list">The input list.</param>
     /// <param name="function">The mapping function to apply to each element in the list.</param>
-    /// <returns>A list of the mapped results.</returns>
+    /// <returns>A list of the mapped values.</returns>
     public static List<TOut> ListMap<TIn, TOut>(this List<TIn> list, Func<TIn, TOut> function)
     {
         List<TOut> outList = new();
