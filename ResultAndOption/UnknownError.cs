@@ -2,7 +2,6 @@
 
 public class UnknownError : IError
 {
-    private readonly IErrorLogger _logger;
     private const string _message = "Unknown Error";
     public string Message => _message;
 
