@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-
 namespace Results;
 
 public class MultipleErrors : IError
@@ -10,10 +8,9 @@ public class MultipleErrors : IError
         _errors
             .ListMap(error => error.Message)
             .PipeNonNull(errorMessages => string.Join(",\n", errorMessages)));
-
-    public MultipleErrors(List<IError> errors) =>
+    public MultipleErrors(List<IError> errors)
+    {
         _errors = errors;
-
-    public void Log(ILogger logger) =>
-        logger.LogError(Message);
+    }
+    public void Log(IErrorLogger logger) => logger.LogError(Message);
 }
