@@ -1,13 +1,14 @@
-﻿namespace Results;
+﻿using Microsoft.Extensions.Logging;
+
+namespace Results;
 
 public class UnknownError : IError
 {
-    private string _message = "Unknwon Error";
+    private const string _message = "Unknown Error";
     public string Message => _message;
 
     public UnknownError()
     {
     }
-
-    public void Log() => Console.WriteLine(_message);
+    public void Log(ILogger logger) => logger.LogError(_message);
 }
