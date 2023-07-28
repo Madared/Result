@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace Results;
+﻿namespace Results;
 
 public class UnknownError : IError
 {
