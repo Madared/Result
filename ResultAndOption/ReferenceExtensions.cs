@@ -17,10 +17,9 @@ public static class ReferenceExtensions
         where TIn : class
         where TOut : class
     {
-        if (i is null)
-            return Result<TOut>.Fail(new UnknownError());
-
-        return function(i);
+        return i is null
+            ? Result<TOut>.Fail(new UnknownError())
+            : function(i);
     }
 
     /// <summary>
@@ -32,13 +31,12 @@ public static class ReferenceExtensions
     /// <param name="function">The function to invoke on the input reference.</param>
     /// <returns>The result of type <typeparamref name="TOut"/> produced by the function if the input reference is not null. Otherwise, returns null.</returns>
     public static TOut? Pipe<TIn, TOut>(this TIn? i, Func<TIn, TOut?> function)
-        where TIn : notnull 
+        where TIn : notnull
         where TOut : notnull
     {
-        if (i is null)
-            return default(TOut?);
-
-        return function(i);
+        return i is null
+            ? default(TOut?)
+            : function(i);
     }
 
     /// <summary>
@@ -65,10 +63,9 @@ public static class ReferenceExtensions
     public static Result Pipe<TIn>(this TIn? i, Func<TIn, Result> function, IError error)
         where TIn : notnull
     {
-        if (i is null)
-            return Result.Fail(error);
-
-        return function(i);
+        return i is null
+            ? Result.Fail(error)
+            : function(i);
     }
 
     /// <summary>
@@ -106,9 +103,8 @@ public static class ReferenceExtensions
     /// <param name="list">The input list.</param>
     /// <param name="function">The mapping function to apply to each element in the list.</param>
     /// <returns>A list of the mapped values.</returns>
-    public static List<TOut> ListMap<TIn, TOut>(this List<TIn> list, Func<TIn, TOut> function) =>
+    public static List<TOut> ListMap<TIn, TOut>(this IEnumerable<TIn> list, Func<TIn, TOut> function) =>
         list
             .Select(function)
             .ToList();
 }
-
