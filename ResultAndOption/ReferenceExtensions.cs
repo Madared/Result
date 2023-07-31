@@ -106,11 +106,9 @@ public static class ReferenceExtensions
     /// <param name="list">The input list.</param>
     /// <param name="function">The mapping function to apply to each element in the list.</param>
     /// <returns>A list of the mapped values.</returns>
-    public static List<TOut> ListMap<TIn, TOut>(this List<TIn> list, Func<TIn, TOut> function)
-    {
-        List<TOut> outList = new();
-        list.ForEach(item => outList.Add(function(item)));
-        return outList;
-    }
+    public static List<TOut> Map<TIn, TOut>(this List<TIn> list, Func<TIn, TOut> function) =>
+        list
+            .Select(function)
+            .ToList();
 }
 
