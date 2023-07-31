@@ -30,21 +30,25 @@ public class ResultList<T> where T : notnull
 
     public bool HasErrors() => Errors.Count > 0;
 
-    public ResultList<TOut> Map<TOut>(Func<T, Result<TOut>> function) where TOut : notnull
+    public ResultList<TOut> Map<TOut>(Func<T, Result<TOut>> function) where TOut : notnull =>
+        Successes
+            .ListMap(function)
+            .Concat(Errors.ListMap(Result<TOut>.Fail))
+            .ToList()
+            .ToResult();
+
+    public ResultList<TOut> Map<TOut>(Func<T, TOut?> function, IError nullabilityError) where TOut : notnull
     {
         ResultList<TOut> newList = new(Errors);
         Successes
-            .ListMap(function)
+            .Select(data => function(data).ToResult(nullabilityError))
+            .ToList()
             .ForEach(result => newList.AddResult(result));
         return newList;
     }
 
-    public ResultList<TOut> Map<TOut>(Func<T, TOut?> function) where TOut : notnull
-    {
-        ResultList<TOut> newList = new(Errors);
-        Successes
-            .ListMap(data => function(data).ToResult(new UnknownError()))
-            .ForEach(result => newList.AddResult(result));
-        return newList;
-    }
+    public Result<TOut> MapList<TOut>(Func<List<T>, Result<TOut>> function) where TOut : notnull =>
+        HasErrors()
+            ? Result<TOut>.Fail(new MultipleErrors(Errors))
+            : function(Successes);
 }

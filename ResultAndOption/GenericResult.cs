@@ -60,8 +60,8 @@ public class Result<T> where T : notnull
     /// <returns>A new result with the mapped data.</returns>
     public Result<TResult> Map<TResult>(Func<T, TResult> mapper) where TResult : notnull =>
         _failed
-        ? Result<TResult>.Fail(Error)
-        : Result<TResult>.Ok(mapper(Data));
+            ? Result<TResult>.Fail(Error)
+            : Result<TResult>.Ok(mapper(Data));
 
     /// <summary>
     /// Pipes the data into a function that also returns a result or passes the error to the new result.
@@ -71,8 +71,8 @@ public class Result<T> where T : notnull
     /// <returns>A new result with the mapped data.</returns>
     public Result<TResult> Map<TResult>(Func<T, Result<TResult>> mapper) where TResult : notnull =>
         _failed
-        ? Result<TResult>.Fail(Error)
-        : mapper(Data);
+            ? Result<TResult>.Fail(Error)
+            : mapper(Data);
 
     /// <summary>
     /// Maps the data of the result using the specified function that returns a simple result.
@@ -81,8 +81,8 @@ public class Result<T> where T : notnull
     /// <returns>A new result.</returns>
     public Result Map(Func<T, Result> mapper) =>
         _failed
-        ? Result.Fail(Error)
-        : mapper(Data);
+            ? Result.Fail(Error)
+            : mapper(Data);
 
     ///<summary>
     ///if the result is successfull calls the specified function otherwise returns a simple failed result wrapping the current error
@@ -91,8 +91,8 @@ public class Result<T> where T : notnull
     ///<returns>A new simple result</returns>
     public Result Map(Func<Result> function) =>
         _failed
-        ? Result.Fail(Error)
-        : function();
+            ? Result.Fail(Error)
+            : function();
 
 
     /// <summary>
@@ -102,10 +102,8 @@ public class Result<T> where T : notnull
     /// <returns>The same result after applying the action.</returns>
     public Result<T> UseData(Action<T> function)
     {
-        if (_failed)
-            return this;
-
-        function(Data);
+        if (!_failed)
+            function(Data);
         return this;
     }
 
@@ -125,7 +123,7 @@ public class Result<T> where T : notnull
 
         Result result = function(Data);
         return result.Failed
-            ? Result<T>.Fail(result.Error)
+            ? Fail(result.Error)
             : this;
     }
 
@@ -135,8 +133,8 @@ public class Result<T> where T : notnull
     /// <returns>A simple result representing the success or failure of the original result.</returns>
     public Result ToSimpleResult() =>
         _failed
-        ? Result.Fail(Error)
-        : Result.Ok();
+            ? Result.Fail(Error)
+            : Result.Ok();
 
     /// <summary>
     /// Converts the result to a result with a different data type, assuming the original result represents an error.
@@ -146,8 +144,9 @@ public class Result<T> where T : notnull
     /// <exception cref="InvalidOperationException">Thrown if the original result represents a failure.</exception>
     public Result<TResult> ConvertErrorResult<TResult>() where TResult : notnull =>
         _failed
-        ? Result<TResult>.Fail(Error)
-        : throw new InvalidOperationException("Cannot convert error result when the original result represents a success.");
+            ? Result<TResult>.Fail(Error)
+            : throw new InvalidOperationException(
+                "Cannot convert error result when the original result represents a success.");
 
     /// <summary>
     /// Executes the specified action if the result represents a failure.
