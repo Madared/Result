@@ -87,7 +87,7 @@ public static class ReferenceExtensions
     /// <param name="results">The list of results to convert</param>
     /// <typeparam name="TIn">The type of data carried by the result</typeparam>
     /// <returns>A ResultList</returns>
-    public static ResultList<TIn> ToResult<TIn>(this List<Result<TIn>> results)
+    public static ResultList<TIn> ToResult<TIn>(this IEnumerable<Result<TIn>> results)
         where TIn : notnull
     {
         ResultList<TIn> resultList = new();
@@ -103,7 +103,7 @@ public static class ReferenceExtensions
     /// <param name="list">The input list.</param>
     /// <param name="function">The mapping function to apply to each element in the list.</param>
     /// <returns>A list of the mapped values.</returns>
-    public static List<TOut> ListMap<TIn, TOut>(this IEnumerable<TIn> list, Func<TIn, TOut> function) =>
+    public static IEnumerable<TOut> ListMap<TIn, TOut>(this IEnumerable<TIn> list, Func<TIn, TOut> function) =>
         list
             .Select(function)
             .ToList();

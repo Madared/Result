@@ -43,7 +43,7 @@ public class ExtensionTests
             1, 2, 3, 4, 5
         };
         //When
-        List<int> newValues = values.ListMap(value => value + 1);
+        IEnumerable<int> newValues = values.ListMap(value => value + 1);
         //Then
         Assert.Equal(expectedValues, newValues);
     }
@@ -67,7 +67,7 @@ public class ExtensionTests
             "hello"
         };
         //When
-        List<string> newValues = values.ListMap(value => value + " world");
+        IEnumerable<string> newValues = values.ListMap(value => value + " world");
         //Then
         Assert.Equal(expectedValues, newValues);
     }
