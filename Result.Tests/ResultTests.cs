@@ -133,7 +133,7 @@ public class ResultTests
         Result<string> stringResult = Result<string>.Ok("hello");
         //When
         Result<int> mappedResult = stringResult
-            .Map(data => data.Count());
+            .Map(data => data.Length);
         //Then
         Assert.Equal(5, mappedResult.Data);
     }
@@ -151,5 +151,22 @@ public class ResultTests
         Assert.True(simpleOkResult.Succeeded);
         Assert.True(simpleFailedResult.Failed);
         Assert.Equal(failedStringResult.Error, simpleFailedResult.Error);
+    }
+
+    [Fact]
+    public void ToResult_Works_ToCreate_ResultList()
+    {
+        //Given
+        List<Result<string>> stringResults = new()
+        {
+            Result<string>.Ok("hello"),
+            Result<string>.Ok("world")
+        };
+        //When
+        ResultList<string> resultList = stringResults.ToResult();
+        //Then
+        Assert.False(resultList.HasErrors());
+        Assert.Equal(2, resultList.Successes.Count);
+        
     }
 }
