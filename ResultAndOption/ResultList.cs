@@ -36,21 +36,18 @@ public class ResultList<T> where T : notnull
     public bool HasErrors() => Errors.Count > 0;
 
     public ResultList<TOut> Map<TOut>(Func<T, Result<TOut>> function) where TOut : notnull =>
-        Successes
-            .Select(function)
-            .Concat(Errors.Select(Result<TOut>.Fail))
-            .ToList()
-            .ToResult();
+        HasErrors()
+            ? new ResultList<TOut>(Errors)
+            : Successes
+                .Select(function)
+                .ToResult();
 
-    public ResultList<TOut> Map<TOut>(Func<T, TOut?> function, IError nullabilityError) where TOut : notnull
-    {
-        ResultList<TOut> newList = new(Errors);
-        Successes
-            .Select(data => function(data).ToResult(nullabilityError))
-            .ToList()
-            .ForEach(result => newList.AddResult(result));
-        return newList;
-    }
+    public ResultList<TOut> Map<TOut>(Func<T, TOut?> function, IError nullabilityError) where TOut : notnull =>
+        HasErrors()
+            ? new ResultList<TOut>(Errors)
+            : Successes
+                .Select(data => function(data).ToResult(nullabilityError))
+                .ToResult();
 
     public Result<TOut> MapList<TOut>(Func<IEnumerable<T>, TOut?> function, IError nullabilityError)
         where TOut : notnull =>
