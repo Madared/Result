@@ -25,15 +25,20 @@ public class ResultList<T> where T : notnull
             Successes.Add(result.Data);
     }
 
-    public void AddResults(List<Result<T>> results) =>
-        results.ForEach(AddResult);
+    public void AddResults(IEnumerable<Result<T>> results)
+    {
+        foreach (Result<T> result in results)
+        {
+            AddResult(result);
+        }
+    }
 
     public bool HasErrors() => Errors.Count > 0;
 
     public ResultList<TOut> Map<TOut>(Func<T, Result<TOut>> function) where TOut : notnull =>
         Successes
-            .ListMap(function)
-            .Concat(Errors.ListMap(Result<TOut>.Fail))
+            .Select(function)
+            .Concat(Errors.Select(Result<TOut>.Fail))
             .ToList()
             .ToResult();
 
@@ -47,7 +52,20 @@ public class ResultList<T> where T : notnull
         return newList;
     }
 
-    public Result<TOut> MapList<TOut>(Func<List<T>, Result<TOut>> function) where TOut : notnull =>
+    public Result<TOut> MapList<TOut>(Func<IEnumerable<T>, TOut?> function, IError nullabilityError)
+        where TOut : notnull =>
+        HasErrors()
+            ? Result<TOut>.Fail(new MultipleErrors(Errors))
+            : function(Successes).ToResult(nullabilityError);
+
+    public ResultList<TOut> MapList<TOut>(Func<IEnumerable<T>, IEnumerable<Result<TOut>>> function)
+        where TOut : notnull =>
+        HasErrors()
+            ? new ResultList<TOut>(Errors)
+            : function(Successes).ToResult();
+
+
+    public Result<TOut> MapList<TOut>(Func<IEnumerable<T>, Result<TOut>> function) where TOut : notnull =>
         HasErrors()
             ? Result<TOut>.Fail(new MultipleErrors(Errors))
             : function(Successes);
