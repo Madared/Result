@@ -1,6 +1,6 @@
 namespace Results;
 
-public class Option<T>
+public class Option<T> where T : notnull
 {
     private readonly T? _data;
     private readonly bool _isNone;
@@ -22,16 +22,18 @@ public class Option<T>
             ? Option<T>.None()
             : Option<T>.Some(data);
 
-    public Option<TOut> Map<TOut>(Func<T, TOut> function) =>
+    public Option<TOut> Map<TOut>(Func<T, TOut> function) where TOut : notnull =>
         _data is null || _isNone
             ? Option<TOut>.None()
             : Option<TOut>.Some(function(_data));
 
-    public Option<TOut> Map<TOut>(Func<T, Option<TOut>> function) =>
+    public Option<TOut> Map<TOut>(Func<T, Option<TOut>> function) where TOut : notnull =>
         _data is null || _isNone
             ? Option<TOut>.None()
             : function(_data);
 
     public bool IsSome() => !_isNone && _data is not null;
     public bool IsNone() => _isNone || _data is null;
+
+    public T Or(T defaultValue) => _isNone ? defaultValue : _data!;
 }
