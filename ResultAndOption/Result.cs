@@ -67,7 +67,7 @@ public class Result
     /// <typeparam name="T">The type of data carried by the new result.</typeparam>
     /// <param name="function">The function to map the result.</param>
     /// <returns>A new result of type <typeparamref name="T"/> produced by the function if the original result represents a success. Otherwise, a failed result with the same error as the original result is returned.</returns>
-    public Result<T> Map<T>(Func<Result<T>> function) where T : class =>
+    public Result<T> Map<T>(Func<Result<T>> function) where T : notnull =>
         _failed ? Result<T>.Fail(_error!) : function();
 
     /// <summary>
@@ -76,6 +76,6 @@ public class Result
     /// <typeparam name="T">The type of data carried by the new result.</typeparam>
     /// <param name="function">The function to map the result.</param>
     /// <returns>A new result of type <typeparamref name="T"/> produced by the function if the original result represents a success. Otherwise, a failed result with the same error as the original result is returned.</returns>
-    public Result<T> Map<T>(Func<T> function) where T : class =>
+    public Result<T> Map<T>(Func<T> function) where T : notnull =>
         _failed ? Result<T>.Fail(_error!) : Result<T>.Ok(function());
 }
