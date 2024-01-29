@@ -47,10 +47,7 @@ public static class ReferenceExtensions
     /// <param name="i">The non-null input reference.</param>
     /// <param name="function">The function to invoke on the input reference.</param>
     /// <returns>The result of type <typeparamref name="TOut"/> produced by the function.</returns>
-    public static TOut PipeNonNull<TIn, TOut>(this TIn i, Func<TIn, TOut> function)
-    {
-        return function(i);
-    }
+    public static TOut PipeNonNull<TIn, TOut>(this TIn i, Func<TIn, TOut> function) where TIn : notnull => function(i);
 
     /// <summary>
     /// Invokes a function on a nullable reference and returns a result, handling the case when the reference is null.
@@ -60,13 +57,10 @@ public static class ReferenceExtensions
     /// <param name="function">The function to invoke on the input reference.</param>
     /// <param name="error">The error to use if the input reference is null.</param>
     /// <returns>A result produced by the function if the input reference is not null. Otherwise, a failed result with the specified error is returned.</returns>
-    public static Result Pipe<TIn>(this TIn? i, Func<TIn, Result> function, IError error)
-        where TIn : notnull
-    {
-        return i is null
+    public static Result Pipe<TIn>(this TIn? i, Func<TIn, Result> function, IError error) where TIn : notnull =>
+        i is null
             ? Result.Fail(error)
             : function(i);
-    }
 
     /// <summary>
     /// Converts a nullable reference to a result, representing a success or failure state.
@@ -75,11 +69,8 @@ public static class ReferenceExtensions
     /// <param name="i">The nullable input reference.</param>
     /// <param name="error">The error to use if the input reference is null.</param>
     /// <returns>A result representing the input reference if it is not null, or a failed result with the specified error.</returns>
-    public static Result<TIn> ToResult<TIn>(this TIn? i, IError error)
-        where TIn : notnull
-    {
-        return Result<TIn>.Unknown(i, error);
-    }
+    public static Result<TIn> ToResult<TIn>(this TIn? i, IError error) where TIn : notnull =>
+        Result<TIn>.Unknown(i, error);
 
     /// <summary>
     /// Converts a simple list of results to the more specific ResultList.
@@ -88,7 +79,7 @@ public static class ReferenceExtensions
     /// <typeparam name="TIn">The type of data carried by the result</typeparam>
     /// <returns>A ResultList</returns>
     public static ResultList<TIn> ToResult<TIn>(this IEnumerable<Result<TIn>> results)
-        where TIn : notnull
+        where TIn : notnull 
     {
         ResultList<TIn> resultList = new();
         resultList.AddResults(results);
