@@ -32,8 +32,9 @@ public class OptionTests
     public void Null_ValueType_Options_IsNone()
     {
         //Given
-        int? nullInt = null;
-        Option<int?> intOption = Option<int?>.Maybe(nullInt);
+        //Started with string because of notnull constraint in the option type as it cannot be Option<int?>
+        Option<int> intOption = Option<string>.None()
+            .Map(str => str.Length);
         //When
         bool isNone = intOption.IsNone();
         //Then
@@ -104,5 +105,30 @@ public class OptionTests
         bool isNone = mappedOption.IsNone();
         //Then
         Assert.True(isNone);
+    }
+
+    [Fact]
+    public void Or_Gets_Default_Value()
+    {
+        //Given
+        Option<string> optionalName = Option<string>.None();
+        string newName = "newName";
+        //When
+        string returned = optionalName.Or(newName);
+        //Then
+        Assert.Equal(newName, returned);
+    }
+
+    [Fact]
+    public void Or_Of_Populated_Option_Returns_Internal_Value()
+    {
+        //Given
+        string initialName = "initialName";
+        Option<string> optionalName = Option<string>.Some(initialName);
+        string newName = "newName";
+        //When
+        string returned = optionalName.Or(newName);
+        //Then
+        Assert.Equal(initialName, returned);
     }
 }
