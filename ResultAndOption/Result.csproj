@@ -22,9 +22,10 @@
 
   <PropertyGroup>
     <PackageId>Afonsomtsm.Result</PackageId>
-    <Version>0.9.3.5</Version>
+    <Version>0.9.4</Version>
     <Authors>Afonso Matos</Authors>
     <Company></Company>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>A package containing result and optional types to avoid exceptions and provide extensibility on error management and a way to work with the values they wrap, as well as avoiding null reference exceptions</Description>
     <Copyright>Copyright(c) Afonso Matos 2023</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
