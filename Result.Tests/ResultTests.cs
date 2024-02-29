@@ -1,4 +1,5 @@
 namespace ResultTests;
+using Results;
 
 public class ResultTests
 {
@@ -154,6 +155,18 @@ public class ResultTests
     }
 
     [Fact]
+    public void Aggregation_With_Tuples()
+    {
+        var tupleResult = Result<string>.Ok("hello")
+            .Map(str => (str, number: 10))
+            .Map(data => (data.str, data.number, str2: "hello"));
+        Assert.True(tupleResult.Succeeded);
+        Assert.Equal("hello", tupleResult.Data.str);
+        Assert.Equal(10, tupleResult.Data.number);
+        Assert.Equal("hello", tupleResult.Data.str2);
+    }
+
+    [Fact]
     public void ToResult_Works_ToCreate_ResultList()
     {
         //Given
@@ -168,5 +181,21 @@ public class ResultTests
         Assert.False(resultList.HasErrors());
         Assert.Equal(2, resultList.Successes.Count);
         
+    }
+
+    [Fact]
+    public void Or_On_Failed_Result_Returns_Passed_In_Value()
+    {
+        Result<int> failed = Result<int>.Fail(new UnknownError());
+        int fromOr = failed.Or(5);
+        Assert.Equal(5, fromOr);
+    }
+
+    [Fact]
+    public void Or_On_Successful_Result_Returns_Internal_Value()
+    {
+        Result<int> successful = Result<int>.Ok(100);
+        int fromOr = successful.Or(5);
+        Assert.Equal(100, fromOr);
     }
 }
