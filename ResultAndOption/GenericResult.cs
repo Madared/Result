@@ -4,7 +4,7 @@
 /// Represents a result of an operation that can either succeed or fail, carrying either data or an error.
 /// </summary>
 /// <typeparam name="T">The type of data carried by the result.</typeparam>
-public class Result<T> where T : notnull
+public class Result<T> : IResultWithoutData where T : notnull 
 {
     private readonly IError? _error;
     private readonly bool _failed;
@@ -171,4 +171,11 @@ public class Result<T> where T : notnull
             action(this);
         return this;
     }
+
+    /// <summary>
+    /// Returns the internal data in case of success or the replacement value passed in
+    /// </summary>
+    /// <param name="data">Replacement value to use in case of failed result</param>
+    /// <returns></returns>
+    public T Or(T data) => _failed ? data : Data;
 }
