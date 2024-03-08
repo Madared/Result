@@ -29,8 +29,16 @@ public class Option<T> where T : notnull
             ? Option<TOut>.None()
             : function(_data);
 
+    public Option<T> UseData(Action<T> action)
+    {
+        if (_data is not null) action(_data);
+        return this;
+    }
+
     public bool IsSome() => !_isNone && _data is not null;
     public bool IsNone() => _isNone || _data is null;
 
     public T Or(T defaultValue) => _data ?? defaultValue;
+    public Option<T> OrNullable(T? replacement) => IsNone() ? Maybe(replacement) : this;
+    public Option<T> OrOption(Option<T> replacement) => IsNone() ? replacement : this;
 }
