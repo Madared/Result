@@ -1,6 +1,6 @@
 ﻿namespace Results;
 
-public class Result
+public class Result: IResultWithoutData
 {
     private readonly bool _failed;
     private readonly IError? _error;

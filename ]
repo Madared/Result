@@ -1,0 +1,18 @@
+namespace Invoicing.Models.CV.ResponseObjects;
+using Money;
+using Values;
+
+public class BasicInvoice
+{
+    public Guid Id { get; }
+    public List<OrderItemView> Items { get; }
+}
+
+public class OrderItemView
+{
+    public Guid Id { get; }
+    public Money TotalWithoutTax { get; }
+    public Money TotalTax { get; }
+    public int Discount { get; }
+    public Money Total { get; }
+}

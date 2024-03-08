@@ -16,11 +16,8 @@ public class Option<T> where T : notnull
     }
 
     public static Option<T> Some(T data) => new(data, false);
-    public static Option<T> None() => new(default(T?), true);
-    public static Option<T> Maybe(T? data) =>
-        data is null
-            ? Option<T>.None()
-            : Option<T>.Some(data);
+    public static Option<T> None() => new(default, true);
+    public static Option<T> Maybe(T? data) => data is null ? None() : Some(data);
 
     public Option<TOut> Map<TOut>(Func<T, TOut> function) where TOut : notnull =>
         _data is null || _isNone
@@ -35,5 +32,5 @@ public class Option<T> where T : notnull
     public bool IsSome() => !_isNone && _data is not null;
     public bool IsNone() => _isNone || _data is null;
 
-    public T Or(T defaultValue) => _isNone ? defaultValue : _data!;
+    public T Or(T defaultValue) => _data ?? defaultValue;
 }
