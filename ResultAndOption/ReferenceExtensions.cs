@@ -105,5 +105,5 @@ public static class ReferenceExtensions
     /// <param name="data"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static Option<T> ToOption<T>(T? data) where T : notnull => Option<T>.Maybe(data);
+    public static Option<T> ToOption<T>(this T? data) where T : notnull => Option<T>.Maybe(data);
 }
