@@ -112,11 +112,15 @@ public class OptionTests
     {
         //Given
         Option<string> optionalName = Option<string>.None();
+        Option<int> optionalInt = Option<int>.None();
         string newName = "newName";
+        int newInt = 5;
         //When
         string returned = optionalName.Or(newName);
+        int returnedInt = optionalInt.Or(newInt);
         //Then
         Assert.Equal(newName, returned);
+        Assert.Equal(newInt, returnedInt);
     }
 
     [Fact]
@@ -130,5 +134,62 @@ public class OptionTests
         string returned = optionalName.Or(newName);
         //Then
         Assert.Equal(initialName, returned);
+    }
+
+    [Fact]
+    public void OrOption_Of_Empty_Option_Gets_Replacement_Value()
+    {
+        //Given
+        Option<string> optionalString = Option<string>.None();
+        Option<string> replacement = Option<string>.Some("hello");
+        Option<int> optionalInt = Option<int>.None();
+        Option<int> replacementInt = Option<int>.Some(5);
+        //When
+        Option<string> returned = optionalString.OrOption(replacement);
+        Option<int> returnedInt = optionalInt.OrOption(replacementInt);
+        //Then
+        Assert.Equal(replacement, returned);
+        Assert.Equal(replacementInt, returnedInt);
+    }
+
+    [Fact]
+    public void Or_Option_Of_Populated_Option_Returns_Original_Value()
+    {
+        //Given
+        Option<string> optionalString = Option<string>.Some("hello");
+        Option<int> optionalInt = Option<int>.Some(4);
+        Option<string> replacementString = Option<string>.Some("world");
+        Option<int> replacementInt = Option<int>.Some(20);
+        //When
+        Option<string> returnedString = optionalString.OrOption(replacementString);
+        Option<int> returnedInt = optionalInt.OrOption(replacementInt);
+        //Then
+        Assert.Equal(optionalString, returnedString);
+        Assert.Equal(optionalInt, returnedInt);
+    }
+
+    [Fact]
+    public void OrNullable_Of_Empty_Option_Gets_Replacement_Value()
+    {
+        //Given
+        Option<string> optionalString = Option<string>.None();
+        string replacementString = "hello";
+        //When
+        Option<string> returnedString = optionalString.OrNullable(replacementString);
+        //Then
+        Assert.Equal(replacementString, returnedString.Data);
+    }
+
+    [Fact]
+    public void OrNullable_With_Null_Replacement_Returns_Empty_Option()
+    {
+        //Given
+        Option<string> optionalString = Option<string>.None();
+        string? replacement = null;
+        //When
+        Option<string> returnedString = optionalString.OrNullable(replacement);
+        //Then
+        Assert.NotEqual(optionalString, returnedString);
+        Assert.True(returnedString.IsNone());
     }
 }
