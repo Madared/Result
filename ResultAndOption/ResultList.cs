@@ -54,13 +54,16 @@ public class ResultList<T> where T : notnull
         HasErrors()
             ? Result<TOut>.Fail(new MultipleErrors(Errors))
             : function(Successes).ToResult(nullabilityError);
-
+    
     public ResultList<TOut> MapList<TOut>(Func<IEnumerable<T>, IEnumerable<Result<TOut>>> function)
         where TOut : notnull =>
         HasErrors()
             ? new ResultList<TOut>(Errors)
             : function(Successes).ToResult();
 
+    public Result<TOut> MapList<TOut>(Func<IEnumerable<T>, TOut> function) where TOut : notnull => HasErrors()
+        ? Result<TOut>.Fail(new MultipleErrors(Errors))
+        : Result<TOut>.Ok(function(Successes));
 
     public Result<TOut> MapList<TOut>(Func<IEnumerable<T>, Result<TOut>> function) where TOut : notnull =>
         HasErrors()
