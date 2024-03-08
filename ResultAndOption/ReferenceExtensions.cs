@@ -79,7 +79,7 @@ public static class ReferenceExtensions
     /// <typeparam name="TIn">The type of data carried by the result</typeparam>
     /// <returns>A ResultList</returns>
     public static ResultList<TIn> ToResult<TIn>(this IEnumerable<Result<TIn>> results)
-        where TIn : notnull 
+        where TIn : notnull
     {
         ResultList<TIn> resultList = new();
         resultList.AddResults(results);
@@ -98,4 +98,12 @@ public static class ReferenceExtensions
         list
             .Select(function)
             .ToList();
+
+    /// <summary>
+    /// Generates an option type based on a null reference type
+    /// </summary>
+    /// <param name="data"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static Option<T> ToOption<T>(T? data) where T : notnull => Option<T>.Maybe(data);
 }
