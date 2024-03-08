@@ -38,7 +38,7 @@ public class Option<T> where T : notnull
     public bool IsSome() => !_isNone && _data is not null;
     public bool IsNone() => _isNone || _data is null;
 
-    public T Or(T defaultValue) => _data ?? defaultValue;
+    public T Or(T defaultValue) => IsNone() ? defaultValue : Data;
     public Option<T> OrNullable(T? replacement) => IsNone() ? Maybe(replacement) : this;
     public Option<T> OrOption(Option<T> replacement) => IsNone() ? replacement : this;
 }
