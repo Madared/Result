@@ -198,4 +198,44 @@ public class ResultTests
         int fromOr = successful.Or(5);
         Assert.Equal(100, fromOr);
     }
+
+    [Fact]
+    public void MapAsync_Maps_Internal_Result_Extracting_Task() {
+        Result<string> stringResult = Result<string>.Ok("hello");
+        Task<Result<string>> taskResult = Task.FromResult(stringResult);
+
+        async Task<int> SomeAsyncFunc(string f) {
+            return f.Length;
+        }
+
+        Task<Result<int>> intResultTask = taskResult.MapAsync(SomeAsyncFunc);
+        Result<int> intResult = intResultTask.Result;
+        Assert.True(intResult.Succeeded);
+        Assert.Equal(stringResult.Data.Length, intResult.Data);
+    }
+
+    [Fact]
+    public void MapAsync_Maps_Non_Async_Function_While_Extracting_Task() {
+        string hello = "hello";
+        Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
+        Task<Result<int>> intTaskResult = taskResult.MapAsync(s => s.Length);
+        Result<int> intResult = intTaskResult.Result;
+        Assert.True(intResult.Succeeded);
+        Assert.Equal(hello.Length, intResult.Data);
+    }
+
+    [Fact]
+    public void MapAsync_Turns_Sync_Result_To_TaskResult() {
+        string hello = "hello";
+        Result<string> helloResult = Result<string>.Ok(hello);
+
+        async Task<int> SomeAsyncFunction(string s) {
+            return s.Length;
+        }
+
+        Task<Result<int>> intTaskResult = helloResult.MapAsync(SomeAsyncFunction);
+        Result<int> intResult = intTaskResult.Result;
+        Assert.True(intResult.Succeeded);
+        Assert.Equal(hello.Length, intResult.Data);
+    }
 }

@@ -4,8 +4,7 @@
 /// Represents a result of an operation that can either succeed or fail, carrying either data or an error.
 /// </summary>
 /// <typeparam name="T">The type of data carried by the result.</typeparam>
-public class Result<T> : IResultWithoutData where T : notnull 
-{
+public class Result<T> : IResultWithoutData where T : notnull {
     private readonly IError? _error;
     private readonly bool _failed;
     private readonly Option<T> _data;
@@ -19,8 +18,7 @@ public class Result<T> : IResultWithoutData where T : notnull
 
     public T Data => _data.Data;
 
-    private Result(bool failed, IError? error, Option<T> data)
-    {
+    private Result(bool failed, IError? error, Option<T> data) {
         _failed = failed;
         _error = error;
         _data = data;
@@ -100,8 +98,7 @@ public class Result<T> : IResultWithoutData where T : notnull
     /// </summary>
     /// <param name="function">The action to apply.</param>
     /// <returns>The same result after applying the action.</returns>
-    public Result<T> UseData(Action<T> function)
-    {
+    public Result<T> UseData(Action<T> function) {
         if (!_failed)
             function(Data);
         return this;
@@ -116,8 +113,7 @@ public class Result<T> : IResultWithoutData where T : notnull
     ///     If the function returns a failed result, a new failed result with the error from the function's result is returned.
     ///     Otherwise, the same result is returned.
     /// </returns>
-    public Result<T> UseData(Func<T, Result> function)
-    {
+    public Result<T> UseData(Func<T, Result> function) {
         if (_failed)
             return this;
 
@@ -153,8 +149,7 @@ public class Result<T> : IResultWithoutData where T : notnull
     /// </summary>
     /// <param name="action">The action to execute.</param>
     /// <returns>The same result after executing the action.</returns>
-    public Result<T> IfFailed(Action<Result<T>> action)
-    {
+    public Result<T> IfFailed(Action<Result<T>> action) {
         if (_failed)
             action(this);
         return this;
@@ -165,8 +160,7 @@ public class Result<T> : IResultWithoutData where T : notnull
     /// </summary>
     /// <param name="action">The action to execute.</param>
     /// <returns>The same result after executing the action.</returns>
-    public Result<T> IfSucceeded(Action<Result<T>> action)
-    {
+    public Result<T> IfSucceeded(Action<Result<T>> action) {
         if (!_failed)
             action(this);
         return this;
@@ -178,4 +172,53 @@ public class Result<T> : IResultWithoutData where T : notnull
     /// <param name="data">Replacement value to use in case of failed result</param>
     /// <returns></returns>
     public T Or(T data) => _failed ? data : Data;
+
+    public async Task<Result<TOut>> MapAsync<TOut>(Func<T, Task<TOut>> asyncFunction) where TOut : notnull {
+        if (_failed) {
+            return Result<TOut>.Fail(Error);
+        }
+
+        var functionData = await asyncFunction(Data);
+        return Result<TOut>.Ok(functionData);
+    }
+}
+
+public static class TaskExtensions {
+    /// <summary>
+    /// implicitly awaits the original result and if the result is a success will also implicitly await the
+    /// async function passed in and maps it;
+    /// </summary>
+    /// <param name="result">The async result to map</param>
+    /// <param name="asyncMapper">The async mapping function</param>
+    /// <typeparam name="T">The Original result type</typeparam>
+    /// <typeparam name="TOut">The mapper output type</typeparam>
+    /// <returns></returns>
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, Task<TOut>> asyncMapper)
+        where TOut : notnull
+        where T : notnull 
+    {
+        Result<T> originalResult = await result;
+        if (originalResult.Failed) {
+            return Result<TOut>.Fail(originalResult.Error);
+        }
+
+        TOut asyncResult = await asyncMapper(originalResult.Data);
+        return Result<TOut>.Ok(asyncResult);
+    }
+
+    /// <summary>
+    /// Implicitly awaits the original result and then maps as a normal synchronous Map method
+    /// </summary>
+    /// <param name="result">The async result to map</param>
+    /// <param name="mapper">Mapping function</param>
+    /// <typeparam name="T">The Original result type</typeparam>
+    /// <typeparam name="TOut">The mapper output type</typeparam>
+    /// <returns></returns>
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, TOut> mapper)
+        where T : notnull
+        where TOut : notnull {
+
+        var originalResult = await result;
+        return originalResult.Map(mapper);
+    }
 }
