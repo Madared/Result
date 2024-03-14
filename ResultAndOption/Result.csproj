@@ -1,38 +1,38 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <ReleaseVersion>1.0</ReleaseVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <ReleaseVersion>1.0</ReleaseVersion>
+    </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="SimpleResultList.cs" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="SimpleResultList.cs"/>
+    </ItemGroup>
 
-  <PropertyGroup>
-    <PackageId>Afonsomtsm.Result</PackageId>
-    <Version>0.9.4</Version>
-    <Authors>Afonso Matos</Authors>
-    <Company></Company>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Description>A package containing result and optional types to avoid exceptions and provide extensibility on error management and a way to work with the values they wrap, as well as avoiding null reference exceptions</Description>
-    <Copyright>Copyright(c) Afonso Matos 2023</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>Result;Option;Functional;Pattern</PackageTags>
-    <RepositoryUrl>https://github.com/Madared/Result</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/Madared/Result</PackageProjectUrl>
-  </PropertyGroup>
+    <PropertyGroup>
+        <PackageId>Afonsomtsm.Result</PackageId>
+        <Version>0.9.4</Version>
+        <Authors>Afonso Matos</Authors>
+        <Company></Company>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <Description>A package containing result and optional types to avoid exceptions and provide extensibility on error management and a way to work with the values they wrap, as well as avoiding null reference exceptions</Description>
+        <Copyright>Copyright(c) Afonso Matos 2023</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>Result;Option;Functional;Pattern</PackageTags>
+        <RepositoryUrl>https://github.com/Madared/Result</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/Madared/Result</PackageProjectUrl>
+    </PropertyGroup>
 
 </Project>

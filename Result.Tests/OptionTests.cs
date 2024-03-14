@@ -1,10 +1,8 @@
 namespace ResultTests;
 
-public class OptionTests
-{
+public class OptionTests {
     [Fact]
-    public void Null_Option_IsNone()
-    {
+    public void Null_Option_IsNone() {
         //Given
         Option<string> stringOption = Option<string>.Maybe(null);
         //When
@@ -16,8 +14,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void Non_Null_Option_IsSome()
-    {
+    public void Non_Null_Option_IsSome() {
         //Given
         Option<string> stringOption = Option<string>.Maybe("hello");
         //When
@@ -29,8 +26,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void Null_ValueType_Options_IsNone()
-    {
+    public void Null_ValueType_Options_IsNone() {
         //Given
         //Started with string because of notnull constraint in the option type as it cannot be Option<int?>
         Option<int> intOption = Option<string>.None()
@@ -42,8 +38,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void Data_Accessing_In_NoneOption_Throws()
-    {
+    public void Data_Accessing_In_NoneOption_Throws() {
         //Given
         Option<string> nullOption = Option<string>.None();
         //Then
@@ -51,8 +46,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void Option_Map_On_None_Stays_None()
-    {
+    public void Option_Map_On_None_Stays_None() {
         //Given
         Option<string> stringOption = Option<string>.None();
         //When
@@ -62,8 +56,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void Option_Map_On_Some_Returns_Proper_Value()
-    {
+    public void Option_Map_On_Some_Returns_Proper_Value() {
         //Given
         Option<string> stringOption = Option<string>.Some("hello");
         //When
@@ -73,8 +66,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void Mapping_With_Option_Returning_Function_Does_Not_Nest_Options()
-    {
+    public void Mapping_With_Option_Returning_Function_Does_Not_Nest_Options() {
         //Given
         Option<string> stringOption = Option<string>.Some("hello");
         //When
@@ -84,8 +76,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void None_Method_Returns_Null_For_Non_Nullable_Types()
-    {
+    public void None_Method_Returns_Null_For_Non_Nullable_Types() {
         //Given
         Option<int> intOption = Option<int>.None();
         //When
@@ -96,8 +87,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void Mapping_Non_Nullable_Type_None_Returns_None()
-    {
+    public void Mapping_Non_Nullable_Type_None_Returns_None() {
         //Given
         Option<int> intOption = Option<int>.None();
         //When
@@ -108,8 +98,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void Or_Gets_Default_Value()
-    {
+    public void Or_Gets_Default_Value() {
         //Given
         Option<string> optionalName = Option<string>.None();
         Option<int> optionalInt = Option<int>.None();
@@ -124,8 +113,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void Or_Of_Populated_Option_Returns_Internal_Value()
-    {
+    public void Or_Of_Populated_Option_Returns_Internal_Value() {
         //Given
         string initialName = "initialName";
         Option<string> optionalName = Option<string>.Some(initialName);
@@ -137,8 +125,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void OrOption_Of_Empty_Option_Gets_Replacement_Value()
-    {
+    public void OrOption_Of_Empty_Option_Gets_Replacement_Value() {
         //Given
         Option<string> optionalString = Option<string>.None();
         Option<string> replacement = Option<string>.Some("hello");
@@ -153,8 +140,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void Or_Option_Of_Populated_Option_Returns_Original_Value()
-    {
+    public void Or_Option_Of_Populated_Option_Returns_Original_Value() {
         //Given
         Option<string> optionalString = Option<string>.Some("hello");
         Option<int> optionalInt = Option<int>.Some(4);
@@ -169,8 +155,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void OrNullable_Of_Empty_Option_Gets_Replacement_Value()
-    {
+    public void OrNullable_Of_Empty_Option_Gets_Replacement_Value() {
         //Given
         Option<string> optionalString = Option<string>.None();
         string replacementString = "hello";
@@ -181,8 +166,7 @@ public class OptionTests
     }
 
     [Fact]
-    public void OrNullable_With_Null_Replacement_Returns_Empty_Option()
-    {
+    public void OrNullable_With_Null_Replacement_Returns_Empty_Option() {
         //Given
         Option<string> optionalString = Option<string>.None();
         string? replacement = null;
@@ -191,5 +175,19 @@ public class OptionTests
         //Then
         Assert.NotEqual(optionalString, returnedString);
         Assert.True(returnedString.IsNone());
+    }
+
+    [Fact]
+    public void ToOption_Turns_Null_Into_Empty_Option() {
+        string? nullString = null;
+        Option<string> optionalString = nullString.ToOption();
+        Assert.True(optionalString.IsNone());
+    }
+
+    [Fact]
+    public void ToOption_Turns_Existing_Value_Into_Full_Option() {
+        string? existingString = "hello";
+        Option<string> optionalString = existingString.ToOption();
+        Assert.True(optionalString.IsSome());
     }
 }

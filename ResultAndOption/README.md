@@ -1,10 +1,12 @@
 A Result type for CSharp which allows for error passing without exceptions
 =
 
-This package is an attempt to allow consumers to pass custom errors upstream without having to try and catch exceptions that may change over time,
+This package is an attempt to allow consumers to pass custom errors upstream without having to try and catch exceptions
+that may change over time,
 thus decreasing the maintenance cost of changes and bugfixes downstream.  
-This also allows for more functionality within error with an IError interface which can be extended to provide better usability, and more flexibility.
-    Ex: Having a method to return the appropriate **ObjectResult** for a failure of a rest api;
+This also allows for more functionality within error with an IError interface which can be extended to provide better
+usability, and more flexibility.
+Ex: Having a method to return the appropriate **ObjectResult** for a failure of a rest api;
 
 ```csharp
     public interface IError 
@@ -27,7 +29,8 @@ This also allows for more functionality within error with an IError interface wh
     }
 ```
 
-You can then either create an abstract class/interface to wrap all Errors into a type that is more favourable for your application. Ex: 
+You can then either create an abstract class/interface to wrap all Errors into a type that is more favourable for your
+application. Ex:
 
 ```csharp
 
@@ -97,7 +100,8 @@ Which can then be returned by your service and consumed appropriately inside of 
 
 ```
 
-The extension methods can be used to parse null values to results in a simpler style and to use Piping with single variables such as in Fsharp:
+The extension methods can be used to parse null values to results in a simpler style and to use Piping with single
+variables such as in Fsharp:
 
 ```csharp
 

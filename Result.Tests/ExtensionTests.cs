@@ -1,10 +1,8 @@
 namespace ResultTests;
 
-public class ExtensionTests
-{
+public class ExtensionTests {
     [Fact]
-    public void ToResult_Returns_Failed_In_null_object()
-    {
+    public void ToResult_Returns_Failed_In_null_object() {
         //Given
         string? nullString = null;
         //When
@@ -14,8 +12,7 @@ public class ExtensionTests
     }
 
     [Fact]
-    public void ToResult_Returns_ResultList_With_Correctly_Mapped_Values()
-    {
+    public void ToResult_Returns_ResultList_With_Correctly_Mapped_Values() {
         //Given
         Result<string> okResult = Result<string>.Ok("hello");
         Result<string> failedResult = Result<string>.Fail(new UnknownError());
@@ -31,15 +28,12 @@ public class ExtensionTests
     }
 
     [Fact]
-    public void ListMap_Correctly_Maps_Every_Value()
-    {
+    public void ListMap_Correctly_Maps_Every_Value() {
         //Given
-        List<int> expectedValues = new()
-        {
+        List<int> expectedValues = new() {
             2, 3, 4, 5, 6
         };
-        List<int> values = new()
-        {
+        List<int> values = new() {
             1, 2, 3, 4, 5
         };
         //When
@@ -49,18 +43,15 @@ public class ExtensionTests
     }
 
     [Fact]
-    public void LisMap_Handles_Null()
-    {
+    public void LisMap_Handles_Null() {
         //Given
-        List<string> expectedValues = new()
-        {
+        List<string> expectedValues = new() {
             "hello world",
             "hello world",
             " world",
             "hello world"
         };
-        List<string?> values = new()
-        {
+        List<string?> values = new() {
             "hello",
             "hello",
             null,

@@ -1,11 +1,8 @@
 namespace ResultTests;
-using Results;
 
-public class ResultTests
-{
+public class ResultTests {
     [Fact]
-    public void Failure_Checking_Returns_Correct_Value()
-    {
+    public void Failure_Checking_Returns_Correct_Value() {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
 
@@ -18,8 +15,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Success_Checking_Returns_Correct_Values()
-    {
+    public void Success_Checking_Returns_Correct_Values() {
         //Given
         Result<string> stringResult = Result<string>.Ok("hello");
         //When
@@ -31,8 +27,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Accessing_Data_In_Failed_Result_Throws_InvalidOperationException()
-    {
+    public void Accessing_Data_In_Failed_Result_Throws_InvalidOperationException() {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //Then
@@ -40,8 +35,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Accessing_Data_In_Failed_Result_Of_Non_Nullable_Value_Type_Throws()
-    {
+    public void Accessing_Data_In_Failed_Result_Of_Non_Nullable_Value_Type_Throws() {
         //Given
         Result<int> intResult = Result<int>.Fail(new UnknownError());
         //Then
@@ -49,8 +43,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Successfull_Result_IfSucceeded_Completes_Action_And_Returns_Self()
-    {
+    public void Successfull_Result_IfSucceeded_Completes_Action_And_Returns_Self() {
         //Given
         Result<string> stringResult = Result<string>.Ok("world");
         //When
@@ -63,8 +56,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Failure_Result_IfFailed_Completes_Action_And_Returns_Self()
-    {
+    public void Failure_Result_IfFailed_Completes_Action_And_Returns_Self() {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //When
@@ -77,8 +69,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void ErrorConversion_On_Failed_Transfers_Correctly()
-    {
+    public void ErrorConversion_On_Failed_Transfers_Correctly() {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //When
@@ -89,8 +80,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void ErrorConversion_On_Success_Throws_InvalidOperationException()
-    {
+    public void ErrorConversion_On_Success_Throws_InvalidOperationException() {
         //Given
         Result<string> stringResult = Result<string>.Ok("hello");
         //Then
@@ -98,12 +88,19 @@ public class ResultTests
     }
 
     [Fact]
-    public void UseData_On_Result_Returning_Functions_Returns_Correct_Response()
-    {
+    public void UseData_On_Result_Returning_Functions_Returns_Correct_Response() {
         //Given
         string helloWorld = "hello";
-        Result GetSuccess(string world) { helloWorld += $" {world}"; return Result.Ok(); }
-        Result GetFailure() => Result.Fail(new UnknownError());
+
+        Result GetSuccess(string world) {
+            helloWorld += $" {world}";
+            return Result.Ok();
+        }
+
+        Result GetFailure() {
+            return Result.Fail(new UnknownError());
+        }
+
         Result<string> stringResult = Result<string>.Ok("world");
         //When
         Result<string> postGettingSuccess = stringResult.UseData(data => GetSuccess(data));
@@ -115,8 +112,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Mapping_Failed_Result_Returns_A_Failed_Result_And_Passes_The_Error()
-    {
+    public void Mapping_Failed_Result_Returns_A_Failed_Result_And_Passes_The_Error() {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //When
@@ -128,8 +124,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Mapping_Successful_Result_Returns_Correct_Data_In_Result_Object()
-    {
+    public void Mapping_Successful_Result_Returns_Correct_Data_In_Result_Object() {
         //Given
         Result<string> stringResult = Result<string>.Ok("hello");
         //When
@@ -140,14 +135,13 @@ public class ResultTests
     }
 
     [Fact]
-    public void ToSimpleResult_Correctly_Maps()
-    {
+    public void ToSimpleResult_Correctly_Maps() {
         //Given
         Result<string> okStringResult = Result<string>.Ok("hello");
         Result<string> failedStringResult = Result<string>.Fail(new UnknownError());
         //When
-        Result simpleOkResult = okStringResult.ToSimpleResult();
-        Result simpleFailedResult = failedStringResult.ToSimpleResult();
+        var simpleOkResult = okStringResult.ToSimpleResult();
+        var simpleFailedResult = failedStringResult.ToSimpleResult();
         //Then
         Assert.True(simpleOkResult.Succeeded);
         Assert.True(simpleFailedResult.Failed);
@@ -155,9 +149,8 @@ public class ResultTests
     }
 
     [Fact]
-    public void Aggregation_With_Tuples()
-    {
-        var tupleResult = Result<string>.Ok("hello")
+    public void Aggregation_With_Tuples() {
+        Result<(string str, int number, string str2)> tupleResult = Result<string>.Ok("hello")
             .Map(str => (str, number: 10))
             .Map(data => (data.str, data.number, str2: "hello"));
         Assert.True(tupleResult.Succeeded);
@@ -167,11 +160,9 @@ public class ResultTests
     }
 
     [Fact]
-    public void ToResult_Works_ToCreate_ResultList()
-    {
+    public void ToResult_Works_ToCreate_ResultList() {
         //Given
-        List<Result<string>> stringResults = new()
-        {
+        List<Result<string>> stringResults = new() {
             Result<string>.Ok("hello"),
             Result<string>.Ok("world")
         };
@@ -180,20 +171,17 @@ public class ResultTests
         //Then
         Assert.False(resultList.HasErrors());
         Assert.Equal(2, resultList.Successes.Count);
-        
     }
 
     [Fact]
-    public void Or_On_Failed_Result_Returns_Passed_In_Value()
-    {
+    public void Or_On_Failed_Result_Returns_Passed_In_Value() {
         Result<int> failed = Result<int>.Fail(new UnknownError());
         int fromOr = failed.Or(5);
         Assert.Equal(5, fromOr);
     }
 
     [Fact]
-    public void Or_On_Successful_Result_Returns_Internal_Value()
-    {
+    public void Or_On_Successful_Result_Returns_Internal_Value() {
         Result<int> successful = Result<int>.Ok(100);
         int fromOr = successful.Or(5);
         Assert.Equal(100, fromOr);
