@@ -1,6 +1,6 @@
 namespace Results;
 
-public static class TaskExtensions {
+public static class TaskResultExtensions {
     /// <summary>
     ///     implicitly awaits the original result and if the result is a success will also implicitly await the
     ///     async function passed in and maps it;
