@@ -1,5 +1,8 @@
 namespace Results;
 
+/// <summary>
+/// Extensions For asynchronous result types
+/// </summary>
 public static class TaskResultExtensions {
     /// <summary>
     ///     implicitly awaits the original result and if the result is a success will also implicitly await the
