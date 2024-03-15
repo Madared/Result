@@ -21,30 +21,21 @@ public class Option<T> where T : notnull {
         : _data;
 
     /// <summary>
-    /// Creates a populated Option
+    /// Checks if the option is populated
     /// </summary>
-    /// <param name="data">The data to populate the option with</param>
     /// <returns></returns>
-    public static Option<T> Some(T data) {
-        return new Option<T>(data, false);
+    public bool IsSome() {
+        return !_isNone && _data is not null;
     }
 
     /// <summary>
-    /// Creates an empty option
+    /// Checks if the option is empty
     /// </summary>
     /// <returns></returns>
-    public static Option<T> None() {
-        return new Option<T>(default, true);
+    public bool IsNone() {
+        return _isNone || _data is null;
     }
 
-    /// <summary>
-    /// Creates an emtpy option if the data is null otherwise populates it with data
-    /// </summary>
-    /// <param name="data">Nullable data to insert into the option</param>
-    /// <returns></returns>
-    public static Option<T> Maybe(T? data) {
-        return data is null ? None() : Some(data);
-    }
 
     /// <summary>
     /// Maps the option into the result of the function wrapped in an option, if the options is empty
@@ -80,21 +71,6 @@ public class Option<T> where T : notnull {
         return this;
     }
 
-    /// <summary>
-    /// Checks if the option is populated
-    /// </summary>
-    /// <returns></returns>
-    public bool IsSome() {
-        return !_isNone && _data is not null;
-    }
-
-    /// <summary>
-    /// Checks if the option is empty
-    /// </summary>
-    /// <returns></returns>
-    public bool IsNone() {
-        return _isNone || _data is null;
-    }
 
     /// <summary>
     /// Returns the value inside the option, in case it is empty returns the non-null value passed in
@@ -116,6 +92,32 @@ public class Option<T> where T : notnull {
     /// <returns></returns>
     public Option<T> OrOption(Option<T> replacement) {
         return IsNone() ? replacement : this;
+    }
+
+    /// <summary>
+    /// Creates a populated Option
+    /// </summary>
+    /// <param name="data">The data to populate the option with</param>
+    /// <returns></returns>
+    public static Option<T> Some(T data) {
+        return new Option<T>(data, false);
+    }
+
+    /// <summary>
+    /// Creates an empty option
+    /// </summary>
+    /// <returns></returns>
+    public static Option<T> None() {
+        return new Option<T>(default, true);
+    }
+
+    /// <summary>
+    /// Creates an emtpy option if the data is null otherwise populates it with data
+    /// </summary>
+    /// <param name="data">Nullable data to insert into the option</param>
+    /// <returns></returns>
+    public static Option<T> Maybe(T? data) {
+        return data is null ? None() : Some(data);
     }
 
     /// <summary>
