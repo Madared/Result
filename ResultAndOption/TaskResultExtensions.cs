@@ -76,6 +76,16 @@ public static class TaskResultExtensions {
         return data.ToResult(error);
     }
 
+    public static async Task<Result> MapAsync<T>(this Task<Result<T>> result, Func<T, Result> mapper) where T : notnull {
+        Result<T> originalResult = await result;
+        return originalResult.Map(mapper);
+    }
+
+    public static async Task<Result> MapAsync<T>(this Task<Result<T>> result, Func<T, Task<Result>> mapper) where T : notnull {
+        Result<T> originalResult = await result;
+        return originalResult.Failed ? Result.Fail(originalResult.Error) : await mapper(originalResult.Data);
+    }
+
     public static async Task<Result<T>> UseDataAsync<T>(this Task<Result<T>> result, Action<T> function) where T : notnull {
         Result<T> originalResult = await result;
         return originalResult.UseData(function);
