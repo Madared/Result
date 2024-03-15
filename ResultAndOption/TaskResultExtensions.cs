@@ -34,11 +34,29 @@ public static class TaskResultExtensions {
         return originalResult.Map(mapper);
     }
 
+    /// <summary>
+    /// Implicitly awaits the original result and if it is successful maps it and unwraps the returned result so there are no nested results,
+    /// otherwise returns a failed result without calling the mapping function
+    /// </summary>
+    /// <param name="result">The async result to map</param>
+    /// <param name="mapper">Mapping function</param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, Result<TOut>> mapper) where T : notnull where TOut : notnull {
         Result<T> originalResult = await result;
         return originalResult.Map(mapper);
     }
 
+    /// <summary>
+    /// Implicitly awaits the original result and returns the mapping function result if the original result is successful,
+    /// otherwise returns a failed result without calling the mapping function
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="asyncMapper"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, Task<Result<TOut>>> asyncMapper) where T : notnull where TOut : notnull {
         Result<T> originalResult = await result;
         if (originalResult.Failed) {
