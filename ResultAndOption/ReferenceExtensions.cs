@@ -118,4 +118,8 @@ public static class ReferenceExtensions {
     public static Option<T> ToOption<T>(this T? data) where T : notnull {
         return Option<T>.Maybe(data);
     }
+
+    public static Result<T> ToResult<T>(this Option<T> data, IError error) where T : notnull => data.IsNone()
+        ? Result<T>.Fail(error)
+        : Result<T>.Ok(data.Data);
 }

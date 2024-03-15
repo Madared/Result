@@ -62,4 +62,18 @@ public class ExtensionTests {
         //Then
         Assert.Equal(expectedValues, newValues);
     }
+
+    [Fact]
+    public void ToResult_On_Option_Maps_Correctly() {
+        IError error = new UnknownError();
+        string hello = "hello";
+        Option<string> none = Option<string>.None();
+        Option<string> some = Option<string>.Some(hello);
+        Result<string> noneResult = none.ToResult(error);
+        Result<string> someResult = some.ToResult(error);
+        Assert.True(noneResult.Failed);
+        Assert.True(someResult.Succeeded);
+        Assert.Equal(error, noneResult.Error);
+        Assert.Equal(hello, someResult.Data);
+    }
 }
