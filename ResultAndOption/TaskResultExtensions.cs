@@ -65,4 +65,14 @@ public static class TaskResultExtensions {
 
         return await asyncMapper(originalResult.Data);
     }
+
+    public static async Task<Result<T>> ToResultAsync<T>(this Task<Option<T>> option, IError error) where T : notnull {
+        Option<T> data = await option;
+        return data.ToResult(error);
+    }
+
+    public static async Task<Result<T>> ToResultAsync<T>(this Task<T?> nullable, IError error) where T : notnull {
+        T? data = await nullable;
+        return data.ToResult(error);
+    }
 }
