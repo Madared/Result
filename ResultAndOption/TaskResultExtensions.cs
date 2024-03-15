@@ -75,4 +75,9 @@ public static class TaskResultExtensions {
         T? data = await nullable;
         return data.ToResult(error);
     }
+
+    public static async Task<Result<T>> UseDataAsync<T>(this Task<Result<T>> result, Action<T> function) where T : notnull {
+        Result<T> originalResult = await result;
+        return originalResult.UseData(function);
+    }
 }
