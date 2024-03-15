@@ -35,4 +35,20 @@ public static class TaskResultExtensions {
         Result<T> originalResult = await result;
         return originalResult.Map(mapper);
     }
+
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, Result<TOut>> mapper)
+        where T : notnull where TOut : notnull {
+        Result<T> originalResult = await result;
+        return originalResult.Map(mapper);
+    }
+
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, Task<Result<TOut>>> asyncMapper)
+        where T : notnull
+        where TOut : notnull {
+        Result<T> originalResult = await result;
+        if (originalResult.Failed) {
+            return Result<TOut>.Fail(originalResult.Error);
+        }
+        return await asyncMapper(originalResult.Data);
+    }
 }
