@@ -20,4 +20,9 @@ public static class TaskOptionExtensions {
         Option<T> originalOption = await option;
         return await originalOption.MapAsync(asyncMapper);
     }
+
+    public static async Task<Option<T>> ToOptionAsync<T>(this Task<T?> nullable) where T : notnull {
+        T? data = await nullable;
+        return data.ToOption();
+    }
 }
