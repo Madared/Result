@@ -6,13 +6,18 @@ public static class TaskOptionExtensions {
         return originalOption.Map(mapper);
     }
 
-    public static async Task<Option<TOut>> MapAsync<T, TOut>(this Task<Option<T>> option, Func<T, Task<TOut>> asyncMapper) where T : notnull where TOut : notnull {
+    public static async Task<Option<TOut>> MapAsync<T, TOut>(this Task<Option<T>> option, Func<T, Task<TOut?>> asyncMapper) where T : notnull where TOut : notnull {
         Option<T> originalOption = await option;
-        if (originalOption.IsNone()) {
-            return Option<TOut>.None();
-        }
+        return await originalOption.MapAsync(asyncMapper);
+    }
 
-        TOut mapResult = await asyncMapper(originalOption.Data);
-        return Option<TOut>.Some(mapResult);
+    public static async Task<Option<TOut>> MapAsync<T, TOut>(this Task<Option<T>> option, Func<T, Option<TOut>> mapper) where T : notnull where TOut : notnull {
+        Option<T> originalOption = await option;
+        return originalOption.Map(mapper);
+    }
+
+    public static async Task<Option<TOut>> MapAsync<T, TOut>(this Task<Option<T>> option, Func<T, Task<Option<TOut>>> asyncMapper) where T : notnull where TOut : notnull {
+        Option<T> originalOption = await option;
+        return await originalOption.MapAsync(asyncMapper);
     }
 }
