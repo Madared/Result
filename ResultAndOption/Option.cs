@@ -61,4 +61,21 @@ public class Option<T> where T : notnull {
     public Option<T> OrOption(Option<T> replacement) {
         return IsNone() ? replacement : this;
     }
+
+    public async Task<Option<TOut>> MapAsync<TOut>(Func<T, Task<TOut?>> asyncMapper) where TOut : notnull {
+        if (_isNone) {
+            return Option<TOut>.None();
+        }
+
+        TOut? mapResult = await asyncMapper(Data);
+        return mapResult is null ? Option<TOut>.None() : Option<TOut>.Some(mapResult);
+    }
+
+    public async Task<Option<TOut>> MapAsync<TOut>(Func<T, Task<Option<TOut>>> asyncMapper) where TOut : notnull {
+        if (_isNone) {
+            return Option<TOut>.None();
+        }
+
+        return await asyncMapper(Data);
+    }
 }
