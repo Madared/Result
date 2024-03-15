@@ -193,4 +193,9 @@ public class Result<T> : IResultWithoutData where T : notnull {
         var functionData = await asyncFunction(Data);
         return Result<TOut>.Ok(functionData);
     }
+
+    public async Task<Result<TOut>> MapAsync<TOut>(Func<T, Task<Result<TOut>>> asyncMapper) where TOut : notnull {
+        if (Failed) return Result<TOut>.Fail(Error);
+        return await asyncMapper(Data);
+    }
 }
