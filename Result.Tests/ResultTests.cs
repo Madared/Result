@@ -226,4 +226,29 @@ public class ResultTests {
         Assert.True(intResult.Succeeded);
         Assert.Equal(hello.Length, intResult.Data);
     }
+
+    [Fact]
+    public void Result_Async_Map_On_Async_Result_Works() {
+        string hello = "hello";
+        Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
+
+        async Task<Result<int>> SomeAsyncFunction(string s) {
+            return Result<int>.Ok(s.Length);
+        }
+
+        Task<Result<int>> intTaskResult = taskResult.MapAsync(SomeAsyncFunction);
+        Result<int> intResult = intTaskResult.Result;
+        Assert.True(intResult.Succeeded);
+        Assert.Equal(hello.Length, intResult.Data);
+    }
+
+    [Fact]
+    public void Result_Map_On_Async_Result_Works() {
+        string hello = "hello";
+        Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
+        Task<Result<int>> intTaskResult = taskResult.MapAsync(s => s.Length);
+        Result<int> intResult = intTaskResult.Result;
+        Assert.True(intResult.Succeeded);
+        Assert.Equal(hello.Length, intResult.Data);
+    }
 }
