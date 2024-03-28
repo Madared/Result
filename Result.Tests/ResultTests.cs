@@ -251,4 +251,22 @@ public class ResultTests {
         Assert.True(intResult.Succeeded);
         Assert.Equal(hello.Length, intResult.Data);
     }
+
+    [Fact]
+    public void Result_Map_On_Async_Result_Does_Not_Wrap_Simple_Result() {
+        string hello = "hello";
+        Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
+        Task<Result> simpleResult = taskResult.MapAsync(() => Result.Ok());
+        Result awaitedResult = simpleResult.Result;
+        Assert.True(awaitedResult.Succeeded);
+    }
+
+    [Fact]
+    public void Result_Map_With_Async_Mapper_Does_Not_Wrap_Simple_Result() {
+        string hello = "hello";
+        Result<string> stringResult = Result<string>.Ok(hello);
+        Task<Result> simpleResult = stringResult.MapAsync(() => Task.FromResult(Result.Ok()));
+        Result awaitedResult = simpleResult.Result;
+        Assert.True(awaitedResult.Succeeded);
+    }
 }
