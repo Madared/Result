@@ -198,4 +198,12 @@ public class Result<T> : IResultWithoutData where T : notnull {
         if (Failed) return Result<TOut>.Fail(Error);
         return await asyncMapper(Data);
     }
+    
+    public async Task<Result> MapAsync(Func<T, Task<Result>> mapper) {
+        if (Failed) return Result.Fail(Error);
+        return await mapper(Data);
+    }
+
+    public async Task<Result> MapAsync(Func<Task<Result>> mapper) =>
+        Failed ? Result.Fail(Error) : await mapper();
 }
