@@ -8,6 +8,12 @@ public struct Result<T> : IResultWithoutData where T : notnull {
     private readonly Option<T> _data;
     private readonly IError? _error;
 
+    public T Data => _data.Data;
+
+    public bool Failed { get; }
+
+    public bool Succeeded => !Failed;
+
     public Result() {
         Failed = true;
         _data = Option<T>.None();
@@ -19,12 +25,6 @@ public struct Result<T> : IResultWithoutData where T : notnull {
         _error = error;
         _data = data;
     }
-
-    public T Data => _data.Data;
-
-    public bool Failed { get; }
-
-    public bool Succeeded => !Failed;
 
     public IError Error => !Failed || _error is null
         ? throw new InvalidOperationException()
@@ -204,7 +204,7 @@ public struct Result<T> : IResultWithoutData where T : notnull {
         if (Failed) return Result<TOut>.Fail(Error);
         return await asyncMapper(Data);
     }
-    
+
     public async Task<Result> MapAsync(Func<T, Task<Result>> mapper) {
         if (Failed) return Result.Fail(Error);
         return await mapper(Data);
@@ -224,6 +224,7 @@ public struct Result<T> : IResultWithoutData where T : notnull {
         if (Failed && Error is TError error) {
             return Fail(errorWrapper(error));
         }
+
         return this;
     }
 }
