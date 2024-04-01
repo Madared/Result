@@ -3,7 +3,7 @@ namespace Results;
 /// <summary>
 /// Representation for an optional value
 /// </summary>
-public struct Option<T> where T : notnull {
+public class Option<T> where T : notnull {
     private readonly T? _data;
     private readonly bool _isNone;
 
