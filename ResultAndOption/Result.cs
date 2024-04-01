@@ -1,6 +1,6 @@
 ﻿namespace Results;
 
-public class Result : IResultWithoutData {
+public struct Result : IResultWithoutData {
     private readonly IError? _error;
 
     public bool Succeeded => !Failed;
