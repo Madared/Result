@@ -99,6 +99,13 @@ public class Result : IResultWithoutData {
         return Failed ? Result<T>.Fail(_error!) : Result<T>.Ok(function());
     }
 
+    public async Task<Result> MapAsync(Func<Task<Result>> mapper) {
+        return Failed ? this : await mapper();
+    }
+
+    public async Task<Result<T>> MapAsync<T>(Func<Task<Result<T>>> mapper) where T : notnull =>
+        Failed ? Result<T>.Fail(Error) : await mapper();
+
     public Result WrapError<TError>(Func<TError, IError> errorWrapper) where TError : IError {
         if (Failed && Error is TError error) {
             return Fail(errorWrapper(error));

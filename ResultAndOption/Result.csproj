@@ -22,7 +22,7 @@
 
     <PropertyGroup>
         <PackageId>Afonsomtsm.Result</PackageId>
-        <Version>0.9.5.3</Version>
+        <Version>0.9.5.4</Version>
         <Authors>Afonso Matos</Authors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Description>A package containing result and optional types to avoid exceptions and provide extensibility on error management and a way to work with the values they wrap, as well as avoiding null reference exceptions</Description>

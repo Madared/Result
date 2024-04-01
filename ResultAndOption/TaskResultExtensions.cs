@@ -103,4 +103,14 @@ public static class TaskResultExtensions {
         Result<T> originalResult = await result;
         return originalResult.Failed ? Result.Fail(originalResult.Error) : await mapper();
     }
+
+    public static async Task<Result> MapAsync(this Task<Result> result, Func<Task<Result>> asyncMapper) {
+        Result originalResult = await result;
+        return originalResult.Failed ? originalResult : await asyncMapper();
+    }
+
+    public static async Task<Result> MapAsync(this Task<Result> result, Func<Result> mapper) {
+        Result originalResult = await result;
+        return originalResult.Failed ? originalResult : mapper();
+    }
 }
