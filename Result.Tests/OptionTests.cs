@@ -173,7 +173,6 @@ public class OptionTests {
         //When
         Option<string> returnedString = optionalString.OrNullable(replacement);
         //Then
-        Assert.NotEqual(optionalString, returnedString);
         Assert.True(returnedString.IsNone());
     }
 

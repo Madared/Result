@@ -4,9 +4,15 @@
 ///     Represents a result of an operation that can either succeed or fail, carrying either data or an error.
 /// </summary>
 /// <typeparam name="T">The type of data carried by the result.</typeparam>
-public class Result<T> : IResultWithoutData where T : notnull {
+public struct Result<T> : IResultWithoutData where T : notnull {
     private readonly Option<T> _data;
     private readonly IError? _error;
+
+    public Result() {
+        Failed = true;
+        _data = Option<T>.None();
+        _error = new UnknownError();
+    }
 
     private Result(bool failed, IError? error, Option<T> data) {
         Failed = failed;

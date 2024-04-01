@@ -301,4 +301,16 @@ public class ResultTests {
         Assert.True(wrapped.Failed);
         Assert.True(wrapped.Error is ExceptionWrapper);
     }
+
+    [Fact]
+    public void Default_Generic_Result_Constructor_Builds_Failed_Result() {
+        Result<string> stringResult = new();
+        Assert.True(stringResult.Failed);
+    }
+
+    [Fact]
+    public void Default_SimpleResult_Constructor_Builds_Failed_Result() {
+        Result result = new();
+        Assert.True(result.Failed);
+    }
 }
