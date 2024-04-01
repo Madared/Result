@@ -3,6 +3,13 @@
 public struct Result : IResultWithoutData {
     private readonly IError? _error;
 
+    public bool Succeeded => !Failed;
+    public bool Failed { get; }
+
+    public IError Error => !Failed || _error is null
+        ? throw new InvalidOperationException()
+        : _error;
+
     private Result(bool failed, IError? error) {
         Failed = failed;
         _error = error;
@@ -13,12 +20,6 @@ public struct Result : IResultWithoutData {
         _error = new UnknownError();
     }
 
-    public bool Succeeded => !Failed;
-    public bool Failed { get; }
-
-    public IError Error => !Failed || _error is null
-        ? throw new InvalidOperationException()
-        : _error;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Result" /> struct representing a success.
@@ -99,6 +100,7 @@ public struct Result : IResultWithoutData {
         if (Failed && Error is TError error) {
             return Fail(errorWrapper(error));
         }
+
         return this;
     }
 }
