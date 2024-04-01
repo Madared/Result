@@ -206,4 +206,18 @@ public class Result<T> : IResultWithoutData where T : notnull {
 
     public async Task<Result> MapAsync(Func<Task<Result>> mapper) =>
         Failed ? Result.Fail(Error) : await mapper();
+
+    /// <summary>
+    /// Wraps the existing error if it is a failed result and the error is of the specified type otherwise returns the
+    /// existing result object
+    /// </summary>
+    /// <param name="errorWrapper">function to wrap the error</param>
+    /// <typeparam name="TError">expected error type to wrap</typeparam>
+    /// <returns></returns>
+    public Result<T> WrapError<TError>(Func<TError, IError> errorWrapper) where TError : IError {
+        if (Failed && Error is TError error) {
+            return Fail(errorWrapper(error));
+        }
+        return this;
+    }
 }

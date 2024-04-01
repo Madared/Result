@@ -89,4 +89,11 @@ public class Result : IResultWithoutData {
     public Result<T> Map<T>(Func<T> function) where T : notnull {
         return Failed ? Result<T>.Fail(_error!) : Result<T>.Ok(function());
     }
+
+    public Result WrapError<TError>(Func<TError, IError> errorWrapper) where TError : IError {
+        if (Failed && Error is TError error) {
+            return Fail(errorWrapper(error));
+        }
+        return this;
+    }
 }
