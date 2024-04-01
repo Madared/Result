@@ -7,6 +7,9 @@ public struct Option<T> where T : notnull {
     private readonly T? _data;
     private readonly bool _isNone;
 
+    /// <summary>
+    /// If used will generate an 'Empty' option with default T data.
+    /// </summary>
     public Option() {
         _data = default;
         _isNone = true;

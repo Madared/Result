@@ -15,6 +15,9 @@ public struct Result : IResultWithoutData {
         _error = error;
     }
 
+    /// <summary>
+    /// If used will generate a failed simple result with an <see cref="UnknownError"/>;
+    /// </summary>
     public Result() {
         Failed = true;
         _error = new UnknownError();

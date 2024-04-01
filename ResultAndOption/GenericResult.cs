@@ -14,6 +14,9 @@ public struct Result<T> : IResultWithoutData where T : notnull {
 
     public bool Succeeded => !Failed;
 
+    /// <summary>
+    /// If Used will generate a failed result with an <see cref="UnknownError"/>;
+    /// </summary>
     public Result() {
         Failed = true;
         _data = Option<T>.None();
