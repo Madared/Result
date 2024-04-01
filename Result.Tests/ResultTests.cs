@@ -269,4 +269,20 @@ public class ResultTests {
         Result awaitedResult = simpleResult.Result;
         Assert.True(awaitedResult.Succeeded);
     }
+
+    [Fact]
+    public void ErrorWrap_Doesnt_Change_Success_Result() {
+        Result<string> helloResult = Result<string>.Ok("hello");
+        Result<string> wrappedResult = helloResult.WrapError<UnknownError>(error => new MultipleErrors(new List<IError>()));
+        Assert.True(wrappedResult.Succeeded);
+        Assert.Throws<InvalidOperationException>(() => wrappedResult.Error);
+    }
+
+    [Fact]
+    public void ErrorWrap_Converts_Failed_Result_Error() {
+        Result<string> helloResult = Result<string>.Fail(new UnknownError());
+        Result<string> wrapped = helloResult.WrapError<UnknownError>(error => new MultipleErrors(new List<IError>()));
+        Assert.True(wrapped.Failed);
+        Assert.True(wrapped.Error is MultipleErrors);
+    }
 }
