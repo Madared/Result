@@ -8,7 +8,7 @@ public class Result<T> : IResultWithoutData where T : notnull {
     private readonly Option<T> _data;
     private readonly IError? _error;
 
-    public T Data => _data.Data;
+    public T Data => _data.IsNone() ? throw ErrorWrapper.Create(Error) : _data.Data;
 
     public bool Failed { get; }
 
@@ -30,7 +30,7 @@ public class Result<T> : IResultWithoutData where T : notnull {
     }
 
     public IError Error => !Failed || _error is null
-        ? throw new InvalidOperationException()
+        ? throw new InvalidOperationException("Result does not have an Error value!")
         : _error;
 
     /// <summary>
