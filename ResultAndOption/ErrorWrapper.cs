@@ -8,6 +8,6 @@ public class ErrorWrapper : Exception {
         if (error is ExceptionWrapper ex) {
             return ex.Exception;
         }
-        else return new ErrorWrapper(error);
+        return new ErrorWrapper(error);
     }
 }
