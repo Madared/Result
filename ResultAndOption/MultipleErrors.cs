@@ -12,8 +12,4 @@ public class MultipleErrors : IError {
         _errors
             .Select(error => error.Message)
             .Pipe(errorMessages => string.Join(",\n", errorMessages)));
-
-    public void Log(IErrorLogger logger) {
-        logger.LogError(Message);
-    }
 }
