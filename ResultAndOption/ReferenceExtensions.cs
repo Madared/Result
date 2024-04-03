@@ -88,26 +88,17 @@ public static class ReferenceExtensions {
     /// <param name="results">The list of results to convert</param>
     /// <typeparam name="TIn">The type of data carried by the result</typeparam>
     /// <returns>A ResultList</returns>
-    public static ResultList<TIn> ToResult<TIn>(this IEnumerable<Result<TIn>> results)
+    public static ResultList<TIn> ToResultList<TIn>(this IEnumerable<Result<TIn>> results)
         where TIn : notnull {
         ResultList<TIn> resultList = new();
         resultList.AddResults(results);
         return resultList;
     }
-
-    /// <summary>
-    ///     Applies a mapping function to each element in a list and returns a list of the mapped results.
-    /// </summary>
-    /// <typeparam name="TIn">The type of the elements in the input list.</typeparam>
-    /// <typeparam name="TOut">The type of the elements in the output list.</typeparam>
-    /// <param name="list">The input list.</param>
-    /// <param name="function">The mapping function to apply to each element in the list.</param>
-    /// <returns>A list of the mapped values.</returns>
-    public static IEnumerable<TOut> ListMap<TIn, TOut>(this IEnumerable<TIn> list, Func<TIn, TOut> function) {
-        return list
-            .Select(function)
-            .ToList();
-    }
+    
+    public static Result ConditionResult(this bool condition, IError error) => condition
+        ? Result.Ok()
+        : Result.Fail(error);
+    
 
     /// <summary>
     ///     Generates an option type based on a null reference type

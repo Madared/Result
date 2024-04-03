@@ -20,47 +20,11 @@ public class ExtensionTests {
         stringResults.Add(okResult);
         stringResults.Add(failedResult);
         //When
-        ResultList<string> resultList = stringResults.ToResult();
+        ResultList<string> resultList = stringResults.ToResultList();
         //Then
         Assert.True(resultList.HasErrors());
         Assert.Single(resultList.Errors);
         Assert.Single(resultList.Successes);
-    }
-
-    [Fact]
-    public void ListMap_Correctly_Maps_Every_Value() {
-        //Given
-        List<int> expectedValues = new() {
-            2, 3, 4, 5, 6
-        };
-        List<int> values = new() {
-            1, 2, 3, 4, 5
-        };
-        //When
-        IEnumerable<int> newValues = values.ListMap(value => value + 1);
-        //Then
-        Assert.Equal(expectedValues, newValues);
-    }
-
-    [Fact]
-    public void LisMap_Handles_Null() {
-        //Given
-        List<string> expectedValues = new() {
-            "hello world",
-            "hello world",
-            " world",
-            "hello world"
-        };
-        List<string?> values = new() {
-            "hello",
-            "hello",
-            null,
-            "hello"
-        };
-        //When
-        IEnumerable<string> newValues = values.ListMap(value => value + " world");
-        //Then
-        Assert.Equal(expectedValues, newValues);
     }
 
     [Fact]

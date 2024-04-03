@@ -34,7 +34,7 @@ public class ResultList<T> where T : notnull {
             ? new ResultList<TOut>(Errors)
             : Successes
                 .Select(function)
-                .ToResult();
+                .ToResultList();
     }
 
     public ResultList<TOut> Map<TOut>(Func<T, TOut?> function, IError nullabilityError) where TOut : notnull {
@@ -42,7 +42,7 @@ public class ResultList<T> where T : notnull {
             ? new ResultList<TOut>(Errors)
             : Successes
                 .Select(data => function(data).ToResult(nullabilityError))
-                .ToResult();
+                .ToResultList();
     }
 
     public Result<TOut> MapList<TOut>(Func<IEnumerable<T>, TOut?> function, IError nullabilityError)
@@ -56,7 +56,7 @@ public class ResultList<T> where T : notnull {
         where TOut : notnull {
         return HasErrors()
             ? new ResultList<TOut>(Errors)
-            : function(Successes).ToResult();
+            : function(Successes).ToResultList();
     }
 
     public Result<TOut> MapList<TOut>(Func<IEnumerable<T>, TOut> function) where TOut : notnull {

@@ -167,7 +167,7 @@ public class ResultTests {
             Result<string>.Ok("world")
         };
         //When
-        ResultList<string> resultList = stringResults.ToResult();
+        ResultList<string> resultList = stringResults.ToResultList();
         //Then
         Assert.False(resultList.HasErrors());
         Assert.Equal(2, resultList.Successes.Count);
