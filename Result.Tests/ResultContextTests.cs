@@ -23,8 +23,16 @@ public class ResultContextTests {
     }
 
     [Fact]
-    public void Uses_Previous_Calls_Data_On_Retry() {
-        CallableDataThing callableDataThing = new("my data");
+    public void Default_ContextResult_Is_Failure() {
+        ContextResult<string, string> r = default;
+        Assert.True(r.Failed);
+    }
+
+    [Fact]
+    public void Default_Retry_Maintains_Failure_Result() {
+        ContextResult<string, string> r = default;
+        ContextResult<string, string> retried = r.Retry();
+        Assert.True(retried.Failed);
     }
 }
 
