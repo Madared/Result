@@ -10,21 +10,21 @@ public struct Result<T> : IResultWithoutData where T : notnull {
 
     public T Data => _data.Data;
 
-    public bool Failed { get; }
+    public bool Failed => !Succeeded;
 
-    public bool Succeeded => !Failed;
+    public bool Succeeded { get; }
 
     /// <summary>
     /// If Used will generate a failed result with an <see cref="UnknownError"/>;
     /// </summary>
     public Result() {
-        Failed = true;
+        Succeeded = false;
         _data = Option<T>.None();
         _error = new UnknownError();
     }
 
     private Result(bool failed, IError? error, Option<T> data) {
-        Failed = failed;
+        Succeeded = !failed;
         _error = error;
         _data = data;
     }

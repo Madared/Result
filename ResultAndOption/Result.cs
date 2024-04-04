@@ -3,15 +3,15 @@
 public struct Result : IResultWithoutData {
     private readonly IError? _error;
 
-    public bool Succeeded => !Failed;
-    public bool Failed { get; }
+    public bool Succeeded { get; }
+    public bool Failed => !Succeeded;
 
     public IError Error => !Failed || _error is null
         ? throw new InvalidOperationException()
         : _error;
 
     private Result(bool failed, IError? error) {
-        Failed = failed;
+        Succeeded = !failed;
         _error = error;
     }
 
@@ -19,7 +19,7 @@ public struct Result : IResultWithoutData {
     /// If used will generate a failed simple result with an <see cref="UnknownError"/>;
     /// </summary>
     public Result() {
-        Failed = true;
+        Succeeded = false;
         _error = new UnknownError();
     }
 

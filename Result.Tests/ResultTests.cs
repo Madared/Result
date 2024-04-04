@@ -313,4 +313,11 @@ public class ResultTests {
         Result result = new();
         Assert.True(result.Failed);
     }
+
+    [Fact]
+    public void Default_SimpleResult_Is_Failed_Result() {
+        Result<string> result = default;
+        Assert.True(result.Failed);
+        Assert.Throws<InvalidOperationException>(() => result.Data);
+    }
 }
