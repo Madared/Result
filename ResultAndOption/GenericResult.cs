@@ -8,7 +8,16 @@ public struct Result<T> : IResultWithoutData where T : notnull {
     private readonly Option<T> _data;
     private readonly IError? _error;
 
-    public T Data => _data.Data;
+    public T Data => _data.IsNone()
+        ? throw ErrorToException()
+        : _data.Data;
+
+    private Exception ErrorToException() => _error switch {
+        null => new InvalidOperationException(),
+        Exception e => e,
+        ExceptionWrapper e => e.Exception,
+        _ => new ErrorWrapperException(Error)
+    };
 
     public bool Failed => !Succeeded;
 

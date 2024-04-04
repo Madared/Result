@@ -1,13 +1,13 @@
 namespace Results;
 
 public class ExceptionWrapper : IError {
-    private readonly Exception _exception;
+    public Exception Exception { get; }
 
     public ExceptionWrapper(Exception exception) {
-        _exception = exception;
+        Exception = exception;
     }
 
-    public string Message => _exception.Message;
+    public string Message => Exception.Message;
 
     public void Log(IErrorLogger logger) {
         logger.LogError(Message);
