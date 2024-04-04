@@ -9,15 +9,9 @@ public struct Result<T> : IResultWithoutData where T : notnull {
     private readonly IError? _error;
 
     public T Data => _data.IsNone()
-        ? throw ErrorToException()
+        ? throw ErrorToExceptionMapper.Map(_error)
         : _data.Data;
 
-    private Exception ErrorToException() => _error switch {
-        null => new InvalidOperationException(),
-        Exception e => e,
-        ExceptionWrapper e => e.Exception,
-        _ => new ErrorWrapperException(Error)
-    };
 
     public bool Failed => !Succeeded;
 

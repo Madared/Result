@@ -9,7 +9,9 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
     private readonly IError? _error;
 
     public IError Error => _error ?? throw new InvalidOperationException("Cannot access error on successful result");
-    public TOut Data => _data.IsNone() ? throw new InvalidOperationException() : _data.Data;
+    public TOut Data => _data.IsNone() 
+        ? throw ErrorToExceptionMapper.Map(_error)
+        : _data.Data;
     public bool Succeeded { get; }
     public bool Failed => !Succeeded;
 
