@@ -25,27 +25,35 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
 
     public ContextResult<TIn, TOut> Retry() {
         if (Succeeded) return this;
-
-        if (_previousContext is null) {
-            Result<TOut> output = _called.Call();
-            return output.Succeeded
-                ? Ok(_called, output.Data)
-                : Fail(_called, output.Error);
-        }
-
+        if (_called is null) return this;
+        if (_previousContext is null) return RetryWithoutContext();
+        
         IContextResultWithData<TIn> previousContext = _previousContext.Retry();
-        if (previousContext.Failed) {
-            return Fail(_called, previousContext, previousContext.Error);
-        }
+        return previousContext.Failed
+            ? Fail(_called, previousContext, previousContext.Error)
+            : RetryWithNewContext(previousContext);
+    }
 
+    private ContextResult<TIn, TOut> RetryWithoutContext() {
+        Result<TOut> output = _called.Call();
+        return output.Succeeded
+            ? Ok(_called, output.Data)
+            : Fail(_called, output.Error);
+    }
+
+    private ContextResult<TIn, TOut> RetryWithNewContext(IContextResultWithData<TIn> context) {
         if (_called is IContextResultCallableWithData<TIn, TOut> dataContext) {
-            IContextResultCallable<TOut> newCallable = dataContext.WithData(previousContext.Data);
+            IContextResultCallable<TOut> newCallable = dataContext.WithData(context.Data);
             Result<TOut> output = newCallable.Call();
-            return output.Succeeded ? Ok(newCallable, previousContext, output.Data) : Fail(newCallable, previousContext, output.Error);
+            return output.Succeeded
+                ? Ok(newCallable, context, output.Data)
+                : Fail(newCallable, context, output.Error);
         }
 
         Result<TOut> noInputOutput = _called.Call();
-        return noInputOutput.Succeeded ? Ok(_called, previousContext, noInputOutput.Data) : Fail(_called, previousContext, noInputOutput.Error);
+        return noInputOutput.Succeeded
+            ? Ok(_called, context, noInputOutput.Data)
+            : Fail(_called, context, noInputOutput.Error);
     }
 
     public static ContextResult<TIn, TOut> Ok(IContextResultCallable<TOut> callable, TOut data) =>
