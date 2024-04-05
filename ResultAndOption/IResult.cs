@@ -1,11 +1,11 @@
 namespace Results;
 
-public interface IResultWithoutData {
+public interface IResult {
     bool Succeeded { get; }
     bool Failed { get; }
     IError Error { get; }
 }
 
-public interface IResultWithData<T> : IResultWithoutData where T : notnull {
+public interface IResultWithData<T> : IResult where T : notnull {
     T Data { get; }
 }
