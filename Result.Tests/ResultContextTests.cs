@@ -7,9 +7,11 @@ public class ResultContextTests {
     [Fact]
     public void Result_Can_Retry_Function_That_Created_It() {
         CallableThing callableThing = new("I have been called");
+        //Gets called once here
         ContextResult<string, string> contextResult = ContextResult<string, string>.FromCallable(() => callableThing.Call().ToResult(new UnknownError()));
+        //Gets called again here
         ContextResult<string, string> retried = contextResult.Retry();
-        Assert.Equal(1, callableThing.TimesCalled);
+        Assert.Equal(2, callableThing.TimesCalled);
         Assert.Equal(callableThing.Message, contextResult.Data);
     }
 
