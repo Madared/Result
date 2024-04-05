@@ -27,8 +27,9 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
 
     IContextResultWithData<TOut> IContextResultWithData<TOut>.Retry() => Retry();
 
+    public ContextResult<TIn, TOut> RetryIfFailed() => Succeeded ? this : Retry();
+
     public ContextResult<TIn, TOut> Retry() {
-        if (Succeeded) return this;
         if (_called is null) return this;
         if (_previousContext is null) return RetryWithoutContext();
 
