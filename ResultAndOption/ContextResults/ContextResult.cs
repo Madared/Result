@@ -9,9 +9,11 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
     private readonly IError? _error;
 
     public IError Error => _error ?? throw new InvalidOperationException("Cannot access error on successful result");
-    public TOut Data => _data.IsNone() 
+
+    public TOut Data => _data.IsNone()
         ? throw ErrorToExceptionMapper.Map(_error)
         : _data.Data;
+
     public bool Succeeded { get; }
     public bool Failed => !Succeeded;
 
@@ -29,7 +31,7 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
         if (Succeeded) return this;
         if (_called is null) return this;
         if (_previousContext is null) return RetryWithoutContext();
-        
+
         IContextResultWithData<TIn> previousContext = _previousContext.Retry();
         return previousContext.Failed
             ? Fail(_called, previousContext, previousContext.Error)
@@ -49,13 +51,37 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
             Result<TOut> output = newCallable.Call();
             return output.Succeeded
                 ? Ok(newCallable, context, output.Data)
-                : Fail(newCallable, context, output.Error);
+                : Fail(newCallable, context, Error);
         }
 
         Result<TOut> noInputOutput = _called.Call();
         return noInputOutput.Succeeded
             ? Ok(_called, context, noInputOutput.Data)
             : Fail(_called, context, noInputOutput.Error);
+    }
+
+    public ContextResult<TOut, TNext> Map<TNext>(Func<TOut, Result<TNext>> mapper) where TNext : notnull {
+        if (Failed) {
+            return ContextResult<TOut, TNext>.Fail(new ContextResultCallableNoArguments<TNext>(() => Result<TNext>.Fail(new UnknownError())), this, Error);
+        }
+        ContextResultCallableOfResult<TOut, TNext> callable = new(Data, mapper);
+        return ContextResult<TOut, TNext>.Maybe(callable, this);
+    }
+
+    public ContextResult<TOut, TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull {
+        if (Failed) {
+            return ContextResult<TOut, TNext>.Fail(new ContextResultCallableNoArguments<TNext>(() => Result<TNext>.Fail(new UnknownError())), this, Error);
+        }
+
+        ContextResultCallableOfNotNull<TOut, TNext> callable = new(Data, mapper);
+        return ContextResult<TOut, TNext>.Maybe(callable, this);
+    }
+
+    public static ContextResult<TIn, TOut> Maybe(IContextResultCallable<TOut> callable, IContextResultWithData<TIn> previousContext) {
+        Result<TOut> callResult = callable.Call();
+        return callResult.Failed 
+            ? Fail(callable, previousContext, callResult.Error) 
+            : Ok(callable, previousContext, callResult.Data);
     }
 
     public static ContextResult<TIn, TOut> Ok(IContextResultCallable<TOut> callable, TOut data) =>
@@ -76,9 +102,7 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
         );
 
     public static ContextResult<TIn, TOut> Fail(IContextResultCallable<TOut> callable, IContextResultWithData<TIn> previousContext, IError error) =>
-        previousContext.Failed
-            ? new ContextResult<TIn, TOut>(callable, Option<TOut>.None(), previousContext, error, false)
-            : throw new InvalidOperationException();
+        new ContextResult<TIn, TOut>(callable, Option<TOut>.None(), previousContext, error, false);
 
 
     public static ContextResult<TIn, TOut> Fail(IContextResultCallable<TOut> callable, IError error) =>
@@ -103,7 +127,7 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
             return new ContextResult<TIn, TOut>(failureCallable, Option<TOut>.None(), previousContext, previousContext.Error, false);
         }
 
-        IContextResultCallable<TOut> successCallable = new ContextResultCallableOfNotNull<TIn, TOut>(mapper, previousContext.Data);
+        IContextResultCallable<TOut> successCallable = new ContextResultCallableOfNotNull<TIn, TOut>(previousContext.Data, mapper);
         Result<TOut> output = successCallable.Call();
         return output.Failed
             ? new ContextResult<TIn, TOut>(successCallable, Option<TOut>.None(), previousContext, output.Error, false)
