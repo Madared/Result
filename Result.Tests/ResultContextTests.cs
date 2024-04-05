@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace ResultTests;
 
 public class ResultContextTests {
@@ -34,18 +36,48 @@ public class ResultContextTests {
         ContextResult<string, string> retried = r.Retry();
         Assert.True(retried.Failed);
     }
-}
 
-public class CallableDataThing {
-    public CallableDataThing(string message) {
-        Message = message;
+    [Fact]
+    public void Map_On_Success_ContextResult_With_Successful_Callable_Returns_Success() {
+        ContextResult<string, string> success = ContextResult<string, string>.Ok("hello");
+        ContextResult<string, int> mapped = success.Map(s => (s.Length).ToResult(new UnknownError()));
+        Assert.True(mapped.Succeeded);
     }
-    public int TimesCalled { get; private set; } = 0;
-    public string Message { get; }
 
-    public string Call(string value) => string.Concat(value, Message);
+    [Fact]
+    public void Mapping_Successful_Result_With_Non_Result_Callable_Returns_Success() {
+        ContextResult<string, string> success = ContextResult<string, string>.Ok("hello");
+        ContextResult<string, int> mapped = success.Map(s => s.Length);
+        Assert.True(mapped.Succeeded);
+    }
+
+    [Fact]
+    public void Mapping_Failed_Result_With_Successful_Non_Result_Callable_Returns_Failure() {
+        ContextResult<string, string> failed = ContextResult<string, string>.Fail(new ContextResultCallableNoArguments<string>(() => Result<string>.Fail(new UnknownError())), new UnknownError());
+        ContextResult<string, int> mapped = failed.Map(s => s.Length);
+        Assert.True(mapped.Failed);
+    }
+
+    [Fact]
+    public void Mapping_Failed_Result_With_Successful_Result_Callable_Returns_Failure() {
+        ContextResult<string, string> failed = ContextResult<string, string>.Fail(new ContextResultCallableNoArguments<string>(() => Result<string>.Fail(new UnknownError())), new UnknownError());
+        ContextResult<string, int> mapped = failed.Map(s => s.Length.ToResult(new UnknownError()));
+        Assert.True(mapped.Failed);
+    }
+
+    [Fact]
+    public void Retrying_Mapped_Result_From_Failed_Result_Recalls_Original_Callable() {
+        int timesCalled = 0;
+        ContextResult<int, int> failed = ContextResult<int, int>.Fail(new ContextResultCallableNoArguments<int>(() => {
+            timesCalled++;
+            return timesCalled.ToResult(new UnknownError());
+        }), new UnknownError());
+
+        ContextResult<int, int> mapped = failed.Map(total => total);
+        ContextResult<int, int> retried = mapped.Retry();
+        Assert.Equal(1, timesCalled);
+    }
 }
-
 public class CallableThing {
     public CallableThing(string message) {
         Message = message;

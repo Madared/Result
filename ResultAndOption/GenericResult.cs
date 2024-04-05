@@ -32,7 +32,7 @@ public struct Result<T> : IResultWithoutData where T : notnull {
         _data = data;
     }
 
-    public IError Error => !Failed || _error is null
+    public IError Error => Succeeded || _error is null
         ? throw new InvalidOperationException()
         : _error;
 
