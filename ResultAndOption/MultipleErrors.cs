@@ -10,10 +10,6 @@ public class MultipleErrors : IError {
     public string Message => string.Format("{0} : \n {1}",
         "The following Errors have occurred",
         _errors
-            .ListMap(error => error.Message)
-            .PipeNonNull(errorMessages => string.Join(",\n", errorMessages)));
-
-    public void Log(IErrorLogger logger) {
-        logger.LogError(Message);
-    }
+            .Select(error => error.Message)
+            .Pipe(errorMessages => string.Join(",\n", errorMessages)));
 }

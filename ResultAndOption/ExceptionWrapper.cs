@@ -8,8 +8,4 @@ public class ExceptionWrapper : IError {
     }
 
     public string Message => Exception.Message;
-
-    public void Log(IErrorLogger logger) {
-        logger.LogError(Message);
-    }
 }
