@@ -1,6 +1,6 @@
 namespace Results;
 
-public class CRCOfNotNull<TIn, TOut> : IContextResultCallableWithData<TIn, TOut> where TIn : notnull where TOut : notnull {
+internal class CRCOfNotNull<TIn, TOut> : IContextResultCallableWithData<TIn, TOut> where TIn : notnull where TOut : notnull {
     private readonly TIn _data;
     private readonly Func<TIn, TOut> _callable;
 

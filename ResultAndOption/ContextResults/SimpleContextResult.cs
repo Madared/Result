@@ -3,39 +3,26 @@ namespace Results;
 public class SimpleContextResult : IContextResult {
     private readonly IContextResult _previousContext;
     private readonly ISimpleContextResultCallable _callable;
-    private readonly IError? _error;
-    public bool Succeeded { get; }
-    public bool Failed => !Succeeded;
-    public IError Error { get; }
+    private readonly IResult _result;
+    public bool Succeeded => _result.Succeeded;
+    public bool Failed => _result.Failed;
+    public IError Error => _result.Error;
 
-    private SimpleContextResult(IContextResult previousContext, ISimpleContextResultCallable callable, bool succeeded, IError? error) {
+    private SimpleContextResult(IContextResult previousContext, ISimpleContextResultCallable callable, IResult result) {
         _previousContext = previousContext;
         _callable = callable;
-        Succeeded = succeeded;
-        _error = error;
+        _result = result;
     }
 
     public IContextResult Retry() {
         if (Succeeded) return this;
-        if (_previousContext.Failed) {
-            IContextResult retried = _previousContext.Retry();
-            if (retried.Failed) {
-                return new SimpleContextResult(retried, _callable, false, retried.Error);
-            }
-
-            Result output = _callable.Call();
-            return output.Failed
-                ? new SimpleContextResult(retried, _callable, false, output.Error)
-                : new SimpleContextResult(retried, _callable, true, null);
+        if (_previousContext.Succeeded) {
+            Result output2 = _callable.Call();
+            return new SimpleContextResult(_previousContext, _callable, output2);
         }
-
-        Result output2 = _callable.Call();
-        return output2.Failed
-            ? new SimpleContextResult(_previousContext, _callable, false, output2.Error)
-            : new SimpleContextResult(_previousContext, _callable, true, null);
-    }
-
-    public IContextResult Rerun() {
-        throw new NotImplementedException();
+        IContextResult retried = _previousContext.Retry();
+        return retried.Failed
+            ? new SimpleContextResult(retried, _callable, retried)
+            : new SimpleContextResult(retried, _callable, _callable.Call());
     }
 }

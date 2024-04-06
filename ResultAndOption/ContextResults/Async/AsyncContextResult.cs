@@ -5,23 +5,20 @@ namespace Results.ContextResults.Async;
 public class AsyncContextResult<TIn, TOut> : IAsyncContextResultWithData<TIn, TOut> where TIn : notnull where TOut : notnull {
     private readonly IAsyncContextResult? _previousContext;
     private readonly IACRCallable<TOut> _callable;
-    private readonly IError? _error;
-    private readonly Option<TOut> _data;
+    private readonly Result<TOut> _result;
 
-    public bool Succeeded { get; }
-    public bool Failed => !Succeeded;
-    public IError Error => _error ?? throw new InvalidOperationException();
-    public TOut Data => _data.IsSome() ? _data.Data : throw ErrorToExceptionMapper.Map(_error);
+    public bool Succeeded => _result.Succeeded;
+    public bool Failed => _result.Failed;
+    public IError Error => _result.Error;
+    public TOut Data => _result.Data;
 
-    public AsyncContextResult(IAsyncContextResult? previousContext, IACRCallable<TOut> callable, IError? error, Option<TOut> data, bool succeeded) {
+    public AsyncContextResult(IAsyncContextResult? previousContext, IACRCallable<TOut> callable, Result<TOut> result) {
         _previousContext = previousContext;
         _callable = callable;
-        _error = error;
-        _data = data;
-        Succeeded = succeeded;
+        _result = result;
     }
 
-    public Task<Result<TOut>> StripContext() => throw new NotImplementedException();
+    public Result<TOut> StripContext() => _result;
 
     public async Task<AsyncContextResult<TIn, TOut>> Retry() => throw new NotImplementedException();
     public Task<AsyncContextResult<TOut, TNext>> Map<TNext>(Func<TOut, Task<TNext>> mapper) where TNext : notnull => throw new NotImplementedException();

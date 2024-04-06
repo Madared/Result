@@ -1,6 +1,6 @@
 namespace Results;
 
-public class CRCNoArguments<TOut> : IContextResultCallable<TOut> where TOut : notnull {
+internal class CRCNoArguments<TOut> : IContextResultCallable<TOut> where TOut : notnull {
     private readonly Func<Result<TOut>> _callable;
 
     public CRCNoArguments(Func<Result<TOut>> callable) {

@@ -12,10 +12,10 @@ public class ContextResultWrapperAsync<TIn, TOut> : IAsyncContextResultWithData<
         _syncContext = syncContext;
     }
 
-    public Task<Result<TOut>> StripContext() => Task.FromResult(_syncContext.StripContext());
+    public Result<TOut> StripContext() => _syncContext.StripContext();
 
     public Task<IAsyncContextResultWithData<TIn, TOut>> Retry() {
-        IContextResultWithData <TOut> newContext =  _syncContext.Retry();
+        IContextResultWithData<TOut> newContext = _syncContext.Retry();
         IAsyncContextResultWithData<TIn, TOut> wrapped = new ContextResultWrapperAsync<TIn, TOut>(newContext);
         return Task.FromResult(wrapped);
     }
