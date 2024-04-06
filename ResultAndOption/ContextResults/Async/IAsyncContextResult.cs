@@ -1,7 +1,6 @@
 namespace Results.ContextResults.Async;
 
 public interface IAsyncContextResult : IResult {
-    Result StripContext();
+    Task<Result> StripContext();
     Task<IAsyncContextResult> Retry();
-    Task<IAsyncContextResult> ReRun();
 }

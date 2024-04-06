@@ -1,35 +1,33 @@
-namespace Results;
+using System.Net.Http.Headers;
 
-public class AsyncContextResult<TIn, TOut> where TIn : notnull where TOut : notnull {
-    private AsyncContext<TIn, TOut>? _previousContext;
-    private 
+namespace Results.ContextResults.Async;
 
-    public async Task<AsyncContextResult<TIn, TOut>> ReRun() => throw new NotImplementedException();
-}
+public class AsyncContextResult<TIn, TOut> : IAsyncContextResultWithData<TIn, TOut> where TIn : notnull where TOut : notnull {
+    private readonly IAsyncContextResult? _previousContext;
+    private readonly IACRCallable<TOut> _callable;
+    private readonly IError? _error;
+    private readonly Option<TOut> _data;
 
-public class AsyncContext<TIn, TOut> where TIn : notnull where TOut : notnull {
-    private Option<AsyncContextResult<TIn, TOut>> _async;
-    private Option<ContextResult<TIn, TOut>> _sync;
+    public bool Succeeded { get; }
+    public bool Failed => !Succeeded;
+    public IError Error => _error ?? throw new InvalidOperationException();
+    public TOut Data => _data.IsSome() ? _data.Data : throw ErrorToExceptionMapper.Map(_error);
 
-    private AsyncContext(Option<AsyncContextResult<TIn, TOut>> async, Option<ContextResult<TIn, TOut>> sync) {
-        _sync = sync;
-        _async = async;
+    public AsyncContextResult(IAsyncContextResult? previousContext, IACRCallable<TOut> callable, IError? error, Option<TOut> data, bool succeeded) {
+        _previousContext = previousContext;
+        _callable = callable;
+        _error = error;
+        _data = data;
+        Succeeded = succeeded;
     }
 
-    public async Task<AsyncContext<TIn, TOut>> Retry() {
-        if (_async.IsNone() && _sync.IsNone()) throw new InvalidDataException();
-        if (_sync.IsSome()) {
-            return Create(_sync.Data.ReRun());
-        }
-        AsyncContextResult<TIn, TOut> retried = await _async.Data.ReRun();
-        return Create(retried);
-    }
+    public Task<Result<TOut>> StripContext() => throw new NotImplementedException();
 
-    public static AsyncContext<TIn, TOut> Create(AsyncContextResult<TIn, TOut> async) {
-        return new AsyncContext<TIn, TOut>(async.ToOption(), Option<ContextResult<TIn, TOut>>.None());
-    }
+    public async Task<AsyncContextResult<TIn, TOut>> Retry() => throw new NotImplementedException();
+    public Task<AsyncContextResult<TOut, TNext>> Map<TNext>(Func<TOut, Task<TNext>> mapper) where TNext : notnull => throw new NotImplementedException();
+    public Task<AsyncContextResult<TOut, TNext>> Map<TNext>(Func<TOut, Task<Result<TNext>>> mapper) where TNext : notnull => throw new NotImplementedException();
+    public Task<AsyncContextResult<TOut, TNext>> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull => throw new NotImplementedException();
+    public Task<ContextResultWrapperAsync<TOut, TNext>> Map<TNext>(Func<TOut, Result<TNext>> mapper) where TNext : notnull => throw new NotImplementedException();
 
-    public static AsyncContext<TIn, TOut> Create(ContextResult<TIn, TOut> sync) {
-        return new AsyncContext<TIn, TOut>(Option<AsyncContextResult<TIn, TOut>>.None(), sync.ToOption());
-    }
+    async Task<IAsyncContextResultWithData<TIn, TOut>> IAsyncContextResultWithData<TIn, TOut>.Retry() => await Retry();
 }

@@ -2,7 +2,7 @@ using System.Net.Http.Headers;
 
 namespace Results;
 
-public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn : notnull where TOut : notnull {
+public class ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn : notnull where TOut : notnull {
     private readonly IContextResultWithData<TIn>? _previousContext;
     private readonly IContextResultCallable<TOut> _called;
     private readonly Option<TOut> _data;
@@ -27,28 +27,30 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
 
     IContextResultWithData<TOut> IContextResultWithData<TOut>.Retry() => Retry();
 
-    public ContextResult<TIn, TOut> RetryIfFailed() => Succeeded ? this : Retry();
+
+    public Result<TOut> StripContext() => Succeeded ? Result<TOut>.Ok(Data) : Result<TOut>.Fail(Error); 
 
     public ContextResult<TIn, TOut> Retry() {
+        if (Succeeded) return this;
         if (_called is null) return this;
-        if (_previousContext is null) return RetryWithoutContext();
+        if (_previousContext is null) return ReRunWithoutContext();
 
         IContextResultWithData<TIn> previousContext = _previousContext.Retry();
         return previousContext.Failed
             ? Fail(_called, previousContext, previousContext.Error)
-            : RetryWithNewContext(previousContext);
+            : ReRunWithNewContext(previousContext);
     }
 
-    private ContextResult<TIn, TOut> RetryWithoutContext() {
+    private ContextResult<TIn, TOut> ReRunWithoutContext() {
         Result<TOut> output = _called.Call();
         return output.Succeeded
             ? Ok(_called, output.Data)
             : Fail(_called, output.Error);
     }
 
-    private ContextResult<TIn, TOut> RetryWithNewContext(IContextResultWithData<TIn> context) {
-        if (_called is IContextResultCallableWithData<TIn, TOut> dataContext) {
-            IContextResultCallable<TOut> newCallable = dataContext.WithData(context.Data);
+    private ContextResult<TIn, TOut> ReRunWithNewContext(IContextResultWithData<TIn> context) {
+        if (_called is IContextResultCallableWithInput<TIn, TOut> dataContext) {
+            IContextResultCallable<TOut> newCallable = dataContext.WithInput(context.Data);
             Result<TOut> output = newCallable.Call();
             return output.Succeeded
                 ? Ok(newCallable, context, output.Data)
@@ -114,49 +116,6 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
             error,
             false
         );
-
-    public static ContextResult<TIn, TOut> From(IContextResultCallable<TOut> callable) {
-        Result<TOut> output = callable.Call();
-        return output.Failed
-            ? new ContextResult<TIn, TOut>(callable, Option<TOut>.None(), null, output.Error, false)
-            : new ContextResult<TIn, TOut>(callable, output.Data.ToOption(), null, null, true);
-    }
-
-    public static ContextResult<TIn, TOut> From(IContextResultWithData<TIn> previousContext, Func<TIn, TOut> mapper) {
-        if (previousContext.Failed) {
-            IContextResultCallable<TOut> failureCallable = new ContextResultCallableNoArguments<TOut>(() => Result<TOut>.Fail(previousContext.Error));
-            return new ContextResult<TIn, TOut>(failureCallable, Option<TOut>.None(), previousContext, previousContext.Error, false);
-        }
-
-        IContextResultCallable<TOut> successCallable = new ContextResultCallableOfNotNull<TIn, TOut>(previousContext.Data, mapper);
-        Result<TOut> output = successCallable.Call();
-        return output.Failed
-            ? new ContextResult<TIn, TOut>(successCallable, Option<TOut>.None(), previousContext, output.Error, false)
-            : new ContextResult<TIn, TOut>(successCallable, output.Data.ToOption(), previousContext, null, true);
-    }
-
-    public static ContextResult<TIn, TOut> From(IContextResultWithData<TIn> previousContext, Func<TIn, Result<TOut>> mapper) {
-        if (previousContext.Failed) {
-            IContextResultCallable<TOut> failureCallable = new ContextResultCallableNoArguments<TOut>(() => Result<TOut>.Fail(previousContext.Error));
-            return new ContextResult<TIn, TOut>(failureCallable, Option<TOut>.None(), previousContext, previousContext.Error, false);
-        }
-
-        IContextResultCallable<TOut> successCallable = new ContextResultCallableOfResult<TIn, TOut>(previousContext.Data, mapper);
-        Result<TOut> output = successCallable.Call();
-        return output.Failed
-            ? new ContextResult<TIn, TOut>(successCallable, Option<TOut>.None(), previousContext, output.Error, false)
-            : new ContextResult<TIn, TOut>(successCallable, output.Data.ToOption(), previousContext, null, true);
-    }
-
-
-    public static ContextResult<TIn, TOut> FromCallable(Func<TIn, Result<TOut>> callable, TIn data) {
-        IContextResultCallable<TOut> contextCallable = new ContextResultCallableOfResult<TIn, TOut>(data, callable);
-        Result<TOut> output = callable(data);
-        return output.Succeeded
-            ? new ContextResult<TIn, TOut>(contextCallable, output.Data.ToOption(), null, null, true)
-            : new ContextResult<TIn, TOut>(contextCallable, Option<TOut>.None(), null, output.Error, true);
-    }
-
     public static ContextResult<TIn, TOut> FromCallable(Func<Result<TOut>> callable) {
         IContextResultCallable<TOut> contextResultCallable = new ContextResultCallableNoArguments<TOut>(callable);
         Result<TOut> output = callable();
@@ -164,4 +123,5 @@ public struct ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn 
             ? new ContextResult<TIn, TOut>(contextResultCallable, output.Data.ToOption(), null, null, true)
             : new ContextResult<TIn, TOut>(contextResultCallable, Option<TOut>.None(), null, output.Error, true);
     }
+    
 }

@@ -1,6 +1,6 @@
 namespace Results;
 
-public class ContextResultCallableOfNotNull<TIn, TOut> : IContextResultCallableWithData<TIn, TOut> where TIn : notnull where TOut : notnull {
+public class ContextResultCallableOfNotNull<TIn, TOut> : IContextResultCallableWithInput<TIn, TOut> where TIn : notnull where TOut : notnull {
     private readonly TIn _data;
     private readonly Func<TIn, TOut> _callable;
 
@@ -10,7 +10,7 @@ public class ContextResultCallableOfNotNull<TIn, TOut> : IContextResultCallableW
     }
 
     public Result<TOut> Call() => _callable(_data).ToResult(new UnknownError());
-    public IContextResultCallableWithData<TIn, TOut> WithData(TIn data) {
+    public IContextResultCallableWithInput<TIn, TOut> WithInput(TIn data) {
         return new ContextResultCallableOfNotNull<TIn, TOut>(data, _callable);
     }
 }

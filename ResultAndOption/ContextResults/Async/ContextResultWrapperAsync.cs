@@ -1,38 +1,22 @@
 namespace Results.ContextResults.Async;
 
-public class AsyncContext<TIn, TOut> where TIn : notnull where TOut : notnull {
-    private Option<AsyncContextResult<TIn, TOut>> _async;
-    private Option<ContextResult<TIn, TOut>> _sync;
+public class ContextResultWrapperAsync<TIn, TOut> : IAsyncContextResultWithData<TIn, TOut> where TIn : notnull where TOut : notnull {
+    private readonly IContextResultWithData<TOut> _syncContext;
 
-    private AsyncContext(Option<AsyncContextResult<TIn, TOut>> async, Option<ContextResult<TIn, TOut>> sync) {
-        _sync = sync;
-        _async = async;
+    public bool Succeeded => _syncContext.Succeeded;
+    public bool Failed => _syncContext.Failed;
+    public IError Error => _syncContext.Error;
+    public TOut Data => _syncContext.Data;
+
+    public ContextResultWrapperAsync(IContextResultWithData<TOut> syncContext) {
+        _syncContext = syncContext;
     }
 
-    public async Task<AsyncContext<TIn, TOut>> ReRun() {
-        if (_async.IsNone() && _sync.IsNone()) throw new InvalidDataException();
-        if (_sync.IsSome()) {
-            return Create(_sync.Data.ReRun());
-        }
+    public Task<Result<TOut>> StripContext() => Task.FromResult(_syncContext.StripContext());
 
-        AsyncContextResult<TIn, TOut> rerun = await _async.Data.ReRun();
-        return Create(rerun);
-    }
-
-    public async Task<AsyncContext<TIn, TOut>> Retry() {
-        if (_async.IsNone() && _sync.IsNone()) throw new InvalidDataException();
-        if (_sync.IsSome()) {
-            return Create(_sync.Data.Retry());
-        }
-        AsyncContextResult<TIn, TOut> retried = await _async.Data.Retry();
-        return Create(retried);
-    }
-
-    public static AsyncContext<TIn, TOut> Create(AsyncContextResult<TIn, TOut> async) {
-        return new AsyncContext<TIn, TOut>(async.ToOption(), Option<ContextResult<TIn, TOut>>.None());
-    }
-
-    public static AsyncContext<TIn, TOut> Create(ContextResult<TIn, TOut> sync) {
-        return new AsyncContext<TIn, TOut>(Option<AsyncContextResult<TIn, TOut>>.None(), sync.ToOption());
+    public Task<IAsyncContextResultWithData<TIn, TOut>> Retry() {
+        IContextResultWithData <TOut> newContext =  _syncContext.Retry();
+        IAsyncContextResultWithData<TIn, TOut> wrapped = new ContextResultWrapperAsync<TIn, TOut>(newContext);
+        return Task.FromResult(wrapped);
     }
 }

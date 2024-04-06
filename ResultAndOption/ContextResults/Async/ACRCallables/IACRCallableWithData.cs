@@ -1,5 +1,5 @@
 namespace Results.ContextResults.Async;
 
-public interface IAsyncContextResultCallableWithData<TIn, TOut> : IAsyncContextResultCallable<TOut> where TIn : notnull where TOut : notnull {
-    public IAsyncContextResultCallableWithData<TIn, TOut> WithData(TIn data);
+public interface IACRCallableWithData<TIn, TOut> : IACRCallable<TOut> where TIn : notnull where TOut : notnull {
+    public IACRCallableWithData<TIn, TOut> WithData(TIn data);
 }
