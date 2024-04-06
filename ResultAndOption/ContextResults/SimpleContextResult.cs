@@ -1,9 +1,5 @@
 namespace Results;
 
-public interface ISimpleContextResultCallable {
-    public Result Call();
-}
-
 public class SimpleContextResult : IContextResult {
     private readonly IContextResult _previousContext;
     private readonly ISimpleContextResultCallable _callable;

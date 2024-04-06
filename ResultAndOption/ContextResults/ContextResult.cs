@@ -97,7 +97,7 @@ public class ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn :
 
     public static ContextResult<TIn, TOut> Ok(TOut data) =>
         new ContextResult<TIn, TOut>(
-            new SimpleContextResultCallable<TOut>(data),
+            new SimpleCRC<TOut>(data),
             data.ToOption(),
             null,
             null,
