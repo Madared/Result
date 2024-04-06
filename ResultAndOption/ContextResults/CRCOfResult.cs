@@ -1,6 +1,6 @@
 namespace Results;
 
-public class CRCOfResult<TIn, TOut> : SimpleCRC<TIn, TOut> where TIn : notnull where TOut : notnull {
+public class CRCOfResult<TIn, TOut> : IContextResultCallableWithData<TIn, TOut> where TIn : notnull where TOut : notnull {
     private readonly TIn _data;
     private readonly Func<TIn, Result<TOut>> _callable;
 
@@ -10,7 +10,7 @@ public class CRCOfResult<TIn, TOut> : SimpleCRC<TIn, TOut> where TIn : notnull w
     }
 
     public Result<TOut> Call() => _callable(_data);
-    public SimpleCRC<TIn, TOut> WithInput(TIn data) {
+    public IContextResultCallableWithData<TIn, TOut> WithInput(TIn data) {
         return new CRCOfResult<TIn, TOut>(data, _callable);
     }
 }

@@ -49,7 +49,7 @@ public class ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn :
     }
 
     private ContextResult<TIn, TOut> ReRunWithNewContext(IContextResultWithData<TIn> context) {
-        if (_called is SimpleCRC<TIn, TOut> dataContext) {
+        if (_called is IContextResultCallableWithData<TIn, TOut> dataContext) {
             IContextResultCallable<TOut> newCallable = dataContext.WithInput(context.Data);
             Result<TOut> output = newCallable.Call();
             return output.Succeeded
