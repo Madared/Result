@@ -49,7 +49,7 @@ public class ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn :
     }
 
     private ContextResult<TIn, TOut> ReRunWithNewContext(IContextResultWithData<TIn> context) {
-        if (_called is IContextResultCallableWithInput<TIn, TOut> dataContext) {
+        if (_called is SimpleCRC<TIn, TOut> dataContext) {
             IContextResultCallable<TOut> newCallable = dataContext.WithInput(context.Data);
             Result<TOut> output = newCallable.Call();
             return output.Succeeded
@@ -65,18 +65,18 @@ public class ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn :
 
     public ContextResult<TOut, TNext> Map<TNext>(Func<TOut, Result<TNext>> mapper) where TNext : notnull {
         if (Failed) {
-            return ContextResult<TOut, TNext>.Fail(new ContextResultCallableNoArguments<TNext>(() => Result<TNext>.Fail(new UnknownError())), this, Error);
+            return ContextResult<TOut, TNext>.Fail(new CRCNoArguments<TNext>(() => Result<TNext>.Fail(new UnknownError())), this, Error);
         }
-        ContextResultCallableOfResult<TOut, TNext> callable = new(Data, mapper);
+        CRCOfResult<TOut, TNext> callable = new(Data, mapper);
         return ContextResult<TOut, TNext>.Maybe(callable, this);
     }
 
     public ContextResult<TOut, TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull {
         if (Failed) {
-            return ContextResult<TOut, TNext>.Fail(new ContextResultCallableNoArguments<TNext>(() => Result<TNext>.Fail(new UnknownError())), this, Error);
+            return ContextResult<TOut, TNext>.Fail(new CRCNoArguments<TNext>(() => Result<TNext>.Fail(new UnknownError())), this, Error);
         }
 
-        ContextResultCallableOfNotNull<TOut, TNext> callable = new(Data, mapper);
+        CRCOfNotNull<TOut, TNext> callable = new(Data, mapper);
         return ContextResult<TOut, TNext>.Maybe(callable, this);
     }
 
@@ -117,7 +117,7 @@ public class ContextResult<TIn, TOut> : IContextResultWithData<TOut> where TIn :
             false
         );
     public static ContextResult<TIn, TOut> FromCallable(Func<Result<TOut>> callable) {
-        IContextResultCallable<TOut> contextResultCallable = new ContextResultCallableNoArguments<TOut>(callable);
+        IContextResultCallable<TOut> contextResultCallable = new CRCNoArguments<TOut>(callable);
         Result<TOut> output = callable();
         return output.Succeeded
             ? new ContextResult<TIn, TOut>(contextResultCallable, output.Data.ToOption(), null, null, true)
