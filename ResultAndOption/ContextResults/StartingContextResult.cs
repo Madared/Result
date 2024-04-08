@@ -1,6 +1,6 @@
 namespace Results;
 
-public class StartingContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
+internal class StartingContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
     private readonly Result<TOut> _result;
     private readonly Func<Result<TOut>> _callable;
 
@@ -45,7 +45,7 @@ public class StartingContextResult<TOut> : IContextResult<TOut> where TOut : not
     public static StartingContextResult<TOut> Create(Func<Result<TOut>> function) => new(function(), function);
 }
 
-public class StartingContextResult : IContextResult {
+internal class StartingContextResult : IContextResult {
     private readonly Result _result;
     private readonly Func<Result> _callable;
 
@@ -55,7 +55,7 @@ public class StartingContextResult : IContextResult {
     }
 
     public bool Succeeded => _result.Succeeded;
-    public bool Failed => _result.Succeeded;
+    public bool Failed => _result.Failed;
     public IError Error => _result.Error;
 
     public IContextResult Retry() => Succeeded ? this : new StartingContextResult(_callable(), _callable);
