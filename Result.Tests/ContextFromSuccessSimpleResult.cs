@@ -50,4 +50,10 @@ public class ContextFromSuccessSimpleResult {
         Result stripped = context.StripContext();
         Assert.Equal(resultFunc(), stripped);
     }
+
+    [Fact]
+    public void Retry_Returns_Same_Context() {
+        IContextResult retried = context.Retry();
+        Assert.Equal(context, retried);
+    }
 }
