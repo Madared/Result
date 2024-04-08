@@ -18,43 +18,31 @@ public class StartingContextResult<TOut> : IContextResult<TOut> where TOut : not
         throw new NotImplementedException();
     }
 
-    public Result<TOut> StripContext() {
-        throw new NotImplementedException();
-    }
+    public Result<TOut> StripContext() => _result;
 
-    public IContextResult<TNext> Map<TNext>(Func<TOut, Result<TNext>> mapper) where TNext : notnull {
-        throw new NotImplementedException();
-    }
+    public IContextResult<TNext> Map<TNext>(Func<TOut, Result<TNext>> mapper) where TNext : notnull => Failed
+        ? new ContextResult<TOut, TNext>(mapper, this, Result<TNext>.Fail(Error))
+        : new ContextResult<TOut, TNext>(mapper, this, mapper(Data));
 
-    public IContextResult<TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull {
-        throw new NotImplementedException();
-    }
 
-    public IContextResult Map(Func<TOut, Result> mapper) {
-        throw new NotImplementedException();
-    }
+    public IContextResult Map(Func<TOut, Result> mapper) => Failed
+        ? new IntermediateContextResultSimple<TOut>(mapper, this, Result.Fail(Error))
+        : new IntermediateContextResultSimple<TOut>(mapper, this, mapper(Data));
 
-    public IContextResult Map(Action<TOut> mapper) {
-        throw new NotImplementedException();
-    }
 
-    public IContextResult Map(Action action) {
-        throw new NotImplementedException();
-    }
+    public IContextResult Map(Func<Result> mapper) => Failed
+        ? new SimpleContextResult(this, mapper, Result.Fail(Error))
+        : new SimpleContextResult(this, mapper, mapper());
 
-    public IContextResult Map(Func<Result> mapper) {
-        throw new NotImplementedException();
-    }
+    public IContextResult<TNext> Map<TNext>(Func<Result<TNext>> mapper) where TNext : notnull => Failed
+        ? new IntermediateContextResult<TNext>(Result<TNext>.Fail(Error), mapper, this)
+        : new IntermediateContextResult<TNext>(mapper(), mapper, this);
 
-    public IContextResult<TNext> Map<TNext>(Func<Result<TNext>> mapper) where TNext : notnull {
-        throw new NotImplementedException();
-    }
-
-    public IContextResult<TNext> Map<TNext>(Func<TNext> mapper) where TNext : notnull {
-        throw new NotImplementedException();
-    }
-
-    public static StartingContextResult<TOut> Create(Func<Result<TOut>> function) => new (function(), function);
+    public IContextResult<TNext> Map<TNext>(Func<TNext> mapper) where TNext : notnull => Map(mapper.WrapInResult());
+    public IContextResult Map(Action<TOut> mapper) => Map(mapper.WrapInResult());
+    public IContextResult Map(Action action) => Map(action.WrapInResult());
+    public IContextResult<TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull => Map(mapper.WrapInResult());
+    public static StartingContextResult<TOut> Create(Func<Result<TOut>> function) => new(function(), function);
 }
 
 public class StartingContextResult : IContextResult {
@@ -70,29 +58,20 @@ public class StartingContextResult : IContextResult {
     public bool Failed => _result.Succeeded;
     public IError Error => _result.Error;
 
-    public IContextResult Retry() {
-        throw new NotImplementedException();
-    }
+    public IContextResult Retry() => Succeeded ? this : new StartingContextResult(_callable(), _callable);
 
-    public Result StripContext() {
-        throw new NotImplementedException();
-    }
+    public Result StripContext() => _result;
 
-    public IContextResult Map(Action action) {
-        throw new NotImplementedException();
-    }
+    public IContextResult Map(Func<Result> mapper) => Failed
+        ? new SimpleContextResult(this, mapper, Result.Fail(Error))
+        : new SimpleContextResult(this, mapper, mapper());
 
-    public IContextResult Map(Func<Result> mapper) {
-        throw new NotImplementedException();
-    }
+    public IContextResult<TOut> Map<TOut>(Func<Result<TOut>> mapper) where TOut : notnull => Failed
+        ? new IntermediateContextResult<TOut>(Result<TOut>.Fail(Error), mapper, this)
+        : new IntermediateContextResult<TOut>(mapper(), mapper, this);
 
-    public IContextResult<TOut> Map<TOut>(Func<Result<TOut>> mapper) where TOut : notnull {
-        throw new NotImplementedException();
-    }
-
-    public IContextResult<TOut> Map<TOut>(Func<TOut> mapper) where TOut : notnull {
-        throw new NotImplementedException();
-    }
+    public IContextResult Map(Action action) => Map(action.WrapInResult());
+    public IContextResult<TOut> Map<TOut>(Func<TOut> mapper) where TOut : notnull => Map(mapper.WrapInResult());
 
     public static StartingContextResult Create(Func<Result> function) => new(function(), function);
 }

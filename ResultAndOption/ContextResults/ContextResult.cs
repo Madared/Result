@@ -35,33 +35,9 @@ internal class ContextResult<TIn, TOut> : IContextResult<TOut> where TIn : notnu
         ? new ContextResult<TOut, TNext>(mapper, this, Result<TNext>.Fail(Error))
         : new ContextResult<TOut, TNext>(mapper, this, mapper(Data));
 
-    public IContextResult<TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull {
-        return Map(Generated);
-        Result<TNext> Generated(TOut data) {
-            TNext output = mapper(data);
-            return Result<TNext>.Ok(output);
-        }
-    }
-
     public IContextResult Map(Func<TOut, Result> mapper) => Failed
         ? new IntermediateContextResultSimple<TOut>(mapper, this, Result.Fail(Error))
         : new IntermediateContextResultSimple<TOut>(mapper, this, mapper(Data));
-
-    public IContextResult Map(Action<TOut> mapper) {
-        return Map(Generated);
-        Result Generated(TOut data) {
-            mapper(data);
-            return Result.Ok();
-        }
-    }
-
-    public IContextResult Map(Action action) {
-        return Map(Generated);
-        Result Generated() {
-            action();
-            return Result.Ok();
-        }
-    }
 
     public IContextResult Map(Func<Result> mapper) => Failed
         ? new SimpleContextResult(this, mapper, Result.Fail(Error))
@@ -71,11 +47,8 @@ internal class ContextResult<TIn, TOut> : IContextResult<TOut> where TIn : notnu
         ? new IntermediateContextResult<TNext>(Result<TNext>.Fail(Error), mapper, this)
         : new IntermediateContextResult<TNext>(mapper(), mapper, this);
 
-    public IContextResult<TNext> Map<TNext>(Func<TNext> mapper) where TNext : notnull {
-        return Map(Generated);
-        Result<TNext> Generated() {
-            TNext output = mapper();
-            return Result<TNext>.Ok(output);
-        }
-    }
+    public IContextResult<TNext> Map<TNext>(Func<TNext> mapper) where TNext : notnull => Map(mapper.WrapInResult());
+    public IContextResult Map(Action action) => Map(action.WrapInResult());
+    public IContextResult Map(Action<TOut> mapper) => Map(mapper.WrapInResult());
+    public IContextResult<TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull => Map(mapper.WrapInResult());
 }

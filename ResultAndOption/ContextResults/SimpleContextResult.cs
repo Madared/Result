@@ -16,6 +16,7 @@ internal class SimpleContextResult : IContextResult {
         _result = result;
     }
 
+    public Result StripContext() => _result;
     IContextResult IContextResult.Retry() => Retry();
 
     public SimpleContextResult Retry() {
@@ -31,18 +32,6 @@ internal class SimpleContextResult : IContextResult {
             : new SimpleContextResult(retried, _callable, _callable());
     }
 
-    public Result StripContext() => _result;
-
-    public IContextResult Map(Action action) {
-        Func<Result> generated = () => {
-            action();
-            return Result.Ok();
-        };
-        return Failed
-            ? new SimpleContextResult(this, generated, Result.Fail(Error))
-            : new SimpleContextResult(this, generated, generated());
-    }
-
     public IContextResult Map(Func<Result> mapper) => Failed
         ? new SimpleContextResult(this, mapper, Result.Fail(Error))
         : new SimpleContextResult(this, mapper, mapper());
@@ -51,10 +40,6 @@ internal class SimpleContextResult : IContextResult {
         ? new IntermediateContextResult<TOut>(Result<TOut>.Fail(Error), mapper, this)
         : new IntermediateContextResult<TOut>(mapper(), mapper, this);
 
-    public IContextResult<TOut> Map<TOut>(Func<TOut> mapper) where TOut : notnull {
-        Func<Result<TOut>> generated = () => mapper().ToResult(new UnknownError());
-        return Failed
-            ? new IntermediateContextResult<TOut>(Result<TOut>.Fail(Error), generated, this)
-            : new IntermediateContextResult<TOut>(generated(), generated, this);
-    }
+    public IContextResult<TOut> Map<TOut>(Func<TOut> mapper) where TOut : notnull => Map(mapper.WrapInResult());
+    public IContextResult Map(Action action) => Map(action.WrapInResult());
 }

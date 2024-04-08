@@ -34,39 +34,10 @@ internal class IntermediateContextResult<TOut> : IContextResult<TOut> where TOut
         ? new ContextResult<TOut, TNext>(mapper, this, Result<TNext>.Fail(Error))
         : new ContextResult<TOut, TNext>(mapper, this, mapper(Data));
 
-    public IContextResult<TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull {
-        Func<TOut, Result<TNext>> generated = (TOut input) => {
-            TNext data = mapper(input);
-            return Result<TNext>.Ok(data);
-        };
-        return Failed
-            ? new ContextResult<TOut, TNext>(generated, this, Result<TNext>.Fail(Error))
-            : new ContextResult<TOut, TNext>(generated, this, generated(Data));
-    }
 
     public IContextResult Map(Func<TOut, Result> mapper) => Failed
         ? new IntermediateContextResultSimple<TOut>(mapper, this, Result.Fail(Error))
         : new IntermediateContextResultSimple<TOut>(mapper, this, mapper(Data));
-
-    public IContextResult Map(Action<TOut> mapper) {
-        Func<TOut, Result> generated = (data) => {
-            mapper(data);
-            return Result.Ok();
-        };
-        return Failed
-            ? new IntermediateContextResultSimple<TOut>(generated, this, Result.Fail(Error))
-            : new IntermediateContextResultSimple<TOut>(generated, this, generated(Data));
-    }
-
-    public IContextResult Map(Action action) {
-        Func<Result> generated = () => {
-            action();
-            return Result.Ok();
-        };
-        return Failed
-            ? new SimpleContextResult(this, generated, Result.Fail(Error))
-            : new SimpleContextResult(this, generated, generated());
-    }
 
     public IContextResult Map(Func<Result> mapper) => Failed
         ? new SimpleContextResult(this, mapper, Result.Fail(Error))
@@ -76,13 +47,9 @@ internal class IntermediateContextResult<TOut> : IContextResult<TOut> where TOut
         ? new IntermediateContextResult<TNext>(Result<TNext>.Fail(Error), mapper, this)
         : new IntermediateContextResult<TNext>(mapper(), mapper, this);
 
-    public IContextResult<TNext> Map<TNext>(Func<TNext> mapper) where TNext : notnull {
-        Func<Result<TNext>> generated = () => {
-            TNext data = mapper();
-            return Result<TNext>.Ok(data);
-        };
-        return Failed
-            ? new IntermediateContextResult<TNext>(Result<TNext>.Fail(Error), generated, this)
-            : new IntermediateContextResult<TNext>(generated(), generated, this);
-    }
+    public IContextResult<TNext> Map<TNext>(Func<TNext> mapper) where TNext : notnull => Map(mapper.WrapInResult());
+    public IContextResult Map(Action action) => Map(action.WrapInResult());
+    public IContextResult Map(Action<TOut> mapper) => Map(mapper.WrapInResult());
+    
+    public IContextResult<TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull => Map(mapper.WrapInResult());
 }
