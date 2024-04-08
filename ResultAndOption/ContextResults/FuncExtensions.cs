@@ -21,4 +21,8 @@ public static class FuncExtensions {
         action(data);
         return Result.Ok();
     };
+
+    public static IContextResult RunAndGetContext(this Func<Result> action) => new StartingContextResult(action(), action);
+
+    public static IContextResult<TOut> RunAndGetContext<TOut>(this Func<Result<TOut>> function) where TOut : notnull => new StartingContextResult<TOut>(function(), function);
 }
