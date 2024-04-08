@@ -43,4 +43,8 @@ public class SimpleContextResult : IContextResult {
     public IContextResult<TOut> Map<TOut>(Func<TOut> mapper) where TOut : notnull {
         throw new NotImplementedException();
     }
+
+    public static SimpleContextResult Create(Func<Result> function, IContextResult previousContext) => previousContext.Failed
+        ? new SimpleContextResult(previousContext, function, Result.Fail(previousContext.Error))
+        : new SimpleContextResult(previousContext, function, function());
 }

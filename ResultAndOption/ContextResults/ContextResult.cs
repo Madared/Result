@@ -2,14 +2,6 @@ using System.Net.Http.Headers;
 
 namespace Results;
 
-public delegate Result<TOut> ResultGetter<TOut>() where TOut : notnull;
-
-public delegate Result<TOut> InputToResult<in TIn, TOut>(TIn input) where TIn : notnull where TOut : notnull;
-
-public delegate Result SimpleResultGetter();
-
-public delegate Result InputToSimpleResult<in TIn>(TIn input) where TIn : notnull;
-
 public class ContextResult<TIn, TOut> : IContextResult<TOut> where TIn : notnull where TOut : notnull {
     private readonly IContextResult<TIn> _previousContext;
     private readonly Func<TIn, Result<TOut>> _called;
@@ -28,9 +20,15 @@ public class ContextResult<TIn, TOut> : IContextResult<TOut> where TIn : notnull
 
     IContextResult<TOut> IContextResult<TOut>.Retry() => Retry();
 
-
     public Result<TOut> StripContext() => Succeeded ? Result<TOut>.Ok(Data) : Result<TOut>.Fail(Error);
 
+    public ContextResult<TIn, TOut> Retry() {
+        if (Succeeded) return this;
+        IContextResult<TIn> previousContext = _previousContext.Retry();
+        return previousContext.Failed
+            ? new ContextResult<TIn, TOut>(_called, previousContext, Result<TOut>.Fail(previousContext.Error))
+            : new ContextResult<TIn, TOut>(_called, previousContext, _called(previousContext.Data));
+    }
     public IContextResult<TNext> Map<TNext>(Func<TOut, Result<TNext>> mapper) where TNext : notnull {
         throw new NotImplementedException();
     }
@@ -63,11 +61,7 @@ public class ContextResult<TIn, TOut> : IContextResult<TOut> where TIn : notnull
         throw new NotImplementedException();
     }
 
-    public ContextResult<TIn, TOut> Retry() {
-        if (Succeeded) return this;
-        IContextResult<TIn> previousContext = _previousContext.Retry();
-        return previousContext.Failed
-            ? new ContextResult<TIn, TOut>(_called, previousContext, Result<TOut>.Fail(previousContext.Error))
-            : new ContextResult<TIn, TOut>(_called, previousContext, _called(previousContext.Data));
-    }
+    public static ContextResult<TIn, TOut> Create(Func<TIn, Result<TOut>> function, IContextResult<TIn> previousContext) => previousContext.Failed
+        ? new ContextResult<TIn, TOut>(function, previousContext, Result<TOut>.Fail(previousContext.Error))
+        : new ContextResult<TIn, TOut>(function, previousContext, function(previousContext.Data));
 }
