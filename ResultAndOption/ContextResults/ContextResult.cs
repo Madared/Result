@@ -1,8 +1,9 @@
+using System.CodeDom.Compiler;
 using System.Net.Http.Headers;
 
 namespace Results;
 
-public class ContextResult<TIn, TOut> : IContextResult<TOut> where TIn : notnull where TOut : notnull {
+internal class ContextResult<TIn, TOut> : IContextResult<TOut> where TIn : notnull where TOut : notnull {
     private readonly IContextResult<TIn> _previousContext;
     private readonly Func<TIn, Result<TOut>> _called;
     private readonly Result<TOut> _result;
@@ -20,7 +21,7 @@ public class ContextResult<TIn, TOut> : IContextResult<TOut> where TIn : notnull
 
     IContextResult<TOut> IContextResult<TOut>.Retry() => Retry();
 
-    public Result<TOut> StripContext() => Succeeded ? Result<TOut>.Ok(Data) : Result<TOut>.Fail(Error);
+    public Result<TOut> StripContext() => _result;
 
     public ContextResult<TIn, TOut> Retry() {
         if (Succeeded) return this;
@@ -29,39 +30,52 @@ public class ContextResult<TIn, TOut> : IContextResult<TOut> where TIn : notnull
             ? new ContextResult<TIn, TOut>(_called, previousContext, Result<TOut>.Fail(previousContext.Error))
             : new ContextResult<TIn, TOut>(_called, previousContext, _called(previousContext.Data));
     }
-    public IContextResult<TNext> Map<TNext>(Func<TOut, Result<TNext>> mapper) where TNext : notnull {
-        throw new NotImplementedException();
-    }
+
+    public IContextResult<TNext> Map<TNext>(Func<TOut, Result<TNext>> mapper) where TNext : notnull => Failed
+        ? new ContextResult<TOut, TNext>(mapper, this, Result<TNext>.Fail(Error))
+        : new ContextResult<TOut, TNext>(mapper, this, mapper(Data));
 
     public IContextResult<TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull {
-        throw new NotImplementedException();
+        return Map(Generated);
+        Result<TNext> Generated(TOut data) {
+            TNext output = mapper(data);
+            return Result<TNext>.Ok(output);
+        }
     }
 
-    public IContextResult Map(Func<TOut, Result> mapper) {
-        throw new NotImplementedException();
-    }
+    public IContextResult Map(Func<TOut, Result> mapper) => Failed
+        ? new IntermediateContextResultSimple<TOut>(mapper, this, Result.Fail(Error))
+        : new IntermediateContextResultSimple<TOut>(mapper, this, mapper(Data));
 
     public IContextResult Map(Action<TOut> mapper) {
-        throw new NotImplementedException();
+        return Map(Generated);
+        Result Generated(TOut data) {
+            mapper(data);
+            return Result.Ok();
+        }
     }
 
     public IContextResult Map(Action action) {
-        throw new NotImplementedException();
+        return Map(Generated);
+        Result Generated() {
+            action();
+            return Result.Ok();
+        }
     }
 
-    public IContextResult Map(Func<Result> mapper) {
-        throw new NotImplementedException();
-    }
+    public IContextResult Map(Func<Result> mapper) => Failed
+        ? new SimpleContextResult(this, mapper, Result.Fail(Error))
+        : new SimpleContextResult(this, mapper, mapper());
 
-    public IContextResult<TOut1> Map<TOut1>(Func<Result<TOut1>> mapper) where TOut1 : notnull {
-        throw new NotImplementedException();
-    }
+    public IContextResult<TNext> Map<TNext>(Func<Result<TNext>> mapper) where TNext : notnull => Failed
+        ? new IntermediateContextResult<TNext>(Result<TNext>.Fail(Error), mapper, this)
+        : new IntermediateContextResult<TNext>(mapper(), mapper, this);
 
-    public IContextResult<TOut1> Map<TOut1>(Func<TOut1> mapper) where TOut1 : notnull {
-        throw new NotImplementedException();
+    public IContextResult<TNext> Map<TNext>(Func<TNext> mapper) where TNext : notnull {
+        return Map(Generated);
+        Result<TNext> Generated() {
+            TNext output = mapper();
+            return Result<TNext>.Ok(output);
+        }
     }
-
-    public static ContextResult<TIn, TOut> Create(Func<TIn, Result<TOut>> function, IContextResult<TIn> previousContext) => previousContext.Failed
-        ? new ContextResult<TIn, TOut>(function, previousContext, Result<TOut>.Fail(previousContext.Error))
-        : new ContextResult<TIn, TOut>(function, previousContext, function(previousContext.Data));
 }
