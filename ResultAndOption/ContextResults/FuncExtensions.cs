@@ -25,4 +25,26 @@ public static class FuncExtensions {
     public static IContextResult RunAndGetContext(this Func<Result> action) => new StartingContextResult(action(), action);
 
     public static IContextResult<TOut> RunAndGetContext<TOut>(this Func<Result<TOut>> function) where TOut : notnull => new StartingContextResult<TOut>(function(), function);
+
+    public static IContextResult Retry(this IContextResult context,  int timesToRetry) {
+        int timesRetried = 0;
+        while (timesRetried < timesToRetry) {
+            IContextResult retried = context.Retry();
+            if (retried.Succeeded) return retried;
+            timesRetried++;
+        }
+
+        return context;
+    }
+
+    public static IContextResult<T> Retry<T>(this IContextResult<T> context, int timesToRetry) where T : notnull {
+        int timesRetried = 0;
+        while (timesRetried < timesToRetry) {
+            IContextResult<T> retried = context.Retry();
+            if (retried.Succeeded) return retried;
+            timesRetried++;
+        }
+
+        return context;
+    }
 }

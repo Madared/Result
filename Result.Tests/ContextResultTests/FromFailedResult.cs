@@ -41,4 +41,21 @@ public class FromFailedResult {
         Assert.Equal(original.Error.Message, stripped.Error.Message);
         Assert.Equal(original.GetType(), stripped.GetType());
     }
+
+    [Fact]
+    public void Retrying_Multiple_Times_On_Failure_Keeps_Failure() {
+        int timesCalled = 0;
+        IContextResult retried = Context
+            .Map(() => timesCalled++)
+            .Retry(3);
+        
+        Assert.True(retried.Failed);
+        Assert.Equal(0, timesCalled);
+    }
+}
+
+public class MultipleRetryable {
+    public int TimesRun { get; private set; }
+    public const int SuccessOn = 3;
+    public Result Mutate() => TimesRun < SuccessOn ? Result.Fail(new UnknownError()) : Result.Ok();
 }
