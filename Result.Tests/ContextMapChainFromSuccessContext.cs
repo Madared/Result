@@ -11,19 +11,19 @@ public class ContextMapChainFromSuccessContext {
             .Map(i => Result<int>.Ok(i * i))
             .Map(i => i.ToString())
             .Map(str => str.Length);
-        
+
         Assert.True(mapped.Succeeded);
         Assert.Equal(2, mapped.Data);
     }
 
     [Fact]
-    public void Retrying_Retryable_Will_Give_Success_Context () {
+    public void Retrying_Retryable_Will_Give_Success_Context() {
         string name = "Name";
         Retryable retryable = new();
         IContextResult<string> mapped = Context
             .Map(() => name)
             .Map(retryable.AddHello);
-        
+
         Assert.True(mapped.Failed);
 
         IContextResult<string> retried = mapped.Retry();
@@ -33,14 +33,41 @@ public class ContextMapChainFromSuccessContext {
 
     [Fact]
     public void Successful_Side_Effects_Dont_Rerun_On_Retry() {
-        int timesCalled = 0;
+        string name = "Name";
+        SideEffecter sideEffecter = new();
         Retryable retryable = new();
         IContextResult<string> mapped = Context
-            .Map(() => timesCalled++)
-            .Map(() => "Name")
-            .Map(name => retryable.AddHello(name))
+            .Map(str => sideEffecter.Mutate())
+            .Map(() => name)
+            .Map(str => str.ToLower())
+            .Map(lowerName => retryable.AddHello(lowerName))
             .Retry();
+
+        Assert.Equal(1, sideEffecter.TimesMutated);
+        Assert.True(mapped.Succeeded);
+        Assert.Equal(name.ToLower() + retryable.Hello, mapped.Data);
+    }
+
+    [Fact]
+    public void Failed_Side_Effects_Rerun_On_Retry() {
+        SideEffecter sideEffecter = new();
+        Retryable retryable = new();
+
+        IContextResult mapped = Context
+            .Map(retryable.AddHello)
+            .Map(() => sideEffecter.Mutate());
         
-        Assert.Equal(1, timesCalled);
+        Assert.Equal(0, sideEffecter.TimesMutated);
+
+        IContextResult retried = mapped.Retry();
+        Assert.Equal(1, sideEffecter.TimesMutated);
+    }
+}
+
+public class SideEffecter {
+    public int TimesMutated { get; private set; } = 0;
+
+    public void Mutate() {
+        TimesMutated++;
     }
 }
