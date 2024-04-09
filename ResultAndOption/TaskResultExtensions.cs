@@ -93,7 +93,7 @@ public static class TaskResultExtensions {
         Result<T> originalResult = await result;
         return originalResult.UseData(function);
     }
-    
+
     public static async Task<Result> MapAsync<T>(this Task<Result<T>> result, Func<Result> mapper) where T : notnull {
         Result<T> originalResult = await result;
         return originalResult.Failed ? Result.Fail(originalResult.Error) : mapper();

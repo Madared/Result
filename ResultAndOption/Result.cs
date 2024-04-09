@@ -1,28 +1,19 @@
 ﻿namespace Results;
 
-public class Result : IResultWithoutData {
+public readonly struct Result : IResult {
     private readonly IError? _error;
 
-    public bool Succeeded => !Failed;
-    public bool Failed { get; }
+    public bool Succeeded { get; }
+    public bool Failed => !Succeeded;
 
-    public IError Error => !Failed || _error is null
+    public IError Error => Succeeded
         ? throw new InvalidOperationException()
-        : _error;
+        : _error ?? new UnknownError();
 
     private Result(bool failed, IError? error) {
-        Failed = failed;
+        Succeeded = !failed;
         _error = error;
     }
-
-    /// <summary>
-    /// If used will generate a failed simple result with an <see cref="UnknownError"/>;
-    /// </summary>
-    public Result() {
-        Failed = true;
-        _error = new UnknownError();
-    }
-
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Result" /> struct representing a success.
@@ -98,6 +89,13 @@ public class Result : IResultWithoutData {
     public Result<T> Map<T>(Func<T> function) where T : notnull {
         return Failed ? Result<T>.Fail(_error!) : Result<T>.Ok(function());
     }
+    
+    public async Task<Result> MapAsync(Func<Task<Result>> mapper) {
+        return Failed ? this : await mapper();
+    }
+
+    public async Task<Result<T>> MapAsync<T>(Func<Task<Result<T>>> mapper) where T : notnull =>
+        Failed ? Result<T>.Fail(Error) : await mapper();
 
     public async Task<Result> MapAsync(Func<Task<Result>> mapper) {
         return Failed ? this : await mapper();

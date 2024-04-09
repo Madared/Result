@@ -4,34 +4,34 @@
 ///     Represents a result of an operation that can either succeed or fail, carrying either data or an error.
 /// </summary>
 /// <typeparam name="T">The type of data carried by the result.</typeparam>
-public class Result<T> : IResultWithoutData where T : notnull {
+public readonly struct Result<T> : IResult<T> where T : notnull {
     private readonly Option<T> _data;
     private readonly IError? _error;
+    public T Data => _data.IsNone()
+        ? throw ErrorToExceptionMapper.Map(_error)
+        : _data.Data;
 
-    public T Data => _data.IsNone() ? throw ErrorWrapper.Create(Error) : _data.Data;
-
-    public bool Failed { get; }
-
-    public bool Succeeded => !Failed;
+    public bool Failed => !Succeeded;
+    public bool Succeeded { get; }
 
     /// <summary>
     /// If Used will generate a failed result with an <see cref="UnknownError"/>;
     /// </summary>
     public Result() {
-        Failed = true;
+        Succeeded = false;
         _data = Option<T>.None();
         _error = new UnknownError();
     }
 
     private Result(bool failed, IError? error, Option<T> data) {
-        Failed = failed;
+        Succeeded = !failed;
         _error = error;
         _data = data;
     }
 
-    public IError Error => !Failed || _error is null
-        ? throw new InvalidOperationException("Result does not have an Error value!")
-        : _error;
+    public IError Error => Succeeded 
+        ? throw new InvalidOperationException("Cannot access Error on success Result!")
+        : _error ?? new UnknownError();
 
     /// <summary>
     ///     Creates a successful result with the specified data.

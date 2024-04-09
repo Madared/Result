@@ -31,7 +31,7 @@ public class ResultTests {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //Then
-        Assert.Throws<InvalidOperationException>(() => stringResult.Data);
+        Assert.Throws<ErrorWrapperException>(() => stringResult.Data);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class ResultTests {
         //Given
         Result<int> intResult = Result<int>.Fail(new UnknownError());
         //Then
-        Assert.Throws<InvalidOperationException>(() => intResult.Data);
+        Assert.Throws<ErrorWrapperException>(() => intResult.Data);
     }
 
     [Fact]
@@ -312,5 +312,15 @@ public class ResultTests {
     public void Default_SimpleResult_Constructor_Builds_Failed_Result() {
         Result result = new();
         Assert.True(result.Failed);
+    }
+
+    [Fact]
+    public void Default_Constructor() {
+        Result result = default;
+        Result<string> resultString = default;
+        Assert.True(result.Failed);
+        Assert.True(resultString.Failed);
+        Assert.Equal(typeof(UnknownError), result.Error.GetType());
+        Assert.Equal(typeof(UnknownError), resultString.Error.GetType());
     }
 }

@@ -26,7 +26,7 @@ public class ExtensionTests {
         Assert.Single(resultList.Errors);
         Assert.Single(resultList.Successes);
     }
-
+    
     [Fact]
     public void ToResult_On_Option_Maps_Correctly() {
         IError error = new UnknownError();
