@@ -15,8 +15,14 @@ internal class IntermediateContextResultSimple<TIn> : IContextResult where TIn :
     public bool Failed => _result.Failed;
     public IError Error => _result.Error;
 
-    public IContextResult Retry() {
-        throw new NotImplementedException();
+    IContextResult IContextResult.Retry() => Retry();
+
+    public IntermediateContextResultSimple<TIn> Retry() {
+        if (Succeeded) return this;
+        IContextResult<TIn> retried = _previousContext.Retry();
+        return retried.Succeeded 
+            ? new IntermediateContextResultSimple<TIn>(_callable, _previousContext, _callable(retried.Data)) 
+            : new IntermediateContextResultSimple<TIn>(_callable, _previousContext, Result.Fail(_previousContext.Error));
     }
 
     public Result StripContext() => _result;
