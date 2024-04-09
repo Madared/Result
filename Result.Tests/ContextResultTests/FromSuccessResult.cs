@@ -1,6 +1,6 @@
 namespace ResultTests;
 
-public class ContextFromSuccessResult {
+public class FromSuccessResult {
     private static readonly Func<Result<string>> ResultFunc = () => Result<string>.Ok("hello");
     private static readonly IContextResult<string> Context = ResultFunc.RunAndGetContext();
 

@@ -1,6 +1,6 @@
 namespace ResultTests;
 
-public class ContextFromFailedSimpleResult {
+public class FromFailedSimpleResult {
     private static readonly Result Failed = Result.Fail(new UnknownError());
     private static readonly Func<Result> ResultFunc = () => Failed;
     private static readonly IContextResult Context = ResultFunc.RunAndGetContext();

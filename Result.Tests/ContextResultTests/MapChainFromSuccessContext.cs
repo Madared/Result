@@ -1,6 +1,6 @@
 namespace ResultTests;
 
-public class ContextMapChainFromSuccessContext {
+public class MapChainFromSuccessContext {
     private static readonly Func<Result<string>> ResultFunc = () => Result<string>.Ok("Start");
     private static readonly IContextResult<string> Context = ResultFunc.RunAndGetContext();
 
