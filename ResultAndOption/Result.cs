@@ -6,9 +6,9 @@ public readonly struct Result : IResult {
     public bool Succeeded { get; }
     public bool Failed => !Succeeded;
 
-    public IError Error => !Failed || _error is null
+    public IError Error => Succeeded
         ? throw new InvalidOperationException()
-        : _error;
+        : _error ?? new UnknownError();
 
     private Result(bool failed, IError? error) {
         Succeeded = !failed;

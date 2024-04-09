@@ -4,17 +4,14 @@
 ///     Represents a result of an operation that can either succeed or fail, carrying either data or an error.
 /// </summary>
 /// <typeparam name="T">The type of data carried by the result.</typeparam>
-public readonly struct Result<T> : IResultWithData<T> where T : notnull {
+public readonly struct Result<T> : IResult<T> where T : notnull {
     private readonly Option<T> _data;
     private readonly IError? _error;
-
     public T Data => _data.IsNone()
         ? throw ErrorToExceptionMapper.Map(_error)
         : _data.Data;
 
-
     public bool Failed => !Succeeded;
-
     public bool Succeeded { get; }
 
     /// <summary>
@@ -32,9 +29,9 @@ public readonly struct Result<T> : IResultWithData<T> where T : notnull {
         _data = data;
     }
 
-    public IError Error => Succeeded || _error is null
+    public IError Error => Succeeded 
         ? throw new InvalidOperationException()
-        : _error;
+        : _error ?? new UnknownError();
 
     /// <summary>
     ///     Creates a successful result with the specified data.

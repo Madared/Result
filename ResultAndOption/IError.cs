@@ -1,5 +1,7 @@
-﻿namespace Results;
+﻿using System.Collections;
 
-public interface IError {
+namespace Results;
+
+public interface IError{
     public string Message { get; }
 }
