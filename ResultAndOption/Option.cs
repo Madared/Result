@@ -17,7 +17,7 @@ public readonly struct Option<T> where T : notnull {
     /// </summary>
     /// <exception cref="InvalidOperationException">Throws if the data is not present</exception>
     public T Data => _data is null || _isNone
-        ? throw new InvalidOperationException()
+        ? throw new InvalidOperationException("Option is empty!")
         : _data;
 
     /// <summary>

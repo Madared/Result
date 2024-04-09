@@ -54,4 +54,8 @@ public static class ReferenceExtensions {
     public static Result<T> ToResult<T>(this Option<T> data, IError error) where T : notnull => data.IsNone()
         ? Result<T>.Fail(error)
         : Result<T>.Ok(data.Data);
+
+    public static Result ConditionResult(this bool condition, IError error) => condition
+        ? Result.Ok()
+        : Result.Fail(error);
 }

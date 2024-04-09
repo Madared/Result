@@ -93,7 +93,7 @@ public static class TaskResultExtensions {
         Result<T> originalResult = await result;
         return originalResult.UseData(function);
     }
-    
+
     public static async Task<Result> MapAsync<T>(this Task<Result<T>> result, Func<Result> mapper) where T : notnull {
         Result<T> originalResult = await result;
         return originalResult.Failed ? Result.Fail(originalResult.Error) : mapper();
@@ -103,4 +103,16 @@ public static class TaskResultExtensions {
         Result<T> originalResult = await result;
         return originalResult.Failed ? Result.Fail(originalResult.Error) : await mapper();
     }
+
+    public static async Task<Result> MapAsync(this Task<Result> result, Func<Task<Result>> asyncMapper) {
+        Result originalResult = await result;
+        return originalResult.Failed ? originalResult : await asyncMapper();
+    }
+
+    public static async Task<Result> MapAsync(this Task<Result> result, Func<Result> mapper) {
+        Result originalResult = await result;
+        return originalResult.Failed ? originalResult : mapper();
+    }
+
+   
 }
