@@ -315,14 +315,12 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Default_Result_Is_Failed_Result() {
-        Result<string> result = default;
-        Assert.True(result.Failed);
-    }
-
-    [Fact]
-    public void Default_SimpleResult_Is_Failed_Result() {
+    public void Default_Constructor() {
         Result result = default;
+        Result<string> resultString = default;
         Assert.True(result.Failed);
+        Assert.True(resultString.Failed);
+        Assert.Equal(typeof(UnknownError), result.Error.GetType());
+        Assert.Equal(typeof(UnknownError), resultString.Error.GetType());
     }
 }
