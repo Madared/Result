@@ -14,9 +14,7 @@ internal class StartingContextResult<TOut> : IContextResult<TOut> where TOut : n
     public IError Error => _result.Error;
     public TOut Data => _result.Data;
 
-    public IContextResult<TOut> Retry() {
-        throw new NotImplementedException();
-    }
+    public IContextResult<TOut> Retry() => Succeeded ? this : new StartingContextResult<TOut>(_callable(), _callable);
 
     public Result<TOut> StripContext() => _result;
 
