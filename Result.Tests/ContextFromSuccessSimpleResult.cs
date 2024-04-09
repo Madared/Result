@@ -1,8 +1,8 @@
 namespace ResultTests;
 
 public class ContextFromSuccessSimpleResult {
-    private static Func<Result> resultFunc = Result.Ok;
-    private static IContextResult context = resultFunc.RunAndGetContext();
+    private static readonly Func<Result> resultFunc = Result.Ok;
+    private static readonly IContextResult context = resultFunc.RunAndGetContext();
 
     [Fact]
     public void Context_Is_Success() {
