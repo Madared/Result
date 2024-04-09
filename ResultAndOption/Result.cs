@@ -16,15 +16,6 @@ public readonly struct Result : IResult {
     }
 
     /// <summary>
-    /// If used will generate a failed simple result with an <see cref="UnknownError"/>;
-    /// </summary>
-    public Result() {
-        Succeeded = false;
-        _error = new UnknownError();
-    }
-
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="Result" /> struct representing a success.
     /// </summary>
     /// <returns>A new successful result.</returns>
