@@ -12,20 +12,14 @@ Ex: Having a method to return the appropriate **ObjectResult** for a failure of 
     public interface IError 
     {
         public string Message { get; }
-        public ErrorType Type { get; }
-        
-        public void Log(IErrorLogger logger);
     }
 
     public class NotFoundInDatabase : IError 
     {
-        private string _message;
-        public string Message => _message;
+        public string Message { get; } 
 
         public NotFoundInDatabaseError(Guid id) =>
-            _message = String.Format("Item with id: {0} not found in database", id);
-
-        public void Log(IErrorLogger logger) => logger.LogError(Message);
+            Message = String.Format("Item with id: {0} not found in database", id);
     }
 ```
 
@@ -46,17 +40,14 @@ So NotFoundInDatabase would become:
 
 public class NotFoundInDatabase : IHttpParsableError
 {
-        private string _message;
-        public string Message => _message;
+        public string Message { get; }
 
         public NotFoundInDatabaseError(Guid id) =>
-            _message = String.Format("Item with id: {0} not found in database", id);
-
-        public void Log(IErrorLogger logger) => logger.LogError(Message);
+            Message = String.Format("Item with id: {0} not found in database", id);
 
         public ObjectResult GetHttpResponse() 
         {
-            ObjectResult result = new(_message);
+            ObjectResult result = new(Message);
             result.StatusCode = StatusCodes.Status404NotFound;
             return result;
         }
