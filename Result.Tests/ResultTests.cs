@@ -323,4 +323,13 @@ public class ResultTests {
         Assert.Equal(typeof(UnknownError), result.Error.GetType());
         Assert.Equal(typeof(UnknownError), resultString.Error.GetType());
     }
+
+    [Fact]
+    public void Setting_Data_Reference_To_Null_Doesnt_Change_Result_Data() {
+        string? s = "hello";
+        Result<string> sResult = s.ToResult(new UnknownError());
+        s = null;
+        Assert.True(sResult.Succeeded);
+        Assert.Equal("hello", sResult.Data);
+    }
 }

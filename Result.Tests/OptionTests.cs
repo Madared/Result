@@ -245,4 +245,13 @@ public class OptionTests {
         Option<string> option = default;
         Assert.True(option.IsNone());
     }
+
+    [Fact]
+    public void Changing_Reference_To_Null_Keeps_Option_Data() {
+        string? s = "hello";
+        Option<string> sOption = s.ToOption();
+        s = null;
+        Assert.True(sOption.IsSome());
+        Assert.Equal("hello", sOption.Data);
+    }
 }

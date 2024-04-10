@@ -56,6 +56,15 @@ public class FromFailedResult {
 
 public class MultipleRetryable {
     public int TimesRun { get; private set; }
-    public const int SuccessOn = 3;
-    public Result Mutate() => TimesRun < SuccessOn ? Result.Fail(new UnknownError()) : Result.Ok();
+    public int SuccessOn { get; }
+
+    public MultipleRetryable(int successOn) {
+        SuccessOn = successOn;
+    }
+
+    public Result Mutate() {
+        if (TimesRun >= SuccessOn) return Result.Ok();
+        TimesRun++;
+        return Result.Fail(new UnknownError());
+    }
 }
