@@ -33,24 +33,24 @@ public readonly struct Result : IResult {
     }
 
     /// <summary>
-    ///     Runs an action if the result represents a success state and returns the same result.
-    /// </summary>
-    /// <param name="action">The action to run.</param>
-    /// <returns>The same result after running the action.</returns>
-    public Result IfSucceeded(Action action) {
-        action();
-        return this;
-    }
-
-    /// <summary>
     ///     Runs an action if the result represents a failure state and returns the same result.
     /// </summary>
     /// <param name="action">The action to run, accepting the current result as a parameter.</param>
     /// <returns>The same result after running the action.</returns>
     public Result IfFailed(Action<Result> action) {
-        action(this);
+        if (Failed) {
+            action(this);
+        }
         return this;
     }
+
+    public Result IfFailed(Action action) {
+        if (Failed) {
+            action();
+        }
+        return this;
+    }
+    public Result IfFailed(Func<Result> function) => Failed ? function() : this;
 
     /// <summary>
     ///     Maps the result using the specified function.
@@ -89,11 +89,12 @@ public readonly struct Result : IResult {
     public Result<T> Map<T>(Func<T> function) where T : notnull {
         return Failed ? Result<T>.Fail(_error!) : Result<T>.Ok(function());
     }
-    
+
     public async Task<Result> MapAsync(Func<Task<Result>> mapper) {
         return Failed ? this : await mapper();
     }
-     public async Task<Result<T>> MapAsync<T>(Func<Task<Result<T>>> mapper) where T : notnull =>
+
+    public async Task<Result<T>> MapAsync<T>(Func<Task<Result<T>>> mapper) where T : notnull =>
         Failed ? Result<T>.Fail(Error) : await mapper();
 
     public Result WrapError<TError>(Func<TError, IError> errorWrapper) where TError : IError {
