@@ -59,8 +59,9 @@ public static class FuncExtensions {
         return new StartingContextResult<TOut>(Generated(), Generated);
         Result<TOut> Generated() => function(input1, input2, input3, input4);
     }
-    
-    public static IContextResult Retry(this IContextResult context,  int timesToRetry) {
+
+    public static IContextResult Retry(this IContextResult context, int timesToRetry) {
+        if (context.Succeeded) return context;
         int timesRetried = 0;
         while (timesRetried < timesToRetry) {
             IContextResult retried = context.Retry();
@@ -72,6 +73,7 @@ public static class FuncExtensions {
     }
 
     public static IContextResult<T> Retry<T>(this IContextResult<T> context, int timesToRetry) where T : notnull {
+        if (context.Succeeded) return context;
         int timesRetried = 0;
         while (timesRetried < timesToRetry) {
             IContextResult<T> retried = context.Retry();
