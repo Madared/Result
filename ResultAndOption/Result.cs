@@ -50,8 +50,6 @@ public readonly struct Result : IResult {
         }
         return this;
     }
-    public Result IfFailed(Func<Result> function) => Failed ? function() : this;
-
     /// <summary>
     ///     Maps the result using the specified function.
     /// </summary>
