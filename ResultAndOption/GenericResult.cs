@@ -178,17 +178,6 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     }
 
     /// <summary>
-    ///     Executes the specified action if the result represents a success.
-    /// </summary>
-    /// <param name="action">The action to execute.</param>
-    /// <returns>The same result after executing the action.</returns>
-    public Result<T> IfSucceeded(Action<Result<T>> action) {
-        if (!Failed)
-            action(this);
-        return this;
-    }
-
-    /// <summary>
     ///     Returns the internal data in case of success or the replacement value passed in
     /// </summary>
     /// <param name="data">Replacement value to use in case of failed result</param>
