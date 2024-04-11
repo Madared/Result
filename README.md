@@ -2,6 +2,7 @@ A Result type for CSharp which allows for error passing without exceptions
 =
 The goal of this package is to make errors a part of the domain being modeled in the code and leaving exceptions to do 
 the job they were meant to do which is to warn you of exceptional circumstances.
+The way i like to think about it is, errors are for the user, exceptions are for the developer.
 It is also a way to make writing code which can fail more streamlined and simple.
 
 Starting with Options.
@@ -174,4 +175,46 @@ So when you get an error you can use C# type matching to perform any specific ac
 
 There is support for mapping simple results and complex results with asynchronous functions
 
-//TODO
+```csharp
+    public class ProductService
+    {
+        private IDatabase _database;
+        
+        public Task<Result> Delete(Guid id)) => _database.Products
+            .Unique(id) // returns a Task of Option
+            .ToResultAsync(new NotFoundError("Product", productId))
+            .MapAsync(product => MangleName(product))
+            .MapAsync(product => Update(product, id))
+            .IfFailedAsync(() => UndoDeletion(id));
+        
+        public Result<Product> MangleName(Product product) => // mangles product name;
+        public Task<Result> Update(Product updated, Guid id) => // updates db state;
+        public Task UndoDeletion(Guid id) => // undoes deletion;
+    } 
+```
+
+The Latest release of this package also contains a context result, meaning it tracks all actions
+taken from the first result to the current one, allowing for simple and seamless retries.
+
+```csharp
+    public class ProductService
+    {
+        private IDatabase _database;
+        
+        public IContextResult Delete(Guid id)) => UniqueResult(id)
+            .RunAndGetContext()
+            .Map(product => MangleName(product))
+            .Map(product => Update(product, id))
+            .Retry(3);
+        
+        private Result<Product> UniqueResult(Guid id) => _database.Products
+            .Unique(id)
+            .ToResult(new UnknownError);
+        public Result<Product> MangleName(Product product) => // mangles product name;
+        public Result Update(Product updated, Guid id) => // updates db state;
+        public void UndoDeletion(Guid id) => // undoes deletion;
+    }
+```
+
+Basically any function can be attached to a ContextResult and will be retried along with all failed
+results in the context from top to bottom.
