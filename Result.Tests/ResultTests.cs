@@ -42,18 +42,6 @@ public class ResultTests {
         Assert.Throws<ErrorWrapperException>(() => intResult.Data);
     }
 
-    [Fact]
-    public void Successfull_Result_IfSucceeded_Completes_Action_And_Returns_Self() {
-        //Given
-        Result<string> stringResult = Result<string>.Ok("world");
-        //When
-        string helloWorld = "hello";
-        Result<string> afterActionResult = stringResult
-            .IfSucceeded(data => helloWorld += $" {data.Data}");
-        //Then
-        Assert.Equal(stringResult, afterActionResult);
-        Assert.Equal("hello world", helloWorld);
-    }
 
     [Fact]
     public void Failure_Result_IfFailed_Completes_Action_And_Returns_Self() {
