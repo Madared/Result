@@ -1,108 +1,177 @@
 A Result type for CSharp which allows for error passing without exceptions
 =
+The goal of this package is to make errors a part of the domain being modeled in the code and leaving exceptions to do 
+the job they were meant to do which is to warn you of exceptional circumstances.
+It is also a way to make writing code which can fail more streamlined and simple.
 
-This package is an attempt to allow consumers to pass custom errors upstream without having to try and catch exceptions
-that may change over time,
-thus decreasing the maintenance cost of changes and bugfixes downstream.  
-This also allows for more functionality within error with an IError interface which can be extended to provide better
-usability, and more flexibility.
-Ex: Having a method to return the appropriate **ObjectResult** for a failure of a rest api;
-
+Starting with Options.
+They allow you to do more and more simply than a simple null reference.
 ```csharp
-    public interface IError 
+    public class User
     {
-        public string Message { get; }
-    }
-
-    public class NotFoundInDatabase : IError 
-    {
-        public string Message { get; } 
-
-        public NotFoundInDatabaseError(Guid id) =>
-            Message = String.Format("Item with id: {0} not found in database", id);
+        private string _firstName;
+        private Option<string> _lastName;
+        
+        // Will concat the first and last name if a last name exists
+        // otherwise will return the first name.
+        public string FullName() => _lastName
+            .Map(last => _firstName + last) // will return an Option<string>
+            .Or(_firstName);
+        
+        public bool HasLastName() => _lastName.IsSome();
+        
+        public int NameLength() => _lastName
+            .Map(last => last.Length + _firstName.Length) // will return Option<int>
+            .Or(_firstName.Length);
+        
     }
 ```
 
-You can then either create an abstract class/interface to wrap all Errors into a type that is more favourable for your
-application. Ex:
+Then we have Results.
+Results come in two kinds, The Simple result (Result) and a result encapsulating data.
+A simple result is meant to be used on actions which can mutate data but are expected to fail in the normal course 
+of the application, such as paying an order with insufficient funds.
+
+where before you would do something like:
+```csharp
+    public void PayOrder(decimal amount) 
+    {
+        if (amount < _orderTotal) throw new NotEnoughFundsException(amount);
+        // Order payment logic
+    }
+```
+The consumer has no way of knowing that this operation can fail, unless the code is well documented, 
+and the documentation is up to date.
+
+With a simple result it can be made more clear that this operation can fail.
 
 ```csharp
+    public Result PayOrder(decimal amount)
+    {
+        if (amount < _orderTotal) return Result.Fail(new NotEnoughFunds(amount));
+        // Order payment logic
+    }
+```
+It is advised that all mutations are done after the checks so that a failed result describes that no operations were performed.
 
-public interface IHttpParsableError : IError
+These results can also be mapped so that all subsequent operations are dependant on the success of the original one.
+
+```csharp
+public class OrderPaymentProcess
 {
-    public ObjectResult GetHttpResponse();
+    private Order _order;
+    private User _user;
+    
+    public OrderPaymentProcess(Order order, User user) 
+    {
+        _order = order;
+        _user = user;
+    }
+    
+    public Result Process(decimal amount) => _order
+        .PayOrder(amount)
+        .Map(UpdateUserFunds)
+        .Map(SendCustomerInvoice); // If any of the operations fail it will return a failed result
+        
+    public Result SendCustomerInvoice() => // send invoice;
+    
+    public Result UpdateUserFunds() => // updates user funds
 }
 ```
-
-So NotFoundInDatabase would become:
-
+You can also use the IfFailed method on the result to run any undo actions that might be needed.
 ```csharp
-
-public class NotFoundInDatabase : IHttpParsableError
+ public class OrderPaymentProcess
 {
-        public string Message { get; }
-
-        public NotFoundInDatabaseError(Guid id) =>
-            Message = String.Format("Item with id: {0} not found in database", id);
-
-        public ObjectResult GetHttpResponse() 
-        {
-            ObjectResult result = new(Message);
-            result.StatusCode = StatusCodes.Status404NotFound;
-            return result;
-        }
-}
-
+    private Order _order;
+    private User _user;
+    
+    public OrderPaymentProcess(Order order, User user) 
+    {
+        _order = order;
+        _user = user;
+    }
+    
+    public Result Process(decimal amount) => _order
+        .PayOrder(amount)
+        .Map(UpdateUserFunds)
+        .IfFailed(() => UndoProcess(amount))
+        .Map(SendCustomerInvoice); // If any of the operations fail it will return a failed result
+        
+    public Result SendCustomerInvoice() => // send invoice.
+    
+    public Result UpdateUserFunds() => //update funds.
+    
+    public void UndoProcess(decimal amount) => // undo logic
+}   
 ```
+Notice that the return type of the UndoProcess method is void as it cannot fail in the normal function of the application, 
+but you still get a result back from the method call as it returns the Result it was called with, as to not confuse downstream consumers of the state of the operation.
 
-Which can then be returned by your service and consumed appropriately inside of your controller :
+Complex results provide the same functionality but allowing you to pass data in between calls.
 
 ```csharp
-    public class ItemService
+    public class OrderService
     {
-        private IDatabase _db;
-        public ItemService(IDatabase db) => _db = db;
+        private IDatabase _database;
         
-        public Result<Item> GetItem(Guid id)
-        {
-            Item? item = db.Item.Find(id);
-            return Result<Item>.Unknown(item, new NotFoundInDatabase(id));
-        }
+        public Result<OrderItem> CreateOrderItem(Guid productId, int amountPurchased) => _database.Products
+            .Unique(id) // returns an Option<Product>
+            .ToResult(new NotFoundError("Product", productId)) // Maps the option to a Result<Product> using the passed IError if its empty.
+            .Map(product => OrderItem.Create(product, amountPurchased))
     }
-
-    [ApiController]
-    [Route("[controller]")]
-    public class ItemController : ControllerBase
-    {
-        [HttpGet]
-        [ApiRoute("get-item")]
-        public ObjectResult GetItem(Guid id, [Service]ItemService itemService)
-        {
-            Result<Item> result = itemService.GetItem(id);
-            if (result.Succeeded)
-                return Ok(result.Data);
-
-            IHttpParsableError? parsableError = result.Error as IHttpParsableError;
-            return parsableError is null
-                ? Bad(result.Error.Message)
-                : parsableError.GetHttpResponse();
-        }
-    }
-
 ```
 
-The extension methods can be used to parse null values to results in a simpler style and to use Piping with single
-variables such as in Fsharp:
+Simple results and complex results can map in between each other
 
 ```csharp
-
-    public class ItemService
+    public class ProductService
     {
-        private IDatabase _db;
-        public ItemService(IDatabase db) => _db = db;
+        private IDatabase _database;
         
-        public Result<Item> GetById(Guid id) => _db.Item
-            .Find(id)
-            .ToResult(new NotFoundInDatabase(id));
+        public Result Delete(Guid id)) => _database.Products
+            .Unique(id)
+            .ToResult(new NotFoundError("Product", productId))
+            .Map(product => MangleName(product))
+            .Map(product => Update(product, id))
+            .IfFailed(() => UndoDeletion(id));
+        
+        public Result<Product> MangleName(Product product) => // mangles product name;
+        public Result Update(Product updated, Guid id) => // updates db state;
+        public void UndoDeletion(Guid id) => // undoes deletion;
     }
 ```
+
+Both result types use an IError when they fail, which being only an interface can be easily extended
+to provide any functionality needed.
+
+```csharp
+    public interface IHttpMappableError : IError
+   {
+       ObjectResult GetHttpResponse();
+   }
+```
+
+So when you get an error you can use C# type matching to perform any specific actions required
+
+```csharp
+    public class Controller
+    {
+        private ProductService _service;
+        public ActionResult<Product> Delete(Guid id)
+        {
+            Result deletionResult = _service.Delete(id);
+            if (deletionReuslt.Succeeded) {
+                return Ok();
+            }
+            if (deletionResult.Error is IHttpMappableError httpError)
+            {
+                return httpError.GetHttpResponse();
+            }
+            return new InternalServerError();
+        }
+    }
+```
+
+There is support for mapping simple results and complex results with asynchronous functions
+
+//TODO
