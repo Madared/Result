@@ -184,10 +184,10 @@ There is support for mapping simple results and complex results with asynchronou
             .ToResultAsync(new NotFoundError("Product", productId))
             .MapAsync(product => MangleName(product))
             .MapAsync(product => Update(product, id))
-            .IfFailed(() => UndoDeletion(id));
+            .IfFailedAsync(() => UndoDeletion(id));
         
         public Result<Product> MangleName(Product product) => // mangles product name;
-        public Result Update(Product updated, Guid id) => // updates db state;
-        public void UndoDeletion(Guid id) => // undoes deletion;
+        public Task<Result> Update(Product updated, Guid id) => // updates db state;
+        public Task UndoDeletion(Guid id) => // undoes deletion;
     } 
 ```
