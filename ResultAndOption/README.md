@@ -174,4 +174,20 @@ So when you get an error you can use C# type matching to perform any specific ac
 
 There is support for mapping simple results and complex results with asynchronous functions
 
-//TODO
+```csharp
+       public class ProductService
+    {
+        private IDatabase _database;
+        
+        public Task<Result> Delete(Guid id)) => _database.Products
+            .Unique(id) // returns a Task of Option
+            .ToResultAsync(new NotFoundError("Product", productId))
+            .MapAsync(product => MangleName(product))
+            .MapAsync(product => Update(product, id))
+            .IfFailed(() => UndoDeletion(id));
+        
+        public Result<Product> MangleName(Product product) => // mangles product name;
+        public Result Update(Product updated, Guid id) => // updates db state;
+        public void UndoDeletion(Guid id) => // undoes deletion;
+    } 
+```

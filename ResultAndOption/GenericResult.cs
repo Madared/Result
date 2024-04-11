@@ -171,9 +171,17 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     /// </summary>
     /// <param name="action">The action to execute.</param>
     /// <returns>The same result after executing the action.</returns>
-    public Result<T> IfFailed(Action<Result<T>> action) {
+    public Result<T> IfFailed(Action<IError> action) {
         if (Failed)
-            action(this);
+            action(Error);
+        return this;
+    }
+
+    public Result<T> IfFailed(Action action) {
+        if (Failed) {
+            action();
+        }
+
         return this;
     }
 

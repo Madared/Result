@@ -74,6 +74,58 @@ public static class TaskResultExtensions {
         return data.ToResult(error);
     }
 
+    public static async Task<Result> IfFailedAsync(this Task<Result> result, Action action) {
+        Result original = await result;
+        return original.IfFailed(action);
+    }
+
+    public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<Task> action) {
+        Result original = await result;
+        if (original.Failed) await action();
+        return original;
+    }
+
+    public static async Task<Result> IfFailedAsync(this Task<Result> result, Action<IError> action) {
+        Result original = await result;
+        return original.IfFailed(action);
+    }
+
+    public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<IError, Task> action) {
+        Result original = await result;
+        if (original.Failed) {
+            await action(original.Error);
+        }
+        return original;
+    }
+
+    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Action action) where T : notnull {
+        Result<T> original = await result;
+        return original.IfFailed(action);
+    }
+
+    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Action<IError> action) where T : notnull {
+        Result<T> original = await result;
+        return original.IfFailed(action);
+    }
+
+    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Func<Task> action) where T : notnull {
+        Result<T> original = await result;
+        if (original.Failed) {
+            await action();
+        }
+
+        return original;
+    }
+
+    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Func<IError, Task> action) where T : notnull {
+        Result<T> original = await result;
+        if (original.Failed) {
+            await action(original.Error);
+        }
+
+        return original;
+    }
+
     public static async Task<Result<T>> ToResultAsync<T>(this Task<T?> nullable, IError error) where T : notnull {
         T? data = await nullable;
         return data.ToResult(error);

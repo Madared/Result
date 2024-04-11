@@ -37,9 +37,9 @@ public readonly struct Result : IResult {
     /// </summary>
     /// <param name="action">The action to run, accepting the current result as a parameter.</param>
     /// <returns>The same result after running the action.</returns>
-    public Result IfFailed(Action<Result> action) {
+    public Result IfFailed(Action<IError> action) {
         if (Failed) {
-            action(this);
+            action(Error);
         }
         return this;
     }
