@@ -201,8 +201,8 @@ taken from the first result to the current one, allowing for simple and seamless
     {
         private IDatabase _database;
         
-        public IContextResult Delete(Guid id)) => UniqueResult(id)
-            .RunAndGetContext()
+        public IContextResult Delete(Guid id)) => UniqueResult
+            .RunAndGetContext(id)
             .Map(product => MangleName(product))
             .Map(product => Update(product, id))
             .Retry(3);
