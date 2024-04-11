@@ -125,25 +125,6 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     }
 
     /// <summary>
-    ///     Applies the specified function to the data of the result if it represents a success.
-    /// </summary>
-    /// <param name="function">The function to apply.</param>
-    /// <returns>
-    ///     The same result after applying the function.
-    ///     If the function returns a failed result, a new failed result with the error from the function's result is returned.
-    ///     Otherwise, the same result is returned.
-    /// </returns>
-    public Result<T> UseData(Func<T, Result> function) {
-        if (Failed)
-            return this;
-
-        var result = function(Data);
-        return result.Failed
-            ? Fail(result.Error)
-            : this;
-    }
-
-    /// <summary>
     ///     Converts the result to a simple result without carrying any data.
     /// </summary>
     /// <returns>A simple result representing the success or failure of the original result.</returns>
