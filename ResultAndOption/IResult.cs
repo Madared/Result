@@ -6,6 +6,6 @@ public interface IResult {
     IError Error { get; }
 }
 
-public interface IResult<T> : IResult where T : notnull {
+public interface IResult<out T> : IResult where T : notnull {
     T Data { get; }
 }
