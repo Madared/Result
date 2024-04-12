@@ -136,9 +136,11 @@ public static class TaskResultExtensions {
         return originalResult.Do(mapper);
     }
 
-    public static async Task<Result> MapAsync<T>(this Task<Result<T>> result, Func<T, Task<Result>> mapper) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<T, Task<Result>> action) where T : notnull {
         Result<T> originalResult = await result;
-        return originalResult.Failed ? Result.Fail(originalResult.Error) : await mapper(originalResult.Data);
+        if (originalResult.Failed) return originalResult;
+        Result actionResult = await action(originalResult.Data);
+        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : originalResult;
     }
 
     public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Action<T> function) where T : notnull {
