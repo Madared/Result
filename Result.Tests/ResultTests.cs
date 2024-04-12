@@ -92,7 +92,7 @@ public class ResultTests {
         Result<string> stringResult = Result<string>.Ok("world");
         //When
         Result<string> postGettingSuccess = stringResult.Do(GetSuccess);
-        Result<string> postGettingFailure = stringResult.Do(data => GetFailure());
+        Result<string> postGettingFailure = stringResult.Do(GetFailure);
         //Then
         Assert.True(postGettingSuccess.Succeeded);
         Assert.True(postGettingFailure.Failed);
