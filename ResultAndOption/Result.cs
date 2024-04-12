@@ -53,13 +53,19 @@ public readonly struct Result : IResult {
     /// <summary>
     ///     Maps the result using the specified function.
     /// </summary>
-    /// <param name="function">The function to map the result.</param>
+    /// <param name="action">The function to map the result.</param>
     /// <returns>
     ///     A new result produced by the function if the original result represents a success. Otherwise, the original
     ///     result is returned.
     /// </returns>
-    public Result Do(Func<Result> function) {
-        return Failed ? this : function();
+    public Result Do(Func<Result> action) {
+        return Failed ? this : action();
+    }
+
+    public Result Do(Action action) {
+        if (Failed) return this;
+        action();
+        return Ok();
     }
 
     /// <summary>
