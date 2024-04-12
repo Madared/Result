@@ -94,10 +94,10 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     /// </summary>
     /// <param name="mapper">The function.</param>
     /// <returns>A new result.</returns>
-    public Result Map(Func<T, Result> mapper) {
-        return Failed
-            ? Result.Fail(Error)
-            : mapper(Data);
+    public Result<T> Do(Func<T, Result> mapper) {
+        if (Failed) return this;
+        Result result = mapper(Data);
+        return result.Failed ? Fail(result.Error) : this;
     }
 
     /// <summary>
@@ -106,10 +106,10 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     /// </summary>
     /// <param name="function">The function</param>
     /// <returns>A new simple result</returns>
-    public Result Map(Func<Result> function) {
-        return Failed
-            ? Result.Fail(Error)
-            : function();
+    public Result<T> Do(Func<Result> function) {
+        if (Failed) return this;
+        Result result = function();
+        return result.Failed ? Fail(result.Error) : this;
     }
 
 
@@ -118,7 +118,7 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     /// </summary>
     /// <param name="function">The action to apply.</param>
     /// <returns>The same result after applying the action.</returns>
-    public Result<T> UseData(Action<T> function) {
+    public Result<T> Do(Action<T> function) {
         if (!Failed)
             function(Data);
         return this;
@@ -186,13 +186,17 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
         return await asyncMapper(Data);
     }
 
-    public async Task<Result> MapAsync(Func<T, Task<Result>> mapper) {
-        if (Failed) return Result.Fail(Error);
-        return await mapper(Data);
+    public async Task<Result<T>> DoAsync(Func<T, Task<Result>> action) {
+        if (Failed) return this;
+        Result result = await action(Data);
+        return Failed ? Fail(result.Error) : this;
     }
 
-    public async Task<Result> MapAsync(Func<Task<Result>> mapper) =>
-        Failed ? Result.Fail(Error) : await mapper();
+    public async Task<Result<T>> DoAsync(Func<Task<Result>> action) {
+        if (Failed) return this;
+        Result result = await action();
+        return result.Failed ? Fail(result.Error) : this;
+    }
 
     /// <summary>
     /// Wraps the existing error if it is a failed result and the error is of the specified type otherwise returns the

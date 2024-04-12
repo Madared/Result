@@ -131,9 +131,9 @@ public static class TaskResultExtensions {
         return data.ToResult(error);
     }
 
-    public static async Task<Result> MapAsync<T>(this Task<Result<T>> result, Func<T, Result> mapper) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<T, Result> mapper) where T : notnull {
         Result<T> originalResult = await result;
-        return originalResult.Map(mapper);
+        return originalResult.Do(mapper);
     }
 
     public static async Task<Result> MapAsync<T>(this Task<Result<T>> result, Func<T, Task<Result>> mapper) where T : notnull {
@@ -141,19 +141,21 @@ public static class TaskResultExtensions {
         return originalResult.Failed ? Result.Fail(originalResult.Error) : await mapper(originalResult.Data);
     }
 
-    public static async Task<Result<T>> UseDataAsync<T>(this Task<Result<T>> result, Action<T> function) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Action<T> function) where T : notnull {
         Result<T> originalResult = await result;
-        return originalResult.UseData(function);
+        return originalResult.Do(function);
     }
 
-    public static async Task<Result> MapAsync<T>(this Task<Result<T>> result, Func<Result> mapper) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<Result> mapper) where T : notnull {
         Result<T> originalResult = await result;
-        return originalResult.Failed ? Result.Fail(originalResult.Error) : mapper();
+        return originalResult.Do(mapper);
     }
 
-    public static async Task<Result> MapAsync<T>(this Task<Result<T>> result, Func<Task<Result>> mapper) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<Task<Result>> mapper) where T : notnull {
         Result<T> originalResult = await result;
-        return originalResult.Failed ? Result.Fail(originalResult.Error) : await mapper();
+        if (originalResult.Failed) return originalResult;
+        Result mappingResult = await mapper();
+        return mappingResult.Failed ? Result<T>.Fail(mappingResult.Error) : originalResult;
     }
 
     public static async Task<Result> MapAsync(this Task<Result> result, Func<Task<Result>> asyncMapper) {

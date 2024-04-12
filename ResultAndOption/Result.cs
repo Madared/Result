@@ -58,7 +58,7 @@ public readonly struct Result : IResult {
     ///     A new result produced by the function if the original result represents a success. Otherwise, the original
     ///     result is returned.
     /// </returns>
-    public Result Map(Func<Result> function) {
+    public Result Do(Func<Result> function) {
         return Failed ? this : function();
     }
 
@@ -88,7 +88,7 @@ public readonly struct Result : IResult {
         return Failed ? Result<T>.Fail(_error!) : Result<T>.Ok(function());
     }
 
-    public async Task<Result> MapAsync(Func<Task<Result>> mapper) {
+    public async Task<Result> DoAsync(Func<Task<Result>> mapper) {
         return Failed ? this : await mapper();
     }
 

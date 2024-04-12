@@ -91,8 +91,8 @@ public class ResultTests {
 
         Result<string> stringResult = Result<string>.Ok("world");
         //When
-        Result<string> postGettingSuccess = stringResult.UseData(data => GetSuccess(data));
-        Result<string> postGettingFailure = stringResult.UseData(data => GetFailure());
+        Result<string> postGettingSuccess = stringResult.Do(GetSuccess);
+        Result<string> postGettingFailure = stringResult.Do(data => GetFailure());
         //Then
         Assert.True(postGettingSuccess.Succeeded);
         Assert.True(postGettingFailure.Failed);
@@ -244,8 +244,8 @@ public class ResultTests {
     public void Result_Map_On_Async_Result_Does_Not_Wrap_Simple_Result() {
         string hello = "hello";
         Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
-        Task<Result> simpleResult = taskResult.MapAsync(() => Result.Ok());
-        Result awaitedResult = simpleResult.Result;
+        Task<Result<string>> simpleResult = taskResult.DoAsync(() => Result.Ok());
+        Result<string> awaitedResult = simpleResult.Result;
         Assert.True(awaitedResult.Succeeded);
     }
 
@@ -253,8 +253,8 @@ public class ResultTests {
     public void Result_Map_With_Async_Mapper_Does_Not_Wrap_Simple_Result() {
         string hello = "hello";
         Result<string> stringResult = Result<string>.Ok(hello);
-        Task<Result> simpleResult = stringResult.MapAsync(() => Task.FromResult(Result.Ok()));
-        Result awaitedResult = simpleResult.Result;
+        Task<Result<string>> simpleResult = stringResult.DoAsync(() => Task.FromResult(Result.Ok()));
+        Result<string> awaitedResult = simpleResult.Result;
         Assert.True(awaitedResult.Succeeded);
     }
 
