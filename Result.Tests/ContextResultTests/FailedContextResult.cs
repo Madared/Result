@@ -54,7 +54,7 @@ public class FailedContextResult {
     }
 
     [Fact]
-    public void Map_Of_Result_Gives_Failed_Result() {
+    public void Map_Without_Input_Of_Result_Gives_Failed_Result() {
         IContextResult<int> mapped = Context.Map(() => Result<int>.Ok(100));
         Assert.True(mapped.Failed);
     }
