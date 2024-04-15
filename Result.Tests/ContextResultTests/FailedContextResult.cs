@@ -26,7 +26,13 @@ public class FailedContextResult {
             other = "hello";
             return Result.Ok();
         });
+
+        IContextResult<string> afterDoFailure = Context.Do(() => {
+            other = "hello";
+            return Result.Fail(new UnknownError());
+        });
         Assert.True(afterDo.Failed);
+        Assert.True(afterDoFailure.Failed);
         Assert.Null(other);
     }
 
@@ -37,7 +43,14 @@ public class FailedContextResult {
             other = str;
             return Result.Ok();
         });
+
+        IContextResult<string> afterDoFailure = Context.Do(str => {
+            other = str;
+            return Result.Fail(new UnknownError());
+        });
+        
         Assert.True(afterDo.Failed);
+        Assert.True(afterDoFailure.Failed);
         Assert.Null(other);
     }
 
@@ -56,7 +69,10 @@ public class FailedContextResult {
     [Fact]
     public void Map_Without_Input_Of_Result_Gives_Failed_Result() {
         IContextResult<int> mapped = Context.Map(() => Result<int>.Ok(100));
+        IContextResult<int> mappedFailure = Context.Map(() => Result<int>.Fail(new UnknownError()));
+        
         Assert.True(mapped.Failed);
+        Assert.True(mappedFailure.Failed);
     }
 
     [Fact]

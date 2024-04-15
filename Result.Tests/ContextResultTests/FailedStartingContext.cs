@@ -22,7 +22,14 @@ public class FailedStartingContext {
             otherHello = str;
             return Result.Ok();
         });
+
+        IContextResult<string> afterDoFailure = FailureContext.Context.Do(str => {
+            otherHello = str;
+            return Result.Fail(new UnknownError());
+        });
+        
         Assert.True(afterDo.Failed);
+        Assert.True(afterDoFailure.Failed);
         Assert.Null(otherHello);
     }
 
@@ -43,7 +50,9 @@ public class FailedStartingContext {
     [Fact]
     public void Map_Of_Result_Func_Gives_Failed_Context() {
         IContextResult<int> mapped = FailureContext.Context.Map(str => Result<int>.Ok(str.Length));
+        IContextResult<int> mappedFailure = FailureContext.Context.Map(str => Result<int>.Fail(new UnknownError()));
         Assert.True(mapped.Failed);
+        Assert.True(mappedFailure.Failed);
     }
 
     [Fact]
