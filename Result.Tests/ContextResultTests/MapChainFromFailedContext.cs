@@ -1,5 +1,10 @@
 namespace ResultTests;
 
+public static class FailureContext {
+    public static readonly Func<Result<string>> ResultFunc = () => Result<string>.Fail(new UnknownError());
+    public static readonly IContextResult<string> Context = ResultFunc.RunAndGetContext();
+}
+
 public class MapChainFromFailedContext {
     private static readonly Func<Result<string>> ResultFunc = () => Result<string>.Fail(new UnknownError());
     private static readonly IContextResult<string> Context = ResultFunc.RunAndGetContext();

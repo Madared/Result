@@ -11,7 +11,7 @@ public class FromSuccessSimpleResult {
 
     [Fact]
     public void Mapping_With_Successful_Simple_Result_Function_Gives_Successful_Context() {
-        IContextResult mapped = context.Map(Result.Ok);
+        IContextResult mapped = context.Do(Result.Ok);
         Assert.True(mapped.Succeeded);
     }
 
@@ -23,7 +23,7 @@ public class FromSuccessSimpleResult {
 
     [Fact]
     public void Mapping_With_Action_Gives_Successful_Context() {
-        IContextResult mapped = context.Map(() => Console.WriteLine("hello"));
+        IContextResult mapped = context.Do(() => Console.WriteLine("hello"));
         Assert.True(mapped.Succeeded);
     }
 
@@ -35,7 +35,7 @@ public class FromSuccessSimpleResult {
 
     [Fact]
     public void Mapping_With_Failed_Simple_Result_Function_Gives_Failed_Context() {
-        IContextResult mapped = context.Map(() => Result.Fail(new UnknownError()));
+        IContextResult mapped = context.Do(() => Result.Fail(new UnknownError()));
         Assert.True(mapped.Failed);
     }
 

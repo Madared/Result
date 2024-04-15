@@ -11,19 +11,19 @@ public class FromSuccessResult {
 
     [Fact]
     public void Mapping_With_Action_Gives_Successful_Context() {
-        IContextResult mapped = Context.Map(() => Console.WriteLine("hello"));
+        IContextResult mapped = Context.Do(() => Console.WriteLine("hello"));
         Assert.True(mapped.Succeeded);
     }
 
     [Fact]
     public void Mapping_With_Success_Simple_Result_Function_Gives_Successful_Context() {
-        IContextResult mapped = Context.Map(Result.Ok);
+        IContextResult mapped = Context.Do(Result.Ok);
         Assert.True(mapped.Succeeded);
     }
 
     [Fact]
     public void Mapping_With_Failed_Simple_Result_Function_Gives_Failed_Context() {
-        IContextResult mapped = Context.Map(() => Result.Fail(new UnknownError()));
+        IContextResult<string> mapped = Context.Do(() => Result.Fail(new UnknownError()));
         Assert.True(mapped.Failed);
     }
 

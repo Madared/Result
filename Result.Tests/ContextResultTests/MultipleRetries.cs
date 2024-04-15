@@ -8,7 +8,7 @@ public class MultipleRetries {
     public void Multiple_Retries_Calls_Callable_Until_Success_Or_Retries_Demanded() {
         MultipleRetryable retryable = new(3);
         IContextResult retried = Context
-            .Map(() => retryable.Mutate())
+            .Do(() => retryable.Mutate())
             .Retry(5);
         
         Assert.True(retried.Succeeded);

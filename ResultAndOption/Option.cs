@@ -66,7 +66,7 @@ public readonly struct Option<T> where T : notnull {
     /// </summary>
     /// <param name="action">Action to perform</param>
     /// <returns></returns>
-    public Option<T> UseData(Action<T> action) {
+    public Option<T> Do(Action<T> action) {
         if (_data is not null) action(_data);
         return this;
     }

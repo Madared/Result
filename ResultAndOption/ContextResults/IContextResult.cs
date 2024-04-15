@@ -36,8 +36,8 @@ public interface IContextResult : IResult {
     Result StripContext();
 
 
-    IContextResult Map(Action action);
-    IContextResult Map(Func<Result> mapper);
+    IContextResult Do(Action action);
+    IContextResult Do(Func<Result> action);
     IContextResult<TOut> Map<TOut>(Func<Result<TOut>> mapper) where TOut : notnull;
     IContextResult<TOut> Map<TOut>(Func<TOut> mapper) where TOut : notnull;
 }
@@ -51,6 +51,12 @@ public interface IContextResult<TOut> : IContextResult, IResult<TOut> where TOut
 
     IContextResult<TNext> Map<TNext>(Func<TOut, Result<TNext>> mapper) where TNext : notnull;
     IContextResult<TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull;
-    IContextResult Map(Func<TOut, Result> mapper);
-    IContextResult Map(Action<TOut> mapper);
+    IContextResult<TOut> Do(Func<TOut, Result> mapper);
+
+    IContextResult IContextResult.Do(Action action) => Do(action);
+    IContextResult IContextResult.Do(Func<Result> action) => Do(action);
+
+    IContextResult<TOut> Do(Action action);
+    IContextResult<TOut> Do(Action<TOut> action);
+    IContextResult<TOut> Do(Func<Result> action);
 }

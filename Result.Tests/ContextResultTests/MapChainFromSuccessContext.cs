@@ -37,7 +37,7 @@ public class MapChainFromSuccessContext {
         SideEffecter sideEffecter = new();
         Retryable retryable = new();
         IContextResult<string> mapped = Context
-            .Map(str => sideEffecter.Mutate())
+            .Do(str => sideEffecter.Mutate())
             .Map(() => name)
             .Map(str => str.ToLower())
             .Map(lowerName => retryable.AddHello(lowerName))
@@ -55,7 +55,7 @@ public class MapChainFromSuccessContext {
 
         IContextResult mapped = Context
             .Map(retryable.AddHello)
-            .Map(() => sideEffecter.Mutate());
+            .Do(() => sideEffecter.Mutate());
         
         Assert.Equal(0, sideEffecter.TimesMutated);
 

@@ -11,13 +11,13 @@ public class FromFailedResult {
 
     [Fact]
     public void Mapping_With_Action_Gives_Failed_Context() {
-        IContextResult mapped = Context.Map(() => Console.WriteLine("hello"));
+        IContextResult mapped = Context.Do(() => Console.WriteLine("hello"));
         Assert.True(mapped.Failed);
     }
 
     [Fact]
     public void Mapping_With_Success_Simple_Result_Function_Gives_Failed_Context() {
-        IContextResult mapped = Context.Map(Result.Ok);
+        IContextResult mapped = Context.Do(Result.Ok);
         Assert.True(mapped.Failed);
     }
 
@@ -47,7 +47,7 @@ public class FromFailedResult {
         int timesCalled = 0;
         IContextResult retried = Context
             .Map(() => timesCalled++)
-            .Retry(3);
+            .Retry();
         
         Assert.True(retried.Failed);
         Assert.Equal(0, timesCalled);

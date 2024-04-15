@@ -20,21 +20,21 @@ internal class IntermediateContextResultSimple<TIn> : IContextResult where TIn :
     public IntermediateContextResultSimple<TIn> Retry() {
         if (Succeeded) return this;
         IContextResult<TIn> retried = _previousContext.Retry();
-        return retried.Succeeded 
-            ? new IntermediateContextResultSimple<TIn>(_callable, _previousContext, _callable(retried.Data)) 
+        return retried.Succeeded
+            ? new IntermediateContextResultSimple<TIn>(_callable, _previousContext, _callable(retried.Data))
             : new IntermediateContextResultSimple<TIn>(_callable, _previousContext, Result.Fail(_previousContext.Error));
     }
 
     public Result StripContext() => _result;
 
-    public IContextResult Map(Func<Result> mapper) => Failed
-        ? new SimpleContextResult(this, mapper, Result.Fail(Error))
-        : new SimpleContextResult(this, mapper, mapper());
+    public IContextResult Do(Func<Result> action) => Failed
+        ? new SimpleContextResult(this, action, Result.Fail(Error))
+        : new SimpleContextResult(this, action, action());
 
     public IContextResult<TOut> Map<TOut>(Func<Result<TOut>> mapper) where TOut : notnull => Failed
         ? new IntermediateContextResult<TOut>(Result<TOut>.Fail(Error), mapper, this)
         : new IntermediateContextResult<TOut>(mapper(), mapper, this);
 
     public IContextResult<TOut> Map<TOut>(Func<TOut> mapper) where TOut : notnull => Map(mapper.WrapInResult());
-    public IContextResult Map(Action action) => Map(action.WrapInResult());
+    public IContextResult Do(Action action) => Do(action.WrapInResult());
 }

@@ -22,7 +22,7 @@ public class EmptyOption {
     [Fact]
     public void UseData_Doesnt_Run_Action() {
         string? nullable = null;
-        Empty.UseData(str => nullable = str);
+        Empty.Do(str => nullable = str);
         Assert.True(nullable is null);
     }
 
