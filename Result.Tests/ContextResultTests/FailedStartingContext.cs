@@ -57,4 +57,10 @@ public class FailedStartingContext {
         IContextResult<int> mapped = FailureContext.Context.Map(() => Result<int>.Ok(100));
         Assert.True(mapped.Failed);
     }
+
+    [Fact]
+    public void Retry_Does_Not_Change_Result() {
+        IContextResult<string> retried = FailureContext.Context.Retry();
+        Assert.True(retried.Failed);
+    }
 }
