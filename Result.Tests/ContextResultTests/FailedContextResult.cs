@@ -86,4 +86,18 @@ public class FailedContextResult {
         IContextResult<string> retried = Context.Retry();
         Assert.True(retried.Failed);
     }
+
+    [Fact]
+    public void Multiple_Maps_Pass_Down_Error() {
+        string? other = null;
+        IContextResult<int> mapped = Context
+            .Map(str => str.Length)
+            .Map(num => num.ToString())
+            .Do(str => other = str)
+            .Map(str => str.Length);
+        
+        Assert.True(mapped.Failed);
+        Assert.Null(other);
+        Assert.Equal(Context.Error, mapped.Error);
+    }
 }
