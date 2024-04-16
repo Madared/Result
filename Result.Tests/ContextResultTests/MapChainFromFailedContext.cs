@@ -1,3 +1,5 @@
+using Results.ContextResultExtensions;
+
 namespace ResultTests;
 
 public static class FailureContext {
@@ -15,7 +17,7 @@ public class MapChainFromFailedContext {
             .Map(str => str.Length)
             .Map(length => length.ToString())
             .Map(str => str.ToLower());
-        
+
         Assert.True(mapped.Failed);
 
         IContextResult<string> retried = mapped.Retry();
@@ -29,7 +31,7 @@ public class MapChainFromFailedContext {
             .Map(str => str.Length)
             .Map(length => length.ToString())
             .Map(str => str.ToLower());
-        
+
         Assert.True(mapped.Failed);
         Assert.Equal(Context.Error.GetType(), mapped.Error.GetType());
     }

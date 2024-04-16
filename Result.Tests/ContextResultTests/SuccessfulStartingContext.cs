@@ -1,3 +1,5 @@
+using Results.ContextResultExtensions;
+
 namespace ResultTests;
 
 public static class SuccessfulContext {
@@ -59,7 +61,7 @@ public class SuccessfulStartingContext {
     public void Map_Of_Success_Gives_Success_Context() {
         IContextResult<int> mapped = SuccessfulContext.Context
             .Map(str => Result<int>.Ok(str.Length));
-        
+
         Assert.True(mapped.Succeeded);
     }
 
@@ -67,7 +69,7 @@ public class SuccessfulStartingContext {
     public void Map_Of_Failure_Gives_Failed_Context() {
         IContextResult<int> mapped = SuccessfulContext.Context
             .Map(str => Result<int>.Fail(new UnknownError()));
-        
+
         Assert.True(mapped.Failed);
     }
 

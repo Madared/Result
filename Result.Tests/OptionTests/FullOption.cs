@@ -36,7 +36,7 @@ public class FullOption {
         Assert.Equal(Full.Data, or.Data);
         Assert.Equal(Full.Data, orNullable.Data);
     }
-    
+
     [Fact]
     public void OrOption_Returns_Original_Option() {
         //Given

@@ -1,3 +1,5 @@
+using Results.ContextResultExtensions;
+
 namespace ResultTests;
 
 public class MapChainFromSuccessContext {
@@ -56,16 +58,16 @@ public class MapChainFromSuccessContext {
         IContextResult mapped = Context
             .Map(retryable.AddHello)
             .Do(() => sideEffecter.Mutate());
-        
+
         Assert.Equal(0, sideEffecter.TimesMutated);
 
-        IContextResult retried = mapped.Retry();
+        var retried = mapped.Retry();
         Assert.Equal(1, sideEffecter.TimesMutated);
     }
 }
 
 public class SideEffecter {
-    public int TimesMutated { get; private set; } = 0;
+    public int TimesMutated { get; private set; }
 
     public void Mutate() {
         TimesMutated++;

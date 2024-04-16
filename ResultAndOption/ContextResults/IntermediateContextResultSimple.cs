@@ -1,3 +1,5 @@
+using Results.ContextResultExtensions;
+
 namespace Results;
 
 internal class IntermediateContextResultSimple<TIn> : IContextResult where TIn : notnull {

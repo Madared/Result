@@ -1,3 +1,5 @@
+using Results.ContextResultExtensions;
+
 namespace ResultTests;
 
 public class FromFailedResult {
@@ -48,19 +50,19 @@ public class FromFailedResult {
         IContextResult retried = Context
             .Map(() => timesCalled++)
             .Retry();
-        
+
         Assert.True(retried.Failed);
         Assert.Equal(0, timesCalled);
     }
 }
 
 public class MultipleRetryable {
-    public int TimesRun { get; private set; }
-    public int SuccessOn { get; }
-
     public MultipleRetryable(int successOn) {
         SuccessOn = successOn;
     }
+
+    public int TimesRun { get; private set; }
+    public int SuccessOn { get; }
 
     public Result Mutate() {
         if (TimesRun >= SuccessOn) return Result.Ok();

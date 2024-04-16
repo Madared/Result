@@ -1,4 +1,6 @@
 
+using Results.ContextResultExtensions;
+
 namespace Results;
 
 internal class StartingContextResult<TOut> : IContextResult<TOut> where TOut : notnull {

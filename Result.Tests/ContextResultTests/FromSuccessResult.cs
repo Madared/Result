@@ -1,3 +1,5 @@
+using Results.ContextResultExtensions;
+
 namespace ResultTests;
 
 public class FromSuccessResult {
@@ -67,7 +69,7 @@ public class FromSuccessResult {
     public void Stripping_Context_Gives_Same_Result() {
         Result<string> result = ResultFunc();
         Result<string> stripped = Context.StripContext();
-        
+
         Assert.Equal(result.GetType(), stripped.GetType());
         Assert.Equal(result.Succeeded, stripped.Succeeded);
         Assert.Equal(result.Data, stripped.Data);

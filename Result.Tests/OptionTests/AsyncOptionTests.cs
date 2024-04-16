@@ -1,7 +1,6 @@
 namespace ResultTests;
 
 public class AsyncOptionTests {
-
     [Fact]
     public void Async_Option_Map_Returns_Correct_Value() {
         const string hello = "hello";

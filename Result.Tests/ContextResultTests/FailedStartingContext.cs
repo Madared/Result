@@ -27,7 +27,7 @@ public class FailedStartingContext {
             otherHello = str;
             return Result.Fail(new UnknownError());
         });
-        
+
         Assert.True(afterDo.Failed);
         Assert.True(afterDoFailure.Failed);
         Assert.Null(otherHello);

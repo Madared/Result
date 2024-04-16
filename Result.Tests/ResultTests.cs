@@ -276,16 +276,16 @@ public class ResultTests {
 
     [Fact]
     public void ErrorWrap_Doesnt_Change_Success_On_SimpleResult() {
-        Result success = Result.Ok();
-        Result wrapped = success.WrapError<UnknownError>(error => new ExceptionWrapper(new Exception()));
+        var success = Result.Ok();
+        var wrapped = success.WrapError<UnknownError>(error => new ExceptionWrapper(new Exception()));
         Assert.True(wrapped.Succeeded);
         Assert.Throws<InvalidOperationException>(() => wrapped.Error);
     }
 
     [Fact]
     public void ErrorWrap_Converts_Failed_Simple_Result() {
-        Result failure = Result.Fail(new UnknownError());
-        Result wrapped = failure.WrapError<UnknownError>(error => new ExceptionWrapper(new Exception()));
+        var failure = Result.Fail(new UnknownError());
+        var wrapped = failure.WrapError<UnknownError>(error => new ExceptionWrapper(new Exception()));
         Assert.True(wrapped.Failed);
         Assert.True(wrapped.Error is ExceptionWrapper);
     }
