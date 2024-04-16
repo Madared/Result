@@ -7,7 +7,7 @@ public class CallableGenerator<TIn, TOut> : ICallableGenerator<TOut> where TIn :
         _subscriber = subscriber;
         _func = func;
     }
-
+    
     public IContextCallable<TOut> Generate() {
         Result<TIn> newResult = _subscriber.Result;
         return newResult.Failed
