@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using Results.CallableGenerators;
 using Results.ContextResultExtensions;
 
 namespace Results;
@@ -27,7 +28,7 @@ internal class IntermediateContextResult<TOut> : IContextResult<TOut> where TOut
         IContextResult newContext = _previousContext.Retry();
         if (newContext.Failed) return new IntermediateContextResult<TOut>(Result<TOut>.Fail(newContext.Error), _callable, newContext);
         Result<TOut> newResult = _callable();
-        _resultEmitter.SetResult(newResult);
+        _resultEmitter.Emit(newResult);
         return new IntermediateContextResult<TOut>(_callable(), _callable, newContext);
     }
 

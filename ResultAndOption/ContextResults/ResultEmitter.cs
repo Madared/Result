@@ -5,9 +5,10 @@ public class ResultEmitter<T> where T : notnull {
     public ResultEmitter() {
         _subscribers = new List<ResultSubscriber<T>>();
     }
-
-    public void SetResult(Result<T> result) {
-        _subscribers.ForEach(sub => sub.Notify(result));
+    public void Emit(Result<T> result) {
+        foreach (ResultSubscriber<T> subscriber in _subscribers) {
+            subscriber.Update(result);
+        }
     }
     public void Subscribe(ResultSubscriber<T> subscriber) {
         _subscribers.Add(subscriber);

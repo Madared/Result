@@ -22,7 +22,7 @@ internal class StartingContextResult<TOut> : IContextResult<TOut> where TOut : n
     public IContextResult<TOut> Retry() {
         if (Succeeded) return this;
         Result<TOut> newResult = _callable();
-        _emitter.SetResult(newResult);
+        _emitter.Emit(newResult);
         return new StartingContextResult<TOut>(newResult, _callable);
     }
 
