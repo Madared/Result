@@ -71,8 +71,8 @@ public class OrderPaymentProcess
     
     public Result Process(decimal amount) => _order
         .PayOrder(amount)
-        .Map(UpdateUserFunds)
-        .Map(SendCustomerInvoice); // If any of the operations fail it will return a failed result
+        .Do(UpdateUserFunds)
+        .Do(SendCustomerInvoice); // If any of the operations fail it will return a failed result
         
     public Result SendCustomerInvoice() => // send invoice;
     
@@ -94,9 +94,9 @@ You can also use the IfFailed method on the result to run any undo actions that 
     
     public Result Process(decimal amount) => _order
         .PayOrder(amount)
-        .Map(UpdateUserFunds)
+        .Do(UpdateUserFunds)
         .IfFailed(() => UndoProcess(amount))
-        .Map(SendCustomerInvoice); // If any of the operations fail it will return a failed result
+        .Do(SendCustomerInvoice); // If any of the operations fail it will return a failed result
         
     public Result SendCustomerInvoice() => // send invoice.
     
@@ -133,7 +133,7 @@ Simple results and complex results can map in between each other
             .Unique(id)
             .ToResult(new NotFoundError("Product", productId))
             .Map(product => MangleName(product))
-            .Map(product => Update(product, id))
+            .Do(product => Update(product, id))
             .IfFailed(() => UndoDeletion(id));
         
         public Result<Product> MangleName(Product product) => // mangles product name;
@@ -184,7 +184,7 @@ There is support for mapping simple results and complex results with asynchronou
             .Unique(id) // returns a Task of Option
             .ToResultAsync(new NotFoundError("Product", productId))
             .MapAsync(product => MangleName(product))
-            .MapAsync(product => Update(product, id))
+            .DoAsync(product => Update(product, id))
             .IfFailedAsync(() => UndoDeletion(id));
         
         public Result<Product> MangleName(Product product) => // mangles product name;
