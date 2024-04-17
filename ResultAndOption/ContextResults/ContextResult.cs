@@ -3,7 +3,7 @@ using Results.ContextResultExtensions;
 
 namespace Results;
 
-internal class ContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
+internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
     private readonly Option<IContextResult> _previousContext;
     private readonly ICallableGenerator<TOut> _callableGenerator;
     private readonly ResultEmitter<TOut> _resultEmitter;
@@ -51,9 +51,7 @@ internal class ContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
         _resultEmitter.Subscribe(subscriber);
         ICallableGenerator<TNext> callableGenerator = new CallableGenerator<TOut, TNext>(subscriber, mapper);
         IContextCallable<TNext> callable = callableGenerator.Generate();
-        return Failed
-            ? new ContextResult<TNext>(callable, this.ToOption<IContextResult>(), Result<TNext>.Fail(Error), callableGenerator, new ResultEmitter<TNext>())
-            : new ContextResult<TNext>(callable, this.ToOption<IContextResult>(), callable.Call(), callableGenerator, new ResultEmitter<TNext>());
+        return Create(callable, callableGenerator);
     }
 
     public IContextResult<TOut> Do(Func<TOut, Result> mapper) {
@@ -63,9 +61,7 @@ internal class ContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
         IContextCallable simpleCallable = simpleCallableGenerator.Generate();
         ICallableGenerator<TOut> callableGenerator = new CurrentResultActionCallableGenerator<TOut>(subscriber, simpleCallable);
         IContextCallable<TOut> callable = callableGenerator.Generate();
-        return Failed
-            ? new ContextResult<TOut>(callable, this.ToOption<IContextResult>(), Result<TOut>.Fail(Error), callableGenerator, new ResultEmitter<TOut>())
-            : new ContextResult<TOut>(callable, this.ToOption<IContextResult>(), callable.Call(), callableGenerator, new ResultEmitter<TOut>());
+        return Create(callable, callableGenerator);
     }
 
     public IContextResult<TOut> Do(Func<Result> action) {
@@ -75,9 +71,7 @@ internal class ContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
         IContextCallable simpleCallable = simpleCallableGenerator.Generate();
         ICallableGenerator<TOut> callableGenerator = new CurrentResultActionCallableGenerator<TOut>(subscriber, simpleCallable);
         IContextCallable<TOut> callable = callableGenerator.Generate();
-        return Failed
-            ? new ContextResult<TOut>(callable, this.ToOption<IContextResult>(), Result<TOut>.Fail(Error), callableGenerator, new ResultEmitter<TOut>())
-            : new ContextResult<TOut>(callable, this.ToOption<IContextResult>(), callable.Call(), callableGenerator, new ResultEmitter<TOut>());
+        return Create(callable, callableGenerator);
     }
 
     public IContextResult<TOut> Do(Action<TOut> action) {
@@ -88,48 +82,21 @@ internal class ContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
         IContextCallable simpleCallable = simpleCallableGenerator.Generate();
         ICallableGenerator<TOut> callableGenerator = new CurrentResultActionCallableGenerator<TOut>(subscriber, simpleCallable);
         IContextCallable<TOut> callable = callableGenerator.Generate();
-        return Failed
-            ? new ContextResult<TOut>(callable, this.ToOption<IContextResult>(), Result<TOut>.Fail(Error), callableGenerator, new ResultEmitter<TOut>())
-            : new ContextResult<TOut>(callable, this.ToOption<IContextResult>(), callable.Call(), callableGenerator, new ResultEmitter<TOut>());
+        return Create(callable, callableGenerator);
     }
 
     public IContextResult<TNext> Map<TNext>(Func<Result<TNext>> mapper) where TNext : notnull {
         ICallableGenerator<TNext> callableGenerator = new CallableGeneratorWithSimpleInput<TNext>(mapper);
         IContextCallable<TNext> callable = callableGenerator.Generate();
-        return Failed
-            ? new ContextResult<TNext>(callable, this.ToOption<IContextResult>(), Result<TNext>.Fail(Error), callableGenerator, new ResultEmitter<TNext>())
-            : new ContextResult<TNext>(callable, this.ToOption<IContextResult>(), callable.Call(), callableGenerator, new ResultEmitter<TNext>());
+        return Create(callable, callableGenerator);
     }
 
     public IContextResult<TNext> Map<TNext>(Func<TNext> mapper) where TNext : notnull => Map(mapper.WrapInResult());
     public IContextResult<TOut> Do(Action action) => Do(action.WrapInResult());
     public IContextResult Map(Action<TOut> mapper) => Do(mapper.WrapInResult());
     public IContextResult<TNext> Map<TNext>(Func<TOut, TNext> mapper) where TNext : notnull => Map(mapper.WrapInResult());
-}
 
-internal sealed class CurrentResultActionCallableGenerator<TOut> : ICallableGenerator<TOut> where TOut : notnull {
-    private readonly ResultSubscriber<TOut> _subscriber;
-    private readonly IContextCallable _callable;
-
-    public CurrentResultActionCallableGenerator(ResultSubscriber<TOut> subscriber, IContextCallable callable) {
-        _subscriber = subscriber;
-        _callable = callable;
-    }
-
-    public IContextCallable<TOut> Generate() => new CurrentResultActionCallable<TOut>(_subscriber.Result, _callable);
-}
-
-internal sealed class CurrentResultActionCallable<TOut> : IContextCallable<TOut> where TOut : notnull {
-    private Result<TOut> _result;
-    private IContextCallable _callable;
-
-    public CurrentResultActionCallable(Result<TOut> result, IContextCallable callable) {
-        _result = result;
-        _callable = callable;
-    }
-
-    public Result<TOut> Call() {
-        Result called = _callable.Call();
-        return called.Failed ? Result<TOut>.Fail(called.Error) : _result;
-    }
+    private IContextResult<TNext> Create<TNext>(IContextCallable<TNext> callable, ICallableGenerator<TNext> callableGenerator) where TNext : notnull => Failed
+        ? new ContextResult<TNext>(callable, this.ToOption<IContextResult>(), Result<TNext>.Fail(Error), callableGenerator, new ResultEmitter<TNext>())
+        : new ContextResult<TNext>(callable, this.ToOption<IContextResult>(), callable.Call(), callableGenerator, new ResultEmitter<TNext>());
 }
