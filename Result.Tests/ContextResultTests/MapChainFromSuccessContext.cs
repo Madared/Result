@@ -36,23 +36,23 @@ public class MapChainFromSuccessContext {
     [Fact]
     public void Successful_Side_Effects_Dont_Rerun_On_Retry() {
         const string name = "Name";
-        SideEffecter sideEffecter = new();
+        SideEffector sideEffector = new();
         Retryable retryable = new();
         IContextResult<string> mapped = Context
-            .Do(sideEffecter.Mutate)
+            .Do(sideEffector.Mutate)
             .Map(() => name)
             .Map(str => str.ToLower())
             .Map(lowerName => retryable.AddHello(lowerName))
             .Retry();
 
-        Assert.Equal(1, sideEffecter.TimesMutated);
+        Assert.Equal(1, sideEffector.TimesMutated);
         Assert.True(mapped.Succeeded);
         Assert.Equal(name.ToLower() + retryable.Hello, mapped.Data);
     }
 
     [Fact]
     public void Failed_Side_Effects_Rerun_On_Retry() {
-        SideEffecter2 sideEffecter = new();
+        SideEffector2 sideEffecter = new();
         Retryable retryable = new();
 
         IContextResult mapped = Context
@@ -66,7 +66,7 @@ public class MapChainFromSuccessContext {
     }
 }
 
-public class SideEffecter2 : ICommand {
+public class SideEffector2 : ICommand {
     public int TimesMutated { get; private set; }
 
     public void Mutate() {
@@ -83,7 +83,7 @@ public class SideEffecter2 : ICommand {
     }
 }
 
-public class SideEffecter {
+public class SideEffector {
     public int TimesMutated { get; private set; }
 
     public void Mutate() {
