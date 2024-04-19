@@ -1,22 +1,22 @@
 namespace Results.ContextResultExtensions;
 
 public interface ICommand : IContextCallable {
-    Result Undo();
+    void Undo();
 }
 
 public interface ICommandWithInput<in T> where T : notnull {
     Result Call(T data);
-    Result Undo(T data);
+    void Undo(T data);
 }
 
 public interface ICommandWithUndoInput<in T> where T : notnull {
     Result Call();
-    Result Undo(T data);
+    void Undo(T data);
 }
 
 public interface ICommandWithCallInput<in T> where T : notnull {
     Result Call(T data);
-    Result Undo();
+    void Undo();
 }
 
 internal sealed class CommandWithInputWrapper<T> : ICommand where T : notnull {
@@ -28,7 +28,11 @@ internal sealed class CommandWithInputWrapper<T> : ICommand where T : notnull {
         _command = command;
     }
     public Result Call() => _result.Failed ? Result.Fail(_result.Error) : _command.Call(_result.Data);
-    public Result Undo() => _result.Failed ? Result.Fail(_result.Error) : _command.Undo(_result.Data);
+
+    public void Undo() {
+        if (_result.Failed) return;
+        _command.Undo(_result.Data);
+    }
 }
 
 internal sealed class CommandWithInputWrapperGenerator<T> : ICommandGenerator where T : notnull {

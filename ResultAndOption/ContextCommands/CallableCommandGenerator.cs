@@ -1,10 +1,11 @@
+using Results.ActionCallables;
 using Results.CallableGenerators;
 namespace Results.ContextResultExtensions;
 
 internal sealed class CallableCommandGenerator : ICommandGenerator {
     private readonly ICallableGenerator _callableGenerator;
-    private readonly ICallableGenerator _undoGenerator;
-    public CallableCommandGenerator(ICallableGenerator callableGenerator, ICallableGenerator undoGenerator) {
+    private readonly IActionCallableGenerator _undoGenerator;
+    public CallableCommandGenerator(ICallableGenerator callableGenerator, IActionCallableGenerator undoGenerator) {
         _callableGenerator = callableGenerator;
         _undoGenerator = undoGenerator;
     }

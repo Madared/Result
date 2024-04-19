@@ -1,3 +1,4 @@
+using Results.ActionCallables;
 using Results.CallableGenerators;
 
 namespace Results.ContextResultExtensions;
@@ -5,7 +6,7 @@ namespace Results.ContextResultExtensions;
 public static class Running {
     public static IContextResult RunAndGetContext(this Func<Result> action) {
         ICallableGenerator doGenerator = new SimpleCallableGenerator(action);
-        ICallableGenerator undoGenerator = new SimpleCallableGenerator(Nothing.DoNothingResult);
+        IActionCallableGenerator undoGenerator = new ActionCallableGenerator(Nothing.DoNothing);
         ICommandGenerator commandGenerator = new CallableCommandGenerator(doGenerator, undoGenerator);
         ICommand command = commandGenerator.Generate();
         return new SimpleContextResult(Option<IContextResult>.None(), command, commandGenerator, command.Call());

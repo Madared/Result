@@ -1,3 +1,4 @@
+using Results.ActionCallables;
 using Results.CallableGenerators;
 
 namespace Results.ContextResultExtensions;
@@ -5,28 +6,28 @@ namespace Results.ContextResultExtensions;
 public static class Mapping {
     public static IContextResult Do(this IContextResult context, Action action) {
         ICallableGenerator doGenerator = new SimpleCallableGenerator(action.WrapInResult());
-        ICallableGenerator undoGenerator = new SimpleCallableGenerator(Nothing.DoNothingResult);
+        IActionCallableGenerator undoGenerator = new ActionCallableGenerator(Nothing.DoNothing);
         ICommandGenerator commandGenerator = new CallableCommandGenerator(doGenerator, undoGenerator);
         return context.Do(commandGenerator);
     }
 
     public static IContextResult Do(this IContextResult context, Func<Result> action) {
         ICallableGenerator doGenerator = new SimpleCallableGenerator(action);
-        ICallableGenerator undoGenerator = new SimpleCallableGenerator(Nothing.DoNothingResult);
+        IActionCallableGenerator undoGenerator = new ActionCallableGenerator(Nothing.DoNothing);
         ICommandGenerator commandGenerator = new CallableCommandGenerator(doGenerator, undoGenerator);
         return context.Do(commandGenerator);
     }
 
     public static IContextResult<T> Do<T>(this IContextResult<T> context, Action action) where T : notnull {
         ICallableGenerator callableGenerator = new SimpleCallableGenerator(action.WrapInResult());
-        ICallableGenerator undoGenerator = new SimpleCallableGenerator(Nothing.DoNothingResult);
+        IActionCallableGenerator undoGenerator = new ActionCallableGenerator(Nothing.DoNothing);
         ICommandGenerator commandGenerator = new CallableCommandGenerator(callableGenerator, undoGenerator);
         return context.Do(commandGenerator);
     }
 
     public static IContextResult<T> Do<T>(this IContextResult<T> context, Func<Result> action) where T : notnull {
         ICallableGenerator callableGenerator = new SimpleCallableGenerator(action);
-        ICallableGenerator undoGenerator = new SimpleCallableGenerator(Nothing.DoNothingResult);
+        IActionCallableGenerator undoGenerator = new ActionCallableGenerator(Nothing.DoNothing);
         ICommandGenerator commandGenerator = new CallableCommandGenerator(callableGenerator, undoGenerator);
         return context.Do(commandGenerator);
     }
@@ -35,7 +36,7 @@ public static class Mapping {
         ResultSubscriber<T> subscriber = new(context.StripContext());
         context.Emitter.Subscribe(subscriber);
         ICallableGenerator callableGenerator = new CallableGeneratorWithSimpleOutput<T>(action, subscriber);
-        ICallableGenerator undoGenerator = new SimpleCallableGenerator(Nothing.DoNothingResult);
+        IActionCallableGenerator undoGenerator = new ActionCallableGenerator(Nothing.DoNothing);
         ICommandGenerator commandGenerator = new CallableCommandGenerator(callableGenerator, undoGenerator);
         return context.Do(commandGenerator);
     }
@@ -44,7 +45,7 @@ public static class Mapping {
         ResultSubscriber<T> subscriber = new(context.StripContext());
         context.Emitter.Subscribe(subscriber);
         ICallableGenerator callableGenerator = new CallableGeneratorWithSimpleOutput<T>(action.WrapInResult(), subscriber);
-        ICallableGenerator undoGenerator = new SimpleCallableGenerator(Nothing.DoNothingResult);
+        IActionCallableGenerator undoGenerator = new ActionCallableGenerator(Nothing.DoNothing);
         ICommandGenerator commandGenerator = new CallableCommandGenerator(callableGenerator, undoGenerator);
         return context.Do(commandGenerator);
     }
