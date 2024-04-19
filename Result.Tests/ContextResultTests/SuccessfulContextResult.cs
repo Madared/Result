@@ -48,7 +48,7 @@ public class SuccessfulContextResult {
         int timesToSuccess = 3;
         MultipleRetryable retryable = new(timesToSuccess);
         IContextResult<string> retried = Context
-            .Do(str => retryable.Mutate())
+            .Do(() => retryable.Mutate())
             .Retry(timesToSuccess);
 
         Assert.True(retried.Succeeded);
@@ -60,7 +60,7 @@ public class SuccessfulContextResult {
         int timesToSuccess = 3;
         MultipleRetryable retryable = new(timesToSuccess);
         IContextResult<string> retried = Context
-            .Do(str => retryable.Mutate())
+            .Do(() => retryable.Mutate())
             .Retry(timesToSuccess, error => error is MultipleErrors);
 
         Assert.True(retried.Failed);
