@@ -1,9 +1,9 @@
 namespace Results.CallableGenerators;
 
-public interface ICallableGenerator<TOut> where TOut : notnull {
-    
-    IContextCallable<TOut> Generate();
-}
 public interface ICallableGenerator {
     IContextCallable Generate();
+}
+
+public interface ICallableGenerator<T> where T : notnull {
+    IContextCallable<T> Generate();
 }
