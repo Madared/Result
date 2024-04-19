@@ -26,6 +26,10 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
     IContextResult<TOut> IContextResult<TOut>.Retry() => Retry();
     public Result<TOut> StripContext() => _result;
 
+    public void Undo() {
+        if (_previousContext.IsSome()) _previousContext.Data.Undo();
+    }
+
     public IContextResult<TOut> Do(ICommandGenerator commandGenerator) {
         ICommand command = commandGenerator.Generate();
         ResultSubscriber<TOut> subscriber = new(_result);

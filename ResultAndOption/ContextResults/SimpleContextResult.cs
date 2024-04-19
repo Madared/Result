@@ -21,6 +21,11 @@ internal class SimpleContextResult : IContextResult {
 
     public Result StripContext() => _result;
 
+    public void Undo() {
+        if (_previousContext.IsSome()) _previousContext.Data.Undo();
+        _command.Undo();
+    }
+
     public IContextResult Do(ICommandGenerator commandGenerator) {
         ICommand command = commandGenerator.Generate();
         return Failed
