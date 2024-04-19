@@ -9,5 +9,7 @@ internal sealed class ContextCallable<TIn, TOut> : IContextCallable<TOut> where 
         _func = func;
     }
 
-    public Result<TOut> Call() => Result<TOut>.Ok(_func(_data));
+    public Result<TOut> Call() {
+        return Result<TOut>.Ok(_func(_data));
+    }
 }

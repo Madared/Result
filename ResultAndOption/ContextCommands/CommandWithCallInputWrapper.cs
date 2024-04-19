@@ -9,6 +9,11 @@ internal sealed class CommandWithCallInputWrapper<T> : ICommand where T : notnul
         _result = result;
     }
 
-    public Result Call() => _result.Failed ? Result.Fail(_result.Error) : _commandWithCallInput.Call(_result.Data);
-    public void Undo() => _commandWithCallInput.Undo();
+    public Result Call() {
+        return _result.Failed ? Result.Fail(_result.Error) : _commandWithCallInput.Call(_result.Data);
+    }
+
+    public void Undo() {
+        _commandWithCallInput.Undo();
+    }
 }

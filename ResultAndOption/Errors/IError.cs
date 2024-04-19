@@ -1,7 +1,5 @@
-﻿using System.Collections;
+﻿namespace Results;
 
-namespace Results;
-
-public interface IError{
+public interface IError {
     public string Message { get; }
 }

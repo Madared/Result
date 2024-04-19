@@ -51,11 +51,15 @@ public static class ReferenceExtensions {
         return Option<T>.Maybe(data);
     }
 
-    public static Result<T> ToResult<T>(this Option<T> data, IError error) where T : notnull => data.IsNone()
-        ? Result<T>.Fail(error)
-        : Result<T>.Ok(data.Data);
+    public static Result<T> ToResult<T>(this Option<T> data, IError error) where T : notnull {
+        return data.IsNone()
+            ? Result<T>.Fail(error)
+            : Result<T>.Ok(data.Data);
+    }
 
-    public static Result ConditionResult(this bool condition, IError error) => condition
-        ? Result.Ok()
-        : Result.Fail(error);
+    public static Result ConditionResult(this bool condition, IError error) {
+        return condition
+            ? Result.Ok()
+            : Result.Fail(error);
+    }
 }

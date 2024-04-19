@@ -9,7 +9,6 @@ public interface ICommandWithInput<in T> where T : notnull {
     void Undo(T data);
 }
 
-
 public interface ICommandWithUndoInput<in T> where T : notnull {
     Result Call();
     void Undo(T data);

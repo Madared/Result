@@ -1,13 +1,15 @@
 namespace Results.ContextResultExtensions;
 
 internal sealed class CommandWithInputWrapperGenerator<T> : ICommandGenerator where T : notnull {
-    private readonly ResultSubscriber<T> _subscriber;
     private readonly ICommandWithInput<T> _command;
+    private readonly ResultSubscriber<T> _subscriber;
 
     public CommandWithInputWrapperGenerator(ResultSubscriber<T> subscriber, ICommandWithInput<T> command) {
         _subscriber = subscriber;
         _command = command;
     }
 
-    public ICommand Generate() => new CommandWithInputWrapper<T>(_subscriber.Result, _command);
+    public ICommand Generate() {
+        return new CommandWithInputWrapper<T>(_subscriber.Result, _command);
+    }
 }

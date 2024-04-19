@@ -1,5 +1,3 @@
-using Results.ContextResultExtensions;
-
 namespace ResultTests;
 
 public class FromSuccessSimpleResult {

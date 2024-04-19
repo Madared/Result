@@ -38,18 +38,15 @@ public readonly struct Result : IResult {
     /// <param name="action">The action to run, accepting the current result as a parameter.</param>
     /// <returns>The same result after running the action.</returns>
     public Result IfFailed(Action<IError> action) {
-        if (Failed) {
-            action(Error);
-        }
+        if (Failed) action(Error);
         return this;
     }
 
     public Result IfFailed(Action action) {
-        if (Failed) {
-            action();
-        }
+        if (Failed) action();
         return this;
     }
+
     /// <summary>
     ///     Maps the result using the specified function.
     /// </summary>
@@ -98,13 +95,12 @@ public readonly struct Result : IResult {
         return Failed ? this : await mapper();
     }
 
-    public async Task<Result<T>> MapAsync<T>(Func<Task<Result<T>>> mapper) where T : notnull =>
-        Failed ? Result<T>.Fail(Error) : await mapper();
+    public async Task<Result<T>> MapAsync<T>(Func<Task<Result<T>>> mapper) where T : notnull {
+        return Failed ? Result<T>.Fail(Error) : await mapper();
+    }
 
     public Result WrapError<TError>(Func<TError, IError> errorWrapper) where TError : IError {
-        if (Failed && Error is TError error) {
-            return Fail(errorWrapper(error));
-        }
+        if (Failed && Error is TError error) return Fail(errorWrapper(error));
 
         return this;
     }

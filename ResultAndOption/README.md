@@ -1,12 +1,13 @@
 A Result type for CSharp which allows for error passing without exceptions
 =
-The goal of this package is to make errors a part of the domain being modeled in the code and leaving exceptions to do 
+The goal of this package is to make errors a part of the domain being modeled in the code and leaving exceptions to do
 the job they were meant to do which is to warn you of exceptional circumstances.
 The way i like to think about it is, errors are for the user, exceptions are for the developer.
 It is also a way to make writing code which can fail more streamlined and simple.
 
 Starting with Options.
 They allow you to do more and more simply than a simple null reference.
+
 ```csharp
     public class User
     {
@@ -30,10 +31,11 @@ They allow you to do more and more simply than a simple null reference.
 
 Then we have Results.
 Results come in two kinds, The Simple result (Result) and a result encapsulating data.
-A simple result is meant to be used on actions which can mutate data but are expected to fail in the normal course 
+A simple result is meant to be used on actions which can mutate data but are expected to fail in the normal course
 of the application, such as paying an order with insufficient funds.
 
 where before you would do something like:
+
 ```csharp
     public void PayOrder(decimal amount) 
     {
@@ -41,7 +43,8 @@ where before you would do something like:
         // Order payment logic
     }
 ```
-The consumer has no way of knowing that this operation can fail, unless the code is well documented, 
+
+The consumer has no way of knowing that this operation can fail, unless the code is well documented,
 and the documentation is up to date.
 
 With a simple result it can be made more clear that this operation can fail.
@@ -53,7 +56,9 @@ With a simple result it can be made more clear that this operation can fail.
         // Order payment logic
     }
 ```
-It is advised that all mutations are done after the checks so that a failed result describes that no operations were performed.
+
+It is advised that all mutations are done after the checks so that a failed result describes that no operations were
+performed.
 
 These results can also be mapped so that all subsequent operations are dependant on the success of the original one.
 
@@ -79,7 +84,9 @@ public class OrderPaymentProcess
     public Result UpdateUserFunds() => // updates user funds
 }
 ```
+
 You can also use the IfFailed method on the result to run any undo actions that might be needed.
+
 ```csharp
  public class OrderPaymentProcess
 {
@@ -105,8 +112,11 @@ You can also use the IfFailed method on the result to run any undo actions that 
     public void UndoProcess(decimal amount) => // undo logic
 }   
 ```
-Notice that the return type of the UndoProcess method is void as it cannot fail in the normal function of the application, 
-but you still get a result back from the method call as it returns the Result it was called with, as to not confuse downstream consumers of the state of the operation.
+
+Notice that the return type of the UndoProcess method is void as it cannot fail in the normal function of the
+application,
+but you still get a result back from the method call as it returns the Result it was called with, as to not confuse
+downstream consumers of the state of the operation.
 
 Complex results provide the same functionality but allowing you to pass data in between calls.
 

@@ -1,7 +1,7 @@
 namespace Results;
 
 /// <summary>
-/// Extensions For asynchronous result types
+///     Extensions For asynchronous result types
 /// </summary>
 public static class TaskResultExtensions {
     /// <summary>
@@ -38,8 +38,9 @@ public static class TaskResultExtensions {
     }
 
     /// <summary>
-    /// Implicitly awaits the original result and if it is successful maps it and unwraps the returned result so there are no nested results,
-    /// otherwise returns a failed result without calling the mapping function
+    ///     Implicitly awaits the original result and if it is successful maps it and unwraps the returned result so there are
+    ///     no nested results,
+    ///     otherwise returns a failed result without calling the mapping function
     /// </summary>
     /// <param name="result">The async result to map</param>
     /// <param name="mapper">Mapping function</param>
@@ -52,8 +53,8 @@ public static class TaskResultExtensions {
     }
 
     /// <summary>
-    /// Implicitly awaits the original result and returns the mapping function result if the original result is successful,
-    /// otherwise returns a failed result without calling the mapping function
+    ///     Implicitly awaits the original result and returns the mapping function result if the original result is successful,
+    ///     otherwise returns a failed result without calling the mapping function
     /// </summary>
     /// <param name="result"></param>
     /// <param name="asyncMapper"></param>
@@ -62,9 +63,7 @@ public static class TaskResultExtensions {
     /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, Task<Result<TOut>>> asyncMapper) where T : notnull where TOut : notnull {
         Result<T> originalResult = await result;
-        if (originalResult.Failed) {
-            return Result<TOut>.Fail(originalResult.Error);
-        }
+        if (originalResult.Failed) return Result<TOut>.Fail(originalResult.Error);
 
         return await asyncMapper(originalResult.Data);
     }
@@ -75,26 +74,24 @@ public static class TaskResultExtensions {
     }
 
     public static async Task<Result> IfFailedAsync(this Task<Result> result, Action action) {
-        Result original = await result;
+        var original = await result;
         return original.IfFailed(action);
     }
 
     public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<Task> action) {
-        Result original = await result;
+        var original = await result;
         if (original.Failed) await action();
         return original;
     }
 
     public static async Task<Result> IfFailedAsync(this Task<Result> result, Action<IError> action) {
-        Result original = await result;
+        var original = await result;
         return original.IfFailed(action);
     }
 
     public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<IError, Task> action) {
-        Result original = await result;
-        if (original.Failed) {
-            await action(original.Error);
-        }
+        var original = await result;
+        if (original.Failed) await action(original.Error);
         return original;
     }
 
@@ -110,24 +107,20 @@ public static class TaskResultExtensions {
 
     public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Func<Task> action) where T : notnull {
         Result<T> original = await result;
-        if (original.Failed) {
-            await action();
-        }
+        if (original.Failed) await action();
 
         return original;
     }
 
     public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Func<IError, Task> action) where T : notnull {
         Result<T> original = await result;
-        if (original.Failed) {
-            await action(original.Error);
-        }
+        if (original.Failed) await action(original.Error);
 
         return original;
     }
 
     public static async Task<Result<T>> ToResultAsync<T>(this Task<T?> nullable, IError error) where T : notnull {
-        T? data = await nullable;
+        var data = await nullable;
         return data.ToResult(error);
     }
 
@@ -139,7 +132,7 @@ public static class TaskResultExtensions {
     public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<T, Task<Result>> action) where T : notnull {
         Result<T> originalResult = await result;
         if (originalResult.Failed) return originalResult;
-        Result actionResult = await action(originalResult.Data);
+        var actionResult = await action(originalResult.Data);
         return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : originalResult;
     }
 
@@ -156,17 +149,17 @@ public static class TaskResultExtensions {
     public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<Task<Result>> mapper) where T : notnull {
         Result<T> originalResult = await result;
         if (originalResult.Failed) return originalResult;
-        Result mappingResult = await mapper();
+        var mappingResult = await mapper();
         return mappingResult.Failed ? Result<T>.Fail(mappingResult.Error) : originalResult;
     }
 
     public static async Task<Result> MapAsync(this Task<Result> result, Func<Task<Result>> asyncMapper) {
-        Result originalResult = await result;
+        var originalResult = await result;
         return originalResult.Failed ? originalResult : await asyncMapper();
     }
 
     public static async Task<Result> MapAsync(this Task<Result> result, Func<Result> mapper) {
-        Result originalResult = await result;
+        var originalResult = await result;
         return originalResult.Failed ? originalResult : mapper();
     }
 }

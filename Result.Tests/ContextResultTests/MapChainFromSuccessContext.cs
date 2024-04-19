@@ -1,5 +1,3 @@
-using Results.ContextResultExtensions;
-
 namespace ResultTests;
 
 public class MapChainFromSuccessContext {
@@ -69,10 +67,6 @@ public class MapChainFromSuccessContext {
 public class SideEffector2 : ICommand {
     public int TimesMutated { get; private set; }
 
-    public void Mutate() {
-        TimesMutated++;
-    }
-
     public Result Call() {
         Mutate();
         return Result.Ok();
@@ -80,6 +74,10 @@ public class SideEffector2 : ICommand {
 
     public void Undo() {
         TimesMutated--;
+    }
+
+    public void Mutate() {
+        TimesMutated++;
     }
 }
 

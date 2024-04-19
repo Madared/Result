@@ -1,7 +1,7 @@
 namespace Results;
 
 /// <summary>
-/// Representation for an optional value
+///     Representation for an optional value
 /// </summary>
 public readonly struct Option<T> where T : notnull {
     private readonly T? _data;
@@ -13,7 +13,7 @@ public readonly struct Option<T> where T : notnull {
     }
 
     /// <summary>
-    /// Gets the data
+    ///     Gets the data
     /// </summary>
     /// <exception cref="InvalidOperationException">Throws if the data is not present</exception>
     public T Data => _data is null || _isNone
@@ -21,7 +21,7 @@ public readonly struct Option<T> where T : notnull {
         : _data;
 
     /// <summary>
-    /// Checks if the option is populated
+    ///     Checks if the option is populated
     /// </summary>
     /// <returns></returns>
     public bool IsSome() {
@@ -29,7 +29,7 @@ public readonly struct Option<T> where T : notnull {
     }
 
     /// <summary>
-    /// Checks if the option is empty
+    ///     Checks if the option is empty
     /// </summary>
     /// <returns></returns>
     public bool IsNone() {
@@ -38,8 +38,8 @@ public readonly struct Option<T> where T : notnull {
 
 
     /// <summary>
-    /// Maps the option into the result of the function wrapped in an option, if the options is empty
-    /// it foregoes calling the map function and just returns an empty option
+    ///     Maps the option into the result of the function wrapped in an option, if the options is empty
+    ///     it foregoes calling the map function and just returns an empty option
     /// </summary>
     /// <param name="function">mapping function</param>
     /// <returns></returns>
@@ -50,8 +50,8 @@ public readonly struct Option<T> where T : notnull {
     }
 
     /// <summary>
-    /// Maps the option into the new Option type returned by the function, foregoes calling the mapper if the option is
-    /// empty and just returns a new emtpy option of the new type
+    ///     Maps the option into the new Option type returned by the function, foregoes calling the mapper if the option is
+    ///     empty and just returns a new emtpy option of the new type
     /// </summary>
     /// <param name="function">mapping function</param>
     /// <returns></returns>
@@ -62,7 +62,7 @@ public readonly struct Option<T> where T : notnull {
     }
 
     /// <summary>
-    /// Performs the action in case the option is not empty, and returns this option
+    ///     Performs the action in case the option is not empty, and returns this option
     /// </summary>
     /// <param name="action">Action to perform</param>
     /// <returns></returns>
@@ -73,7 +73,7 @@ public readonly struct Option<T> where T : notnull {
 
 
     /// <summary>
-    /// Returns the value inside the option, in case it is empty returns the non-null value passed in
+    ///     Returns the value inside the option, in case it is empty returns the non-null value passed in
     /// </summary>
     /// <param name="defaultValue">Value to return in case option is empty</param>
     /// <returns></returns>
@@ -86,7 +86,7 @@ public readonly struct Option<T> where T : notnull {
     }
 
     /// <summary>
-    /// Returns this option if it isnt empty, otherwise returns the passed in option
+    ///     Returns this option if it isnt empty, otherwise returns the passed in option
     /// </summary>
     /// <param name="replacement">replacement option</param>
     /// <returns></returns>
@@ -95,7 +95,7 @@ public readonly struct Option<T> where T : notnull {
     }
 
     /// <summary>
-    /// Creates a populated Option
+    ///     Creates a populated Option
     /// </summary>
     /// <param name="data">The data to populate the option with</param>
     /// <returns></returns>
@@ -104,7 +104,7 @@ public readonly struct Option<T> where T : notnull {
     }
 
     /// <summary>
-    /// Creates an empty option
+    ///     Creates an empty option
     /// </summary>
     /// <returns></returns>
     public static Option<T> None() {
@@ -112,7 +112,7 @@ public readonly struct Option<T> where T : notnull {
     }
 
     /// <summary>
-    /// Creates an emtpy option if the data is null otherwise populates it with data
+    ///     Creates an emtpy option if the data is null otherwise populates it with data
     /// </summary>
     /// <param name="data">Nullable data to insert into the option</param>
     /// <returns></returns>
@@ -121,30 +121,26 @@ public readonly struct Option<T> where T : notnull {
     }
 
     /// <summary>
-    /// Maps the Option by implicitly awaiting the asynchronous mapping function, foregoes calling the function if
-    /// the option is empty
+    ///     Maps the Option by implicitly awaiting the asynchronous mapping function, foregoes calling the function if
+    ///     the option is empty
     /// </summary>
     /// <param name="asyncMapper">asynchronous mapping function</param>
     /// <returns></returns>
     public async Task<Option<TOut>> MapAsync<TOut>(Func<T, Task<TOut?>> asyncMapper) where TOut : notnull {
-        if (_isNone) {
-            return Option<TOut>.None();
-        }
+        if (_isNone) return Option<TOut>.None();
 
-        TOut? mapResult = await asyncMapper(Data);
+        var mapResult = await asyncMapper(Data);
         return mapResult is null ? Option<TOut>.None() : Option<TOut>.Some(mapResult);
     }
 
     /// <summary>
-    /// Maps the Option by implicitly awaiting the asynchronous mapping function, foregoes calling the function if
-    /// the option is empty
+    ///     Maps the Option by implicitly awaiting the asynchronous mapping function, foregoes calling the function if
+    ///     the option is empty
     /// </summary>
     /// <param name="asyncMapper">asynchronous mapping function</param>
     /// <returns></returns>
     public async Task<Option<TOut>> MapAsync<TOut>(Func<T, Task<Option<TOut>>> asyncMapper) where TOut : notnull {
-        if (_isNone) {
-            return Option<TOut>.None();
-        }
+        if (_isNone) return Option<TOut>.None();
 
         return await asyncMapper(Data);
     }

@@ -7,6 +7,7 @@
 public readonly struct Result<T> : IResult<T> where T : notnull {
     private readonly Option<T> _data;
     private readonly IError? _error;
+
     public T Data => _data.IsNone()
         ? throw ErrorToExceptionMapper.Map(_error)
         : _data.Data;
@@ -15,7 +16,7 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     public bool Succeeded { get; }
 
     /// <summary>
-    /// If Used will generate a failed result with an <see cref="UnknownError"/>;
+    ///     If Used will generate a failed result with an <see cref="UnknownError" />;
     /// </summary>
     public Result() {
         Succeeded = false;
@@ -29,7 +30,7 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
         _data = data;
     }
 
-    public IError Error => Succeeded 
+    public IError Error => Succeeded
         ? throw new InvalidOperationException("Cannot access Error on success Result!")
         : _error ?? new UnknownError();
 
@@ -96,7 +97,7 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     /// <returns>A new result.</returns>
     public Result<T> Do(Func<T, Result> mapper) {
         if (Failed) return this;
-        Result result = mapper(Data);
+        var result = mapper(Data);
         return result.Failed ? Fail(result.Error) : this;
     }
 
@@ -108,7 +109,7 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     /// <returns>A new simple result</returns>
     public Result<T> Do(Func<Result> function) {
         if (Failed) return this;
-        Result result = function();
+        var result = function();
         return result.Failed ? Fail(result.Error) : this;
     }
 
@@ -159,9 +160,7 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     }
 
     public Result<T> IfFailed(Action action) {
-        if (Failed) {
-            action();
-        }
+        if (Failed) action();
 
         return this;
     }
@@ -188,27 +187,25 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
 
     public async Task<Result<T>> DoAsync(Func<T, Task<Result>> action) {
         if (Failed) return this;
-        Result result = await action(Data);
+        var result = await action(Data);
         return Failed ? Fail(result.Error) : this;
     }
 
     public async Task<Result<T>> DoAsync(Func<Task<Result>> action) {
         if (Failed) return this;
-        Result result = await action();
+        var result = await action();
         return result.Failed ? Fail(result.Error) : this;
     }
 
     /// <summary>
-    /// Wraps the existing error if it is a failed result and the error is of the specified type otherwise returns the
-    /// existing result object
+    ///     Wraps the existing error if it is a failed result and the error is of the specified type otherwise returns the
+    ///     existing result object
     /// </summary>
     /// <param name="errorWrapper">function to wrap the error</param>
     /// <typeparam name="TError">expected error type to wrap</typeparam>
     /// <returns></returns>
     public Result<T> WrapError<TError>(Func<TError, IError> errorWrapper) where TError : IError {
-        if (Failed && Error is TError error) {
-            return Fail(errorWrapper(error));
-        }
+        if (Failed && Error is TError error) return Fail(errorWrapper(error));
 
         return this;
     }
