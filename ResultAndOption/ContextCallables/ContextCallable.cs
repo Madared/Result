@@ -1,6 +1,6 @@
 namespace Results;
 
-public class ContextCallable<TIn, TOut> : IContextCallable<TOut> where TIn : notnull where TOut : notnull {
+internal sealed class ContextCallable<TIn, TOut> : IContextCallable<TOut> where TIn : notnull where TOut : notnull {
     private readonly TIn _data;
     private readonly Func<TIn, TOut> _func;
 

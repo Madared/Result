@@ -1,6 +1,6 @@
 namespace Results;
 
-public class NoInputContextCallable<TOut> : IContextCallable<TOut> where TOut : notnull {
+internal sealed class NoInputContextCallable<TOut> : IContextCallable<TOut> where TOut : notnull {
     private Func<Result<TOut>> _func;
 
     public NoInputContextCallable(Func<Result<TOut>> func) {
