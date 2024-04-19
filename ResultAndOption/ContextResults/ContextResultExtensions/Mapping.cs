@@ -73,31 +73,28 @@ public static class Mapping {
         ICallableGenerator<TOut> callableGenerator = new CallableGeneratorWithSimpleInput<TOut>(mapper.WrapInResult());
         return context.Map(callableGenerator);
     }
-}
 
-internal sealed class SimpleCallableGenerator : ICallableGenerator {
-    private readonly Func<Result> _action;
-
-    public SimpleCallableGenerator(Func<Result> action) {
-        _action = action;
+    public static IContextResult Do(this IContextResult context, ICommand command) {
+        ICommandGenerator callableGenerator = new CommandWrapper(command);
+        return context.Do(callableGenerator);
     }
 
-    public IContextCallable Generate() => new NoInputSimpleContextCallable(_action);
-}
-
-internal sealed class CallableGeneratorWithSimpleOutput<TIn> : ICallableGenerator where TIn : notnull {
-    private readonly Func<TIn, Result> _action;
-    private readonly ResultSubscriber<TIn> _subscriber;
-
-    public CallableGeneratorWithSimpleOutput(Func<TIn, Result> action, ResultSubscriber<TIn> subscriber) {
-        _action = action;
-        _subscriber = subscriber;
+    public static IContextResult<TOut> Do<TOut>(this IContextResult<TOut> context, ICommand command) where TOut : notnull {
+        ICommandGenerator commandGenerator = new CommandWrapper(command);
+        return context.Do(commandGenerator);
     }
 
-    public IContextCallable Generate() {
-        Result<TIn> result = _subscriber.Result;
-        return result.Failed
-            ? new NoInputSimpleContextCallable(() => Result.Fail(result.Error))
-            : new NoOutputContextCallable<TIn>(result.Data, _action);
+    public static IContextResult<TOut> Do<TOut>(this IContextResult<TOut> context, ICommandWithInput<TOut> commandWithInput) where TOut : notnull {
+        ResultSubscriber<TOut> subscriber = new(context.StripContext());
+        context.Emitter.Subscribe(subscriber);
+        ICommandGenerator commandGenerator = new CommandWithInputWrapperGenerator<TOut>(subscriber, commandWithInput);
+        return context.Do(commandGenerator);
+    }
+
+    public static IContextResult<TOut> Do<TOut>(this IContextResult<TOut> context, ICommandWithCallInput<TOut> commandWithCallInput) where TOut : notnull {
+        ResultSubscriber<TOut> subscriber = new(context.StripContext());
+        context.Emitter.Subscribe(subscriber);
+        ICommandGenerator commandGenerator = new CommandWithCallInputWrapperGenerator<TOut>(subscriber, commandWithCallInput);
+        return context.Do(commandGenerator);
     }
 }

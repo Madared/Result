@@ -47,17 +47,17 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
     public ContextResult<TOut> Retry() {
         if (Succeeded) return this;
         if (_previousContext.IsNone()) {
-            return new ContextResult<TOut>(_called, Option<IContextResult>.None(), _called.Call(), _callableGenerator, Emitter);
+            return new ContextResult<TOut>(_called, Option<IContextResult>.None(), _called.Call(), _callableGenerator, new ResultEmitter<TOut>());
         }
 
         IContextResult retried = _previousContext.Data.Retry();
         IContextCallable<TOut> updatedCalled = _callableGenerator.Generate();
         if (retried.Failed) {
-            return new ContextResult<TOut>(updatedCalled, retried.ToOption(), Result<TOut>.Fail(retried.Error), _callableGenerator, Emitter);
+            return new ContextResult<TOut>(updatedCalled, retried.ToOption(), Result<TOut>.Fail(retried.Error), _callableGenerator, new ResultEmitter<TOut>());
         }
 
         Result<TOut> updatedResult = updatedCalled.Call();
         Emitter.Emit(updatedResult);
-        return new ContextResult<TOut>(updatedCalled, retried.ToOption(), updatedResult, _callableGenerator, Emitter);
+        return new ContextResult<TOut>(updatedCalled, retried.ToOption(), updatedResult, _callableGenerator, new ResultEmitter<TOut>());
     }
 }

@@ -41,8 +41,9 @@ internal class SimpleContextResult : IContextResult {
         if (Succeeded) return this;
         if (_previousContext.IsNone()) return new SimpleContextResult(Option<IContextResult>.None(), _command, _commandGenerator, _command.Call());
         IContextResult retried = _previousContext.Data.Retry();
-        if (retried.Failed) return new SimpleContextResult(_previousContext, _command, _commandGenerator, Result.Fail(retried.Error));
         ICommand command = _commandGenerator.Generate();
-        return new SimpleContextResult(_previousContext, command, _commandGenerator, _command.Call());
+        return retried.Failed 
+            ? new SimpleContextResult(_previousContext, command, _commandGenerator, Result.Fail(retried.Error)) 
+            : new SimpleContextResult(_previousContext, command, _commandGenerator, _command.Call());
     }
 }
