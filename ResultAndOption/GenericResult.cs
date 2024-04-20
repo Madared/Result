@@ -15,15 +15,6 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     public bool Failed => !Succeeded;
     public bool Succeeded { get; }
 
-    /// <summary>
-    ///     If Used will generate a failed result with an <see cref="UnknownError" />;
-    /// </summary>
-    public Result() {
-        Succeeded = false;
-        _data = Option<T>.None();
-        _error = new UnknownError();
-    }
-
     private Result(bool failed, IError? error, Option<T> data) {
         Succeeded = !failed;
         _error = error;

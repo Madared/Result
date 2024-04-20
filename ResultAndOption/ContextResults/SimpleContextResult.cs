@@ -26,7 +26,7 @@ internal class SimpleContextResult : IContextResult {
 
     public void Undo() {
         if (Succeeded) _command.Undo();
-        _previousContext.Do(context => context.Undo());
+        if (_previousContext.IsSome()) _previousContext.Data.Undo();
     }
 
     public IContextResult Do(ICommandGenerator commandGenerator) {
@@ -43,11 +43,7 @@ internal class SimpleContextResult : IContextResult {
             : new ContextResult<TOut>(callable, this.ToOption<IContextResult>(), callable.Call(), callableGenerator, new ResultEmitter<TOut>());
     }
 
-    IContextResult IContextResult.Retry() {
-        return Retry();
-    }
-
-    public SimpleContextResult Retry() {
+    public IContextResult Retry() {
         if (Succeeded) return this;
         if (_previousContext.IsNone()) return new SimpleContextResult(Option<IContextResult>.None(), _command, _commandGenerator, _command.Call());
         var retried = _previousContext.Data.Retry();

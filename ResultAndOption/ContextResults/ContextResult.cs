@@ -23,16 +23,13 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
     public bool Succeeded => _result.Succeeded;
     public bool Failed => _result.Failed;
 
-    IContextResult<TOut> IContextResult<TOut>.Retry() {
-        return Retry();
-    }
 
     public Result<TOut> StripContext() {
         return _result;
     }
 
     public void Undo() {
-        _previousContext.Do(previous => previous.Undo());
+        if (_previousContext.IsSome()) _previousContext.Data.Undo();
     }
 
     public IContextResult<TOut> Do(ICommandGenerator commandGenerator) {
@@ -53,7 +50,7 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
             : new ContextResult<TNext>(callable, this.ToOption<IContextResult>(), callable.Call(), callableGenerator, new ResultEmitter<TNext>());
     }
 
-    public ContextResult<TOut> Retry() {
+    public IContextResult<TOut> Retry() {
         if (Succeeded) return this;
         if (_previousContext.IsNone()) return new ContextResult<TOut>(_called, Option<IContextResult>.None(), _called.Call(), _callableGenerator, new ResultEmitter<TOut>());
 
