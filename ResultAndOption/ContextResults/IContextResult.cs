@@ -6,6 +6,7 @@ namespace Results;
 public interface IContextResult : IResult {
     IContextResult Retry();
     Result StripContext();
+    void Undo();
     internal IContextResult Do(ICommandGenerator commandGenerator);
     internal IContextResult<TOut> Map<TOut>(ICallableGenerator<TOut> callableGenerator) where TOut : notnull;
 }

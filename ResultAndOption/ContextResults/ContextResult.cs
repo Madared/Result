@@ -31,6 +31,10 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
         return _result;
     }
 
+    public void Undo() {
+        _previousContext.Do(previous => previous.Undo());
+    }
+
     public IContextResult<TOut> Do(ICommandGenerator commandGenerator) {
         var command = commandGenerator.Generate();
         ResultSubscriber<TOut> subscriber = new(_result);
