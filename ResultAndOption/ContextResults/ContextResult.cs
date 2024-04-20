@@ -7,7 +7,7 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
     private readonly ICallableGenerator<TOut> _callableGenerator;
     private readonly IContextCallable<TOut> _called;
     private readonly Option<IContextResult> _previousContext;
-    private readonly Result<TOut> _result;
+    private Result<TOut> _result;
 
     public ContextResult(IContextCallable<TOut> called, Option<IContextResult> previousContext, Result<TOut> result, ICallableGenerator<TOut> callableGenerator, ResultEmitter<TOut> emitter) {
         _called = called;
@@ -30,6 +30,7 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
 
     public void Undo() {
         if (_previousContext.IsSome()) _previousContext.Data.Undo();
+        _result = Result<TOut>.Fail(new UnknownError());
     }
 
     public IContextResult<TOut> Do(ICommandGenerator commandGenerator) {

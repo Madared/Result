@@ -7,7 +7,7 @@ internal class SimpleContextResult : IContextResult {
     private readonly ICommand _command;
     private readonly ICommandGenerator _commandGenerator;
     private readonly Option<IContextResult> _previousContext;
-    private readonly Result _result;
+    private Result _result;
 
     public SimpleContextResult(Option<IContextResult> previousContext, ICommand command, ICommandGenerator commandGenerator, Result result) {
         _previousContext = previousContext;
@@ -27,6 +27,7 @@ internal class SimpleContextResult : IContextResult {
     public void Undo() {
         if (Succeeded) _command.Undo();
         if (_previousContext.IsSome()) _previousContext.Data.Undo();
+        _result = Result.Fail(new UnknownError());
     }
 
     public IContextResult Do(ICommandGenerator commandGenerator) {
