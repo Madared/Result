@@ -5,13 +5,13 @@ namespace Results;
 
 internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
     private readonly ICallableGenerator<TOut> _callableGenerator;
-    private readonly IResultCallable<TOut> _called;
+    private readonly ICallable<TOut> _called;
     private readonly Option<IContextResult> _previousContext;
     private readonly Result<TOut> _result;
     private bool _undone;
     private Result<TOut> ActiveResult => _undone ? Result<TOut>.Fail(new UnknownError()) : _result;
 
-    public ContextResult(IResultCallable<TOut> called, Option<IContextResult> previousContext, Result<TOut> result, ICallableGenerator<TOut> callableGenerator, ResultEmitter<TOut> emitter) {
+    public ContextResult(ICallable<TOut> called, Option<IContextResult> previousContext, Result<TOut> result, ICallableGenerator<TOut> callableGenerator, ResultEmitter<TOut> emitter) {
         _called = called;
         _previousContext = previousContext;
         _result = result;
@@ -47,7 +47,7 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
     }
 
     public IContextResult<TNext> Map<TNext>(ICallableGenerator<TNext> callableGenerator) where TNext : notnull {
-        IResultCallable<TNext> callable = callableGenerator.Generate();
+        ICallable<TNext> callable = callableGenerator.Generate();
         return Failed
             ? new ContextResult<TNext>(callable, this.ToOption<IContextResult>(), Result<TNext>.Fail(Error), callableGenerator, new ResultEmitter<TNext>())
             : new ContextResult<TNext>(callable, this.ToOption<IContextResult>(), callable.Call(), callableGenerator, new ResultEmitter<TNext>());
@@ -58,7 +58,7 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
         if (_previousContext.IsNone()) return new ContextResult<TOut>(_called, Option<IContextResult>.None(), _called.Call(), _callableGenerator, new ResultEmitter<TOut>());
 
         var retried = _previousContext.Data.Retry();
-        IResultCallable<TOut> updatedCalled = _callableGenerator.Generate();
+        ICallable<TOut> updatedCalled = _callableGenerator.Generate();
         if (retried.Failed) return new ContextResult<TOut>(updatedCalled, retried.ToOption(), Result<TOut>.Fail(retried.Error), _callableGenerator, new ResultEmitter<TOut>());
 
         Result<TOut> updatedResult = updatedCalled.Call();

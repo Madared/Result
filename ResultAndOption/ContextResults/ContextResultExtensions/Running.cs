@@ -14,7 +14,7 @@ public static class Running {
 
     public static IContextResult<TOut> RunAndGetContext<TOut>(this Func<Result<TOut>> function) where TOut : notnull {
         ICallableGenerator<TOut> callableGenerator = new CallableGeneratorWithSimpleInput<TOut>(function);
-        IResultCallable<TOut> callable = callableGenerator.Generate();
+        ICallable<TOut> callable = callableGenerator.Generate();
         return new ContextResult<TOut>(callable, Option<IContextResult>.None(), callable.Call(), callableGenerator, new ResultEmitter<TOut>());
     }
 }
@@ -26,12 +26,12 @@ internal sealed class CallableGeneratorWithSimpleInput<T> : ICallableGenerator<T
         _action = action;
     }
 
-    public IResultCallable<T> Generate() {
+    public ICallable<T> Generate() {
         return new CallableWithSimpleInput<T>(_action);
     }
 }
 
-internal sealed class CallableWithSimpleInput<T> : IResultCallable<T> where T : notnull {
+internal sealed class CallableWithSimpleInput<T> : ICallable<T> where T : notnull {
     private readonly Func<Result<T>> _action;
 
     public CallableWithSimpleInput(Func<Result<T>> action) {
