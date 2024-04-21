@@ -1,10 +1,10 @@
 namespace Results;
 
-internal sealed class NoOutputResultCallable<TIn> : IResultCallable where TIn : notnull {
+internal sealed class NoOutputCallable<TIn> : ICallable where TIn : notnull {
     private readonly TIn _data;
     private readonly Func<TIn, Result> _func;
 
-    public NoOutputResultCallable(TIn data, Func<TIn, Result> func) {
+    public NoOutputCallable(TIn data, Func<TIn, Result> func) {
         _data = data;
         _func = func;
     }

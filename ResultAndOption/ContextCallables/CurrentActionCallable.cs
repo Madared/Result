@@ -2,11 +2,11 @@ using Results.CallableGenerators;
 
 namespace Results;
 
-internal sealed class CurrentResultActionCallable<TOut> : IResultCallable<TOut> where TOut : notnull {
-    private readonly IResultCallable _callable;
+internal sealed class CurrentActionCallable<TOut> : ICallable<TOut> where TOut : notnull {
+    private readonly ICallable _callable;
     private readonly Result<TOut> _result;
 
-    public CurrentResultActionCallable(Result<TOut> result, IResultCallable callable) {
+    public CurrentActionCallable(Result<TOut> result, ICallable callable) {
         _result = result;
         _callable = callable;
     }
@@ -17,10 +17,10 @@ internal sealed class CurrentResultActionCallable<TOut> : IResultCallable<TOut> 
     }
 }
 
-internal sealed class ResultGetterCallable<TOut> : IResultCallable<TOut> where TOut : notnull {
+internal sealed class GetterCallable<TOut> : ICallable<TOut> where TOut : notnull {
     private readonly Result<TOut> _result;
 
-    public ResultGetterCallable(Result<TOut> result) {
+    public GetterCallable(Result<TOut> result) {
         _result = result;
     }
 
@@ -36,7 +36,7 @@ internal sealed class ResultGetterCallableGenerator<TOut> : ICallableGenerator<T
         _resultSubscriber = resultSubscriber;
     }
 
-    public IResultCallable<TOut> Generate() {
-        return new ResultGetterCallable<TOut>(_resultSubscriber.Result);
+    public ICallable<TOut> Generate() {
+        return new GetterCallable<TOut>(_resultSubscriber.Result);
     }
 }

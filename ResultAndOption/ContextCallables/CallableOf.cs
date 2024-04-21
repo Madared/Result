@@ -1,10 +1,10 @@
 namespace Results.ContextResultExtensions;
 
-internal class ResultCallableOfResult<TIn, TOut> : IResultCallable<TOut> where TOut : notnull {
+internal class CallableOf<TIn, TOut> : ICallable<TOut> where TOut : notnull {
     private readonly Func<TIn, Result<TOut>> _func;
     private readonly Result<TIn> _result;
 
-    public ResultCallableOfResult(Result<TIn> result, Func<TIn, Result<TOut>> func) {
+    public CallableOf(Result<TIn> result, Func<TIn, Result<TOut>> func) {
         _result = result;
         _func = func;
     }
