@@ -7,7 +7,9 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
     private readonly ICallableGenerator<TOut> _callableGenerator;
     private readonly IContextCallable<TOut> _called;
     private readonly Option<IContextResult> _previousContext;
-    private Result<TOut> _result;
+    private readonly Result<TOut> _result;
+    private bool _undone;
+    private Result<TOut> ActiveResult => _undone ? Result<TOut>.Fail(new UnknownError()) : _result;
 
     public ContextResult(IContextCallable<TOut> called, Option<IContextResult> previousContext, Result<TOut> result, ICallableGenerator<TOut> callableGenerator, ResultEmitter<TOut> emitter) {
         _called = called;
@@ -18,10 +20,10 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
     }
 
     public ResultEmitter<TOut> Emitter { get; }
-    public IError Error => _result.Error;
-    public TOut Data => _result.Data;
-    public bool Succeeded => _result.Succeeded;
-    public bool Failed => _result.Failed;
+    public IError Error => ActiveResult.Error;
+    public TOut Data => ActiveResult.Data;
+    public bool Succeeded => ActiveResult.Succeeded;
+    public bool Failed => ActiveResult.Failed;
 
 
     public Result<TOut> StripContext() {
@@ -30,7 +32,7 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
 
     public void Undo() {
         if (_previousContext.IsSome()) _previousContext.Data.Undo();
-        _result = Result<TOut>.Fail(new UnknownError());
+        _undone = true;
     }
 
     public IContextResult<TOut> Do(ICommandGenerator commandGenerator) {

@@ -7,7 +7,9 @@ internal class SimpleContextResult : IContextResult {
     private readonly ICommand _command;
     private readonly ICommandGenerator _commandGenerator;
     private readonly Option<IContextResult> _previousContext;
-    private Result _result;
+    private readonly Result _result;
+    private bool _undone;
+    private Result ActiveResult => _undone ? Result.Fail(new UnknownError()) : _result;
 
     public SimpleContextResult(Option<IContextResult> previousContext, ICommand command, ICommandGenerator commandGenerator, Result result) {
         _previousContext = previousContext;
@@ -16,18 +18,18 @@ internal class SimpleContextResult : IContextResult {
         _commandGenerator = commandGenerator;
     }
 
-    public bool Succeeded => _result.Succeeded;
-    public bool Failed => _result.Failed;
-    public IError Error => _result.Error;
+    public bool Succeeded => ActiveResult.Succeeded;
+    public bool Failed => ActiveResult.Failed;
+    public IError Error => ActiveResult.Error;
 
     public Result StripContext() {
-        return _result;
+        return ActiveResult;
     }
 
     public void Undo() {
         if (Succeeded) _command.Undo();
         if (_previousContext.IsSome()) _previousContext.Data.Undo();
-        _result = Result.Fail(new UnknownError());
+        _undone = true;
     }
 
     public IContextResult Do(ICommandGenerator commandGenerator) {
