@@ -11,10 +11,10 @@ internal class InputCallableGenerator<TIn, TOut> : ICallableGenerator<TOut> wher
         _func = func;
     }
 
-    public IContextCallable<TOut> Generate() {
+    public IResultCallable<TOut> Generate() {
         Result<TIn> result = _subscriber.Result;
         return result.Failed
-            ? new NoInputContextCallable<TOut>(() => Result<TOut>.Fail(result.Error))
-            : new ContextCallable<TIn, TOut>(result.Data, _func);
+            ? new NoInputResultCallable<TOut>(() => Result<TOut>.Fail(result.Error))
+            : new ResultCallable<TIn, TOut>(result.Data, _func);
     }
 }

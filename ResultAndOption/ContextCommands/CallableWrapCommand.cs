@@ -3,10 +3,10 @@ using Results.ActionCallables;
 namespace Results.ContextResultExtensions;
 
 internal sealed class CallableWrapCommand : ICommand {
-    private readonly IContextCallable _callable;
+    private readonly IResultCallable _callable;
     private readonly IActionCallable _undoer;
 
-    public CallableWrapCommand(IContextCallable callable, IActionCallable undoer) {
+    public CallableWrapCommand(IResultCallable callable, IActionCallable undoer) {
         _callable = callable;
         _undoer = undoer;
     }

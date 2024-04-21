@@ -9,7 +9,7 @@ internal sealed class SimpleCallableGenerator : ICallableGenerator {
         _action = action;
     }
 
-    public IContextCallable Generate() {
-        return new NoInputSimpleContextCallable(_action);
+    public IResultCallable Generate() {
+        return new NoInputSimpleResultCallable(_action);
     }
 }

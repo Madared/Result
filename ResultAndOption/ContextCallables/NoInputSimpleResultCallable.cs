@@ -1,9 +1,9 @@
 namespace Results;
 
-internal sealed class NoInputSimpleContextCallable : IContextCallable {
+internal sealed class NoInputSimpleResultCallable : IResultCallable {
     private readonly Func<Result> _func;
 
-    public NoInputSimpleContextCallable(Func<Result> func) {
+    public NoInputSimpleResultCallable(Func<Result> func) {
         _func = func;
     }
 

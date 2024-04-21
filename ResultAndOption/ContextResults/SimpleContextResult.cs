@@ -40,7 +40,7 @@ internal class SimpleContextResult : IContextResult {
     }
 
     public IContextResult<TOut> Map<TOut>(ICallableGenerator<TOut> callableGenerator) where TOut : notnull {
-        IContextCallable<TOut> callable = callableGenerator.Generate();
+        IResultCallable<TOut> callable = callableGenerator.Generate();
         return Failed
             ? new ContextResult<TOut>(callable, this.ToOption<IContextResult>(), Result<TOut>.Fail(Error), callableGenerator, new ResultEmitter<TOut>())
             : new ContextResult<TOut>(callable, this.ToOption<IContextResult>(), callable.Call(), callableGenerator, new ResultEmitter<TOut>());

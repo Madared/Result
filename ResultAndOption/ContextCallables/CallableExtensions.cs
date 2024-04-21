@@ -1,16 +1,16 @@
 namespace Results.ContextResultExtensions;
 
 public static class CallableExtensions {
-    public static IContextCallable EmptyCallable() {
-        return new NoInputSimpleContextCallable(Nothing.DoNothingResult);
+    public static IResultCallable EmptyCallable() {
+        return new NoInputSimpleResultCallable(Nothing.DoNothingResult);
     }
 
-    public static IContextCallable ToCallable(this Action action) {
-        return new NoInputSimpleContextCallable(action.WrapInResult());
+    public static IResultCallable ToCallable(this Action action) {
+        return new NoInputSimpleResultCallable(action.WrapInResult());
     }
 
-    public static IContextCallable ToCallable(this Func<Result> action) {
-        return new NoInputSimpleContextCallable(action);
+    public static IResultCallable ToCallable(this Func<Result> action) {
+        return new NoInputSimpleResultCallable(action);
     }
 }
 
