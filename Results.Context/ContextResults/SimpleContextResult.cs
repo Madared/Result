@@ -14,7 +14,7 @@ internal class SimpleContextResult : IContextResult {
     private readonly Option<IContextResult> _previousContext;
     private readonly Result _result;
     private bool _undone;
-    private Result ActiveResult => _undone ? Result.Fail(new UnknownError()) : _result;
+    private Result ActiveResult => _undone ? Result.Fail(new ContextHasBeenUndone()) : _result;
 
     public SimpleContextResult(Option<IContextResult> previousContext, ICommand command, ICommandGenerator commandGenerator, Result result) {
         _previousContext = previousContext;
