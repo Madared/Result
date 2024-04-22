@@ -1,5 +1,4 @@
 using ResultAndOption;
-using ResultAndOption.ContextCallables;
 using ResultAndOption.Errors;
 using ResultAndOption.Options;
 using ResultAndOption.Options.Extensions;

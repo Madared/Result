@@ -1,4 +1,3 @@
-using ResultAndOption.ContextCallables;
 using ResultAndOption.Results;
 
 namespace Results.Context.ContextCallables;
