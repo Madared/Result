@@ -8,7 +8,8 @@ internal sealed class CommandWithCallInputWrapperGenerator<T> : ICommandGenerato
     private readonly ResultSubscriber<T> _subscriber;
 
     public CommandWithCallInputWrapperGenerator(ResultSubscriber<T> subscriber, ICommandWithCallInput<T> commandWithCallInput) {
-        throw new NotImplementedException();
+        _subscriber = subscriber;
+        _commandWithCallInput = commandWithCallInput;
     }
 
     public ICommand Generate() {
