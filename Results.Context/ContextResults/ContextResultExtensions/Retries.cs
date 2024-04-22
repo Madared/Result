@@ -17,13 +17,14 @@ public static class Retries {
     }
 
     public static IContextResult<T> Retry<T>(this IContextResult<T> context, int timesToRetry, Func<IError, bool> errorPredicate) where T : notnull {
+        IContextResult<T> toRetry = context;
         while (timesToRetry > 0) {
-            if (context.Succeeded) return context;
-            if (errorPredicate(context.Error) == false) return context;
-            IContextResult<T> retried = context.Retry();
+            if (toRetry.Succeeded) return toRetry;
+            if (errorPredicate(toRetry.Error) == false) return toRetry;
+            IContextResult<T> retried = toRetry.Retry();
             if (retried.Succeeded) return retried;
-            context = retried;
-            timesToRetry = timesToRetry - 1;
+            toRetry = retried;
+            timesToRetry--;
         }
 
         return context;
