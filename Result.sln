@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultAndOption", "ResultAn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Results.Tests", "Results.Tests\Results.Tests.csproj", "{6CFE502D-EE22-4BFE-B858-9600DAFA8892}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Context", "Context\Context.csproj", "{F314BC1E-75B7-4774-AFCC-F0E7744623AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{6CFE502D-EE22-4BFE-B858-9600DAFA8892}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CFE502D-EE22-4BFE-B858-9600DAFA8892}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CFE502D-EE22-4BFE-B858-9600DAFA8892}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F314BC1E-75B7-4774-AFCC-F0E7744623AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F314BC1E-75B7-4774-AFCC-F0E7744623AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F314BC1E-75B7-4774-AFCC-F0E7744623AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F314BC1E-75B7-4774-AFCC-F0E7744623AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
