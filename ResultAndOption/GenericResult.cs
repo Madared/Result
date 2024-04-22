@@ -114,7 +114,7 @@ public readonly struct Result<T> : IResult<T>, IMappable, IMappable<T> where T :
     }
 
     /// <summary>
-    ///     if the result is successfull calls the specified function otherwise returns a simple failed result wrapping the
+    ///     if the result is successful calls the specified function otherwise returns a simple failed result wrapping the
     ///     current error
     /// </summary>
     /// <param name="function">The function</param>
