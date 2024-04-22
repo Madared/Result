@@ -1,4 +1,6 @@
 using ResultAndOption.ContextCallables;
+using ResultAndOption.Results;
+
 namespace ResultAndOption.CallableGenerators;
 
 internal sealed class CallableGeneratorWithSimpleOutput<TIn> : ICallableGenerator where TIn : notnull {

@@ -1,6 +1,6 @@
 using ResultAndOption.Errors;
 
-namespace ResultAndOption;
+namespace ResultAndOption.Results;
 public interface IMapper<out TOut> where TOut : notnull {
     TOut Map();
 }

@@ -1,4 +1,5 @@
 using ResultAndOption.Errors;
+using ResultAndOption.Results;
 using ResultTests;
 
 namespace Results.Tests.ContextResultTests;

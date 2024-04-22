@@ -1,6 +1,9 @@
 using ResultAndOption.Errors;
+using ResultAndOption.Results;
+using ResultAndOption.Results.GenericResultExtensions;
+using ResultAndOption.Results.GenericResultExtensions.Async;
 
-namespace ResultTests;
+namespace Results.Tests;
 
 public class ResultTests {
     [Fact]
@@ -63,7 +66,7 @@ public class ResultTests {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //When
-        Result<int> intResult = stringResult.ConvertErrorResult<int>();
+        Result<int> intResult = stringResult.ConvertErrorResult<string, int>();
         //Then
         Assert.IsType<Result<int>>(intResult);
         Assert.Equal(stringResult.Error, intResult.Error);
@@ -74,7 +77,7 @@ public class ResultTests {
         //Given
         Result<string> stringResult = Result<string>.Ok("hello");
         //Then
-        Assert.Throws<InvalidOperationException>(() => stringResult.ConvertErrorResult<int>());
+        Assert.Throws<InvalidOperationException>(() => stringResult.ConvertErrorResult<string, int>());
     }
 
     [Fact]
@@ -263,7 +266,7 @@ public class ResultTests {
     [Fact]
     public void ErrorWrap_Doesnt_Change_Success_Result() {
         Result<string> helloResult = Result<string>.Ok("hello");
-        Result<string> wrappedResult = helloResult.WrapError<UnknownError>(error => new MultipleErrors(new List<IError>()));
+        Result<string> wrappedResult = helloResult.WrapError<string, UnknownError>(error => new MultipleErrors(new List<IError>()));
         Assert.True(wrappedResult.Succeeded);
         Assert.Throws<InvalidOperationException>(() => wrappedResult.Error);
     }
@@ -271,7 +274,7 @@ public class ResultTests {
     [Fact]
     public void ErrorWrap_Converts_Failed_Result_Error() {
         Result<string> helloResult = Result<string>.Fail(new UnknownError());
-        Result<string> wrapped = helloResult.WrapError<UnknownError>(error => new MultipleErrors(new List<IError>()));
+        Result<string> wrapped = helloResult.WrapError<string, UnknownError>(error => new MultipleErrors(new List<IError>()));
         Assert.True(wrapped.Failed);
         Assert.True(wrapped.Error is MultipleErrors);
     }

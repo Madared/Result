@@ -2,6 +2,7 @@ using ResultAndOption.ActionCallables;
 using ResultAndOption.CallableGenerators;
 using ResultAndOption.ContextCommands;
 using ResultAndOption.ContextResultExtensions;
+using ResultAndOption.Results;
 
 namespace ResultAndOption.ContextResults.ContextResultExtensions;
 

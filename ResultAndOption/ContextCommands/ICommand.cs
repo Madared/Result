@@ -1,4 +1,5 @@
 using ResultAndOption.ContextCallables;
+using ResultAndOption.Results;
 
 namespace ResultAndOption.ContextCommands;
 

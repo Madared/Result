@@ -1,8 +1,9 @@
 using ResultAndOption.Errors;
+using ResultAndOption.Results.GenericResultExtensions;
 
-namespace ResultAndOption;
+namespace ResultAndOption.Results;
 
-public class ResultList<T> where T : notnull {
+public sealed class ResultList<T> where T : notnull {
     public ResultList() {
         Successes = new List<T>();
         Errors = new List<IError>();

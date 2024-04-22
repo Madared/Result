@@ -26,7 +26,7 @@ public static class TaskOptionExtensions {
         return data.ToOption();
     }
 
-    public static async Task<Option<T>> UseDataAsync<T>(this Task<Option<T>> option, Action<T> action) where T : notnull {
+    public static async Task<Option<T>> DoAsync<T>(this Task<Option<T>> option, Action<T> action) where T : notnull {
         Option<T> originalOption = await option;
         return originalOption.Do(action);
     }

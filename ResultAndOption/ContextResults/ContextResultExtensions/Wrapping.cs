@@ -1,3 +1,5 @@
+using ResultAndOption.Results;
+
 namespace ResultAndOption.ContextResults.ContextResultExtensions;
 
 public static class Wrapping {

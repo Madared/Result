@@ -1,4 +1,6 @@
 using ResultAndOption.Errors;
+using ResultAndOption.Results;
+
 namespace Results.Tests.ContextResultTests;
 
 public class FailedStartingContext {

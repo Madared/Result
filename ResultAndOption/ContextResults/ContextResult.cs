@@ -2,6 +2,8 @@ using ResultAndOption.CallableGenerators;
 using ResultAndOption.ContextCallables;
 using ResultAndOption.ContextCommands;
 using ResultAndOption.Errors;
+using ResultAndOption.Results;
+
 namespace ResultAndOption.ContextResults;
 
 internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
