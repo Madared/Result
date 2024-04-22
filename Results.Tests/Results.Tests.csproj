@@ -27,8 +27,4 @@
         <ProjectReference Include="..\ResultAndOption\ResultAndOption.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="ContextResultTests\" />
-    </ItemGroup>
-
 </Project>
