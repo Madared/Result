@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Context\Context.csproj" />
+      <ProjectReference Include="..\Results.Context\Results.Context.csproj" />
     </ItemGroup>
 
 </Project>

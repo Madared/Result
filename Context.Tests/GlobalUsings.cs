@@ -1,4 +1,4 @@
 global using Xunit;
-global using Context.ContextResults;
-global using Context.ContextCommands;
-global using Context.ContextResults.ContextResultExtensions;
+global using Results.Context.ContextResults;
+global using Results.Context.ContextCommands;
+global using Results.Context.ContextResults.ContextResultExtensions;

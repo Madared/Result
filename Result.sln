@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultAndOption", "ResultAn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Results.Tests", "Results.Tests\Results.Tests.csproj", "{6CFE502D-EE22-4BFE-B858-9600DAFA8892}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Context", "Context\Context.csproj", "{F314BC1E-75B7-4774-AFCC-F0E7744623AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Results.Context", "Results.Context\Results.Context.csproj", "{F314BC1E-75B7-4774-AFCC-F0E7744623AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Context.Tests", "Context.Tests\Context.Tests.csproj", "{738736C7-289B-447E-A3DF-CE88293EA6FC}"
 EndProject
