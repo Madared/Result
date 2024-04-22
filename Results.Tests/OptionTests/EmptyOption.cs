@@ -1,6 +1,6 @@
 using ResultAndOption.Options.Extensions;
 
-namespace ResultTests.OptionTests;
+namespace Results.Tests.OptionTests;
 
 public class EmptyOption {
     private static readonly Option<string> Empty = Option<string>.None();

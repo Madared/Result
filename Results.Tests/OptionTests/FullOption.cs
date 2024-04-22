@@ -1,6 +1,6 @@
 using ResultAndOption.Options.Extensions;
 
-namespace ResultTests.OptionTests;
+namespace Results.Tests.OptionTests;
 
 public class FullOption {
     private static readonly Option<string> Full = Option<string>.Some("Hello");

@@ -1,6 +1,6 @@
 using ResultAndOption.Errors;
 
-namespace ResultTests;
+namespace Results.Tests;
 
 public class Retryable {
     private bool _called;

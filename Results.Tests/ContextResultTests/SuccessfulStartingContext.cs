@@ -1,8 +1,7 @@
-using ResultAndOption.ContextResults.ContextResultExtensions;
 using ResultAndOption.Errors;
 using ResultAndOption.Results;
 
-namespace ResultTests;
+namespace Results.Tests.ContextResultTests;
 
 public static class SuccessfulContext {
     public static Func<Result<string>> ResultFunc = () => Result<string>.Ok("hello");

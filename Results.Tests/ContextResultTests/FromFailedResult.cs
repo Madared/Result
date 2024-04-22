@@ -1,8 +1,7 @@
-using ResultAndOption.ContextResults.ContextResultExtensions;
 using ResultAndOption.Errors;
 using ResultAndOption.Results;
 
-namespace ResultTests;
+namespace Results.Tests.ContextResultTests;
 
 public class FromFailedResult {
     private static readonly Func<Result<string>> ResultFunc = () => Result<string>.Fail(new UnknownError());

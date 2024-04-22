@@ -1,8 +1,7 @@
-using ResultAndOption.ContextResults.ContextResultExtensions;
 using ResultAndOption.Errors;
 using ResultAndOption.Results;
 
-namespace ResultTests;
+namespace Results.Tests.ContextResultTests;
 
 public class FromFailedSimpleResult {
     private static readonly Result Failed = Result.Fail(new UnknownError());

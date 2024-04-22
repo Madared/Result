@@ -1,6 +1,6 @@
 using ResultAndOption.Options.Extensions;
 
-namespace ResultTests.OptionTests;
+namespace Results.Tests.OptionTests;
 
 public class OptionCreation {
     [Fact]

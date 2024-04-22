@@ -2,7 +2,7 @@ using ResultAndOption.Errors;
 using ResultAndOption.Results;
 using ResultAndOption.Results.GenericResultExtensions;
 
-namespace ResultTests;
+namespace Results.Tests;
 
 public class ExtensionTests {
     [Fact]

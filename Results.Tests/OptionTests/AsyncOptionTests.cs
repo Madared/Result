@@ -1,6 +1,6 @@
 using ResultAndOption.Options.Extensions.Async;
 
-namespace ResultTests;
+namespace Results.Tests.OptionTests;
 
 public class AsyncOptionTests {
     [Fact]
