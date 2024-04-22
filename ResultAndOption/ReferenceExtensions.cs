@@ -1,4 +1,6 @@
-namespace Results;
+using ResultAndOption.Errors;
+
+namespace ResultAndOption;
 
 /// <summary>
 ///     Provides extension methods for working with reference types and results.

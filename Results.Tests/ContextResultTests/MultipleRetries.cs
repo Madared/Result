@@ -1,4 +1,6 @@
-namespace ResultTests;
+using ResultTests;
+
+namespace Results.Tests.ContextResultTests;
 
 public class MultipleRetries {
     private static readonly Func<Result<string>> ResultFunc = () => Result<string>.Ok("hello");

@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption;
 
 public static class TaskOptionExtensions {
     public static async Task<Option<TOut>> MapAsync<T, TOut>(this Task<Option<T>> option, Func<T, TOut> mapper) where T : notnull where TOut : notnull {

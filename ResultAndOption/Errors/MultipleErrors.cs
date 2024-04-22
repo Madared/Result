@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption.Errors;
 
 public class MultipleErrors : IError {
     private readonly IEnumerable<IError> _errors;

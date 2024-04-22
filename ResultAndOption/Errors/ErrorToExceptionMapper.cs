@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption.Errors;
 
 public static class ErrorToExceptionMapper {
     public static Exception Map(IError? error) {

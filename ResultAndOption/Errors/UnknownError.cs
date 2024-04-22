@@ -1,4 +1,4 @@
-﻿namespace Results;
+﻿namespace ResultAndOption.Errors;
 
 public class UnknownError : IError {
     private const string _message = "Unknown Error";

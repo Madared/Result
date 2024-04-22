@@ -1,6 +1,6 @@
-using Results.CallableGenerators;
+using ResultAndOption.CallableGenerators;
 
-namespace Results;
+namespace ResultAndOption.ContextCallables;
 
 internal sealed class CurrentActionCallable<TOut> : ICallable<TOut> where TOut : notnull {
     private readonly ICallable _callable;

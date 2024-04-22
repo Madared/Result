@@ -1,4 +1,7 @@
-namespace ResultTests;
+using ResultAndOption.Errors;
+using ResultTests;
+
+namespace Results.Tests.ContextResultTests;
 
 public class SuccessfulContextResult {
     private static readonly IContextResult<string> Context = SuccessfulContext.Context.Map(str => str);

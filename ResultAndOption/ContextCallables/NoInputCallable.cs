@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption.ContextCallables;
 
 internal sealed class NoInputCallable<TOut> : ICallable<TOut> where TOut : notnull {
     private readonly Func<Result<TOut>> _func;

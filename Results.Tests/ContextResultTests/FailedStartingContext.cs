@@ -1,4 +1,5 @@
-namespace ResultTests;
+using ResultAndOption.Errors;
+namespace Results.Tests.ContextResultTests;
 
 public class FailedStartingContext {
     [Fact]

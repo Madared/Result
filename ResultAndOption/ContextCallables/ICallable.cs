@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption.ContextCallables;
 
 public interface ICallable {
     Result Call();

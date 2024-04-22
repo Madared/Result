@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption.ContextCallables;
 
 internal sealed class NoInputSimpleCallable : ICallable {
     private readonly Func<Result> _func;

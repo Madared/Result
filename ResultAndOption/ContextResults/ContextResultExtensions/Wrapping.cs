@@ -1,4 +1,4 @@
-namespace Results.ContextResultExtensions;
+namespace ResultAndOption.ContextResults.ContextResultExtensions;
 
 public static class Wrapping {
     public static Func<Result> WrapInResult(this Action action) {

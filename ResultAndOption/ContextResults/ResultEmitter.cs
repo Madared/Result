@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption;
 
 public sealed class ResultEmitter<T> where T : notnull {
     private readonly List<ResultSubscriber<T>> _subscribers;

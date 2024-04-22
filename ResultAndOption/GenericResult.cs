@@ -1,4 +1,5 @@
-﻿namespace Results;
+﻿using ResultAndOption.Errors;
+namespace ResultAndOption;
 
 /// <summary>
 ///     Represents a result of an operation that can either succeed or fail, carrying either data or an error.

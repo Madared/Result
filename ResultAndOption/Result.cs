@@ -1,4 +1,6 @@
-﻿namespace Results;
+﻿using ResultAndOption.Errors;
+
+namespace ResultAndOption;
 
 public readonly struct Result : IResult, IMappable {
     private readonly IError? _error;
@@ -105,8 +107,8 @@ public readonly struct Result : IResult, IMappable {
         return Failed ? this : await mapper();
     }
 
-    public async Task<Result<T>> MapAsync<T>(Func<Task<Result<T>>> mapper) where T : notnull {
-        return Failed ? Result<T>.Fail(Error) : await mapper();
+    public async Task<Result> MapAsync<T>(Func<Task<Result>> mapper) where T : notnull {
+        return Failed ? Fail(Error) : await mapper();
     }
 
     public Result WrapError<TError>(Func<TError, IError> errorWrapper) where TError : IError {

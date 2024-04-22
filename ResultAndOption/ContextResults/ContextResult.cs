@@ -1,7 +1,8 @@
-using Results.CallableGenerators;
-using Results.ContextResultExtensions;
-
-namespace Results;
+using ResultAndOption.CallableGenerators;
+using ResultAndOption.ContextCallables;
+using ResultAndOption.ContextCommands;
+using ResultAndOption.Errors;
+namespace ResultAndOption.ContextResults;
 
 internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : notnull {
     private readonly ICallableGenerator<TOut> _callableGenerator;

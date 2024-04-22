@@ -1,7 +1,8 @@
-using Results.CallableGenerators;
-using Results.ContextResultExtensions;
+using ResultAndOption.CallableGenerators;
+using ResultAndOption.ContextCommands;
+using ResultAndOption.ContextResultExtensions;
 
-namespace Results;
+namespace ResultAndOption;
 
 public interface IContextResult : IResult {
     IContextResult Retry();
@@ -26,7 +27,7 @@ public interface IContextResult<TOut> : IContextResult, IResult<TOut> where TOut
         return Do(commandGenerator);
     }
 
-    IContextResult<TOut> Retry();
-    Result<TOut> StripContext();
-    internal IContextResult<TOut> Do(ICommandGenerator commandGenerator);
+    new IContextResult<TOut> Retry();
+    new Result<TOut> StripContext();
+    internal new IContextResult<TOut> Do(ICommandGenerator commandGenerator);
 }

@@ -1,7 +1,9 @@
-namespace ResultTests;
+using ResultAndOption.Errors;
+
+namespace Results.Tests.ContextResultTests;
 
 public class FailedContextResult {
-    private static readonly IContextResult<string> Context = FailureContext.Context.Map(str => str);
+    private static readonly IContextResult<string> Context = FailureContext.Context.Map((string str) => str);
 
     [Fact]
     public void Do_Of_Action_Gives_Failed_Context() {

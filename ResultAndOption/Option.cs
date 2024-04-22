@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption;
 
 /// <summary>
 ///     Representation for an optional value

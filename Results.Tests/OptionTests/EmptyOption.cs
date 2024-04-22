@@ -1,7 +1,7 @@
 namespace ResultTests.OptionTests;
 
 public class EmptyOption {
-    private static readonly Option<string> Empty;
+    private static readonly Option<string> Empty = Option<string>.None();
 
     [Fact]
     public void IsNone_Returns_True() {

@@ -1,4 +1,6 @@
-namespace Results;
+using ResultAndOption.Errors;
+
+namespace ResultAndOption;
 
 public class ResultList<T> where T : notnull {
     public ResultList() {

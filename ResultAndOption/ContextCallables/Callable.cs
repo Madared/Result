@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption.ContextCallables;
 
 internal sealed class Callable<TIn, TOut> : ICallable<TOut> where TIn : notnull where TOut : notnull {
     private readonly TIn _data;

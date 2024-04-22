@@ -1,4 +1,6 @@
-namespace Results.ContextResultExtensions;
+using ResultAndOption.Errors;
+
+namespace ResultAndOption.ContextResults.ContextResultExtensions;
 
 public static class Retries {
     public static IContextResult Retry(this IContextResult context, int timesToRetry) {

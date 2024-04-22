@@ -1,7 +1,9 @@
-using Results.ActionCallables;
-using Results.CallableGenerators;
+using ResultAndOption.ActionCallables;
+using ResultAndOption.CallableGenerators;
+using ResultAndOption.ContextCommands;
+using ResultAndOption.ContextResultExtensions;
 
-namespace Results.ContextResultExtensions;
+namespace ResultAndOption.ContextResults.ContextResultExtensions;
 
 public static class Mapping {
     public static IContextResult Do(this IContextResult context, Action action) {

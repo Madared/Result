@@ -1,6 +1,7 @@
-using Results.CallableGenerators;
+using ResultAndOption.CallableGenerators;
+using ResultAndOption.ContextCallables;
 
-namespace Results.ContextResultExtensions;
+namespace ResultAndOption.ContextResultExtensions;
 
 internal sealed class SimpleCallableGenerator : ICallableGenerator {
     private readonly Func<Result> _action;

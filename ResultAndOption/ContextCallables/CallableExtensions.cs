@@ -1,4 +1,7 @@
-namespace Results.ContextResultExtensions;
+using ResultAndOption.ContextCallables;
+using ResultAndOption.ContextResults.ContextResultExtensions;
+
+namespace ResultAndOption.ContextResultExtensions;
 
 public static class CallableExtensions {
     public static ICallable EmptyCallable() {

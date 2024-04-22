@@ -1,3 +1,6 @@
+using ResultAndOption.ContextResults.ContextResultExtensions;
+using ResultAndOption.Errors;
+
 namespace ResultTests;
 
 public class FromFailedSimpleResult {

@@ -1,6 +1,8 @@
-using Results.ActionCallables;
+using ResultAndOption.ActionCallables;
+using ResultAndOption.ContextCallables;
+using ResultAndOption.ContextResultExtensions;
 
-namespace Results.ContextResultExtensions;
+namespace ResultAndOption.ContextCommands;
 
 internal sealed class CallableWrapCommand : ICommand {
     private readonly ICallable _callable;

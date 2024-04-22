@@ -1,4 +1,6 @@
-namespace Results;
+using ResultAndOption.Errors;
+
+namespace ResultAndOption;
 
 /// <summary>
 ///     Extensions For asynchronous result types

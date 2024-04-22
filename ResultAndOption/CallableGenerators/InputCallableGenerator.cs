@@ -1,6 +1,5 @@
-using Results.CallableGenerators;
-
-namespace Results.ContextResultExtensions;
+using ResultAndOption.ContextCallables;
+namespace ResultAndOption.CallableGenerators;
 
 internal class InputCallableGenerator<TIn, TOut> : ICallableGenerator<TOut> where TIn : notnull where TOut : notnull {
     private readonly Func<TIn, TOut> _func;

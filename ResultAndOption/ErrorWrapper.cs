@@ -1,4 +1,6 @@
-namespace Results;
+using ResultAndOption.Errors;
+
+namespace ResultAndOption;
 
 public class ErrorWrapper : Exception {
     public ErrorWrapper(IError error) : base(error.Message) {

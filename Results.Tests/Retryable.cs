@@ -1,3 +1,5 @@
+using ResultAndOption.Errors;
+
 namespace ResultTests;
 
 public class Retryable {

@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption;
 
 public sealed class ResultSubscriber<T> where T : notnull {
     public ResultSubscriber(Result<T> result) {

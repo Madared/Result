@@ -1,5 +1,6 @@
-namespace Results;
+using ResultAndOption.Errors;
 
+namespace ResultAndOption;
 public interface IMapper<out TOut> where TOut : notnull {
     TOut Map();
 }

@@ -1,4 +1,4 @@
-namespace Results;
+namespace ResultAndOption.Errors;
 
 public record ExceptionWrapper : IError {
     public ExceptionWrapper(Exception exception) {
