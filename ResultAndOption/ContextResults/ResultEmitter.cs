@@ -1,3 +1,5 @@
+using ResultAndOption.Results;
+
 namespace ResultAndOption;
 
 public sealed class ResultEmitter<T> where T : notnull {

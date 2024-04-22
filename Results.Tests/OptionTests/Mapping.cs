@@ -1,3 +1,4 @@
+using ResultAndOption.Options;
 using ResultAndOption.Options.Extensions;
 
 namespace Results.Tests.OptionTests;

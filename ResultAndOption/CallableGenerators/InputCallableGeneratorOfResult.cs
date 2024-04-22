@@ -1,5 +1,6 @@
 using ResultAndOption.ContextCallables;
 using ResultAndOption.ContextResultExtensions;
+using ResultAndOption.Results;
 
 namespace ResultAndOption.CallableGenerators;
 

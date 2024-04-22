@@ -3,6 +3,7 @@ using ResultAndOption.CallableGenerators;
 using ResultAndOption.ContextCallables;
 using ResultAndOption.ContextCommands;
 using ResultAndOption.ContextResultExtensions;
+using ResultAndOption.Options;
 using ResultAndOption.Results;
 
 namespace ResultAndOption.ContextResults.ContextResultExtensions;

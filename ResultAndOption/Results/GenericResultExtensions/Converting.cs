@@ -1,4 +1,5 @@
 using ResultAndOption.Errors;
+using ResultAndOption.Options;
 
 namespace ResultAndOption.Results.GenericResultExtensions;
 

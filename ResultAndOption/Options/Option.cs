@@ -1,4 +1,4 @@
-namespace ResultAndOption;
+namespace ResultAndOption.Options;
 
 /// <summary>
 ///     Representation for an optional value
@@ -32,14 +32,6 @@ public readonly struct Option<T> where T : notnull {
     /// <returns></returns>
     public bool IsNone() => _isNone || _data is null;
 
-
-
-
-
-
-
-
-
     /// <summary>
     ///     Creates a populated Option
     /// </summary>
@@ -59,5 +51,4 @@ public readonly struct Option<T> where T : notnull {
     /// <param name="data">Nullable data to insert into the option</param>
     /// <returns></returns>
     public static Option<T> Maybe(T? data) => data is null ? None() : Some(data);
-
 }

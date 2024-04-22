@@ -1,3 +1,5 @@
+using ResultAndOption.Results;
+
 namespace ResultAndOption.ContextCallables;
 
 internal sealed class NoInputCallable<TOut> : ICallable<TOut> where TOut : notnull {

@@ -1,4 +1,5 @@
 using ResultAndOption.Errors;
+using ResultAndOption.Options;
 using ResultAndOption.Results;
 using ResultAndOption.Results.GenericResultExtensions;
 

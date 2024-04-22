@@ -1,3 +1,5 @@
+using ResultAndOption.Results;
+
 namespace ResultAndOption.ContextCallables;
 
 internal class CallableOf<TIn, TOut> : ICallable<TOut> where TOut : notnull where TIn : notnull {

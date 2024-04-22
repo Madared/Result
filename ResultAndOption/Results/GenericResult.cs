@@ -1,7 +1,7 @@
 ﻿using ResultAndOption.Errors;
-using ResultAndOption.Results;
+using ResultAndOption.Options;
 
-namespace ResultAndOption;
+namespace ResultAndOption.Results;
 
 /// <summary>
 ///     Represents a result of an operation that can either succeed or fail, carrying either data or an error.

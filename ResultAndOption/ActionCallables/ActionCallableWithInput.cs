@@ -1,3 +1,5 @@
+using ResultAndOption.Results;
+
 namespace ResultAndOption.ActionCallables;
 
 internal sealed class ActionCallableWithInput<TIn> : IActionCallable where TIn : notnull {

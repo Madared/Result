@@ -1,4 +1,6 @@
 using ResultAndOption.ContextCallables;
+using ResultAndOption.Results;
+
 namespace ResultAndOption.CallableGenerators;
 
 internal class InputCallableGenerator<TIn, TOut> : ICallableGenerator<TOut> where TIn : notnull where TOut : notnull {
