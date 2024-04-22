@@ -14,8 +14,10 @@ public class FromFailedResult {
 
     [Fact]
     public void Mapping_With_Action_Gives_Failed_Context() {
-        IContextResult mapped = Context.Do(() => Console.WriteLine("hello"));
+        string? hello = null;
+        IContextResult mapped = Context.Do(() => hello = "hello");
         Assert.True(mapped.Failed);
+        Assert.Null(hello);
     }
 
     [Fact]

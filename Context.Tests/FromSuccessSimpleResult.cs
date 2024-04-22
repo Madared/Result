@@ -26,8 +26,10 @@ public class FromSuccessSimpleResult {
 
     [Fact]
     public void Mapping_With_Action_Gives_Successful_Context() {
-        IContextResult mapped = context.Do(() => Console.WriteLine("hello"));
+        string? hello = null;
+        IContextResult mapped = context.Do(() => hello = "hello");
         Assert.True(mapped.Succeeded);
+        Assert.NotNull(hello);
     }
 
     [Fact]
