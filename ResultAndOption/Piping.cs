@@ -12,7 +12,5 @@ public static class Piping {
     /// <param name="i">The non-null input reference.</param>
     /// <param name="function">The function to invoke on the input reference.</param>
     /// <returns>The result of type <typeparamref name="TOut" /> produced by the function.</returns>
-    public static TOut Pipe<TIn, TOut>(this TIn i, Func<TIn, TOut> function) where TIn : notnull {
-        return function(i);
-    }
+    public static TOut Pipe<TIn, TOut>(this TIn i, Func<TIn, TOut> function) where TIn : notnull => function(i);
 }
