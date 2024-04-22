@@ -1,7 +1,7 @@
-using ResultAndOption.CallableGenerators;
-using ResultAndOption.ContextCallables;
+using Context.CallableGenerators;
+using Context.ContextCallables;
 
-namespace ResultAndOption.ContextCommands;
+namespace Context.ContextCommands;
 
 public interface ICommandGenerator : ICallableGenerator {
     ICallable ICallableGenerator.Generate() {

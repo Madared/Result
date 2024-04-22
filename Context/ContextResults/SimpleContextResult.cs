@@ -1,12 +1,12 @@
-using ResultAndOption.CallableGenerators;
-using ResultAndOption.ContextCallables;
-using ResultAndOption.ContextCommands;
+using Context.CallableGenerators;
+using Context.ContextCallables;
+using Context.ContextCommands;
 using ResultAndOption.Errors;
 using ResultAndOption.Options;
 using ResultAndOption.Options.Extensions;
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextResults;
+namespace Context.ContextResults;
 
 internal class SimpleContextResult : IContextResult {
     private readonly ICommand _command;

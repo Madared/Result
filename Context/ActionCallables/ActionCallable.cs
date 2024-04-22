@@ -1,4 +1,4 @@
-namespace ResultAndOption.ActionCallables;
+namespace Context.ActionCallables;
 
 internal sealed class ActionCallable : IActionCallable {
     private readonly Action _action;

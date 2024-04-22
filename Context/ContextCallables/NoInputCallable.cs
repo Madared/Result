@@ -1,6 +1,6 @@
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextCallables;
+namespace Context.ContextCallables;
 
 internal sealed class NoInputCallable<TOut> : ICallable<TOut> where TOut : notnull {
     private readonly Func<Result<TOut>> _func;

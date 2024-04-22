@@ -1,10 +1,10 @@
-using ResultAndOption.CallableGenerators;
-using ResultAndOption.ContextCommands;
-using ResultAndOption.ContextResultExtensions;
+using Context.CallableGenerators;
+using Context.ContextCommands;
+using ResultAndOption;
 using ResultAndOption.Results;
 using ResultAndOption.Results.GenericResultExtensions;
 
-namespace ResultAndOption;
+namespace Context.ContextResults;
 
 public interface IContextResult : IResult {
     IContextResult Retry();

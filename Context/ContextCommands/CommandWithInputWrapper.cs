@@ -1,7 +1,6 @@
-using ResultAndOption.ContextResultExtensions;
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextCommands;
+namespace Context.ContextCommands;
 
 internal sealed class CommandWithInputWrapper<T> : ICommand where T : notnull {
     private readonly ICommandWithInput<T> _command;

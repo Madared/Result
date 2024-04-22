@@ -1,6 +1,7 @@
+using Context.ContextCallables;
 using ResultAndOption.ContextCallables;
 
-namespace ResultAndOption.CallableGenerators;
+namespace Context.CallableGenerators;
 
 public interface ICallableGenerator {
     ICallable Generate();

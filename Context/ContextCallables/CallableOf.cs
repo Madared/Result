@@ -1,6 +1,7 @@
+using ResultAndOption.ContextCallables;
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextCallables;
+namespace Context.ContextCallables;
 
 internal class CallableOf<TIn, TOut> : ICallable<TOut> where TOut : notnull where TIn : notnull {
     private readonly Func<TIn, Result<TOut>> _func;

@@ -1,6 +1,6 @@
 using ResultAndOption.Results;
 
-namespace ResultAndOption;
+namespace Context.ContextResults;
 
 public sealed class ResultSubscriber<T> where T : notnull {
     public ResultSubscriber(Result<T> result) {

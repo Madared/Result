@@ -1,10 +1,11 @@
-using ResultAndOption.ActionCallables;
-using ResultAndOption.CallableGenerators;
-using ResultAndOption.ContextCommands;
-using ResultAndOption.ContextResultExtensions;
+using Context.ActionCallables;
+using Context.CallableGenerators;
+using Context.ContextCallables;
+using Context.ContextCommands;
+using ResultAndOption;
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextResults.ContextResultExtensions;
+namespace Context.ContextResults.ContextResultExtensions;
 
 public static class Mapping {
     public static IContextResult Do(this IContextResult context, Action action) {

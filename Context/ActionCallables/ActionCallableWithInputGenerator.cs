@@ -1,4 +1,7 @@
-namespace ResultAndOption.ActionCallables;
+using Context.ContextResults;
+using ResultAndOption;
+
+namespace Context.ActionCallables;
 
 internal sealed class ActionCallableWithInputGenerator<TIn> : IActionCallableGenerator where TIn : notnull {
     private readonly Action<TIn> _action;

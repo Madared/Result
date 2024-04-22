@@ -1,6 +1,6 @@
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextCallables;
+namespace Context.ContextCallables;
 
 internal sealed class NoOutputCallable<TIn> : ICallable where TIn : notnull {
     private readonly TIn _data;

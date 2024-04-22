@@ -1,6 +1,7 @@
+using ResultAndOption.ContextCallables;
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextCallables;
+namespace Context.ContextCallables;
 
 internal sealed class Callable<TIn, TOut> : ICallable<TOut> where TIn : notnull where TOut : notnull {
     private readonly TIn _data;

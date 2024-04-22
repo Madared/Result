@@ -1,7 +1,7 @@
-using ResultAndOption.ContextCallables;
+using Context.ContextCallables;
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextCommands;
+namespace Context.ContextCommands;
 
 public interface ICommand : ICallable {
     void Undo();

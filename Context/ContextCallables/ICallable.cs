@@ -1,7 +1,7 @@
 using ResultAndOption.Results;
 using ResultAndOption.Results.GenericResultExtensions;
 
-namespace ResultAndOption.ContextCallables;
+namespace Context.ContextCallables;
 
 public interface ICallable {
     Result Call();

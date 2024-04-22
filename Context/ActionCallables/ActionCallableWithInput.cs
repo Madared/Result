@@ -1,6 +1,6 @@
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ActionCallables;
+namespace Context.ActionCallables;
 
 internal sealed class ActionCallableWithInput<TIn> : IActionCallable where TIn : notnull {
     private readonly Action<TIn> _action;

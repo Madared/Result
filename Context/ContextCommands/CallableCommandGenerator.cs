@@ -1,8 +1,7 @@
-using ResultAndOption.ActionCallables;
-using ResultAndOption.CallableGenerators;
-using ResultAndOption.ContextResultExtensions;
+using Context.ActionCallables;
+using Context.CallableGenerators;
 
-namespace ResultAndOption.ContextCommands;
+namespace Context.ContextCommands;
 
 internal sealed class CallableCommandGenerator : ICommandGenerator {
     private readonly ICallableGenerator _callableGenerator;

@@ -1,6 +1,7 @@
+using ResultAndOption;
 using ResultAndOption.Errors;
 
-namespace ResultAndOption.ContextResults.ContextResultExtensions;
+namespace Context.ContextResults.ContextResultExtensions;
 
 public static class Retries {
     public static IContextResult Retry(this IContextResult context, int timesToRetry) {

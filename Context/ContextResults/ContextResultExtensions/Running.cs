@@ -1,12 +1,12 @@
-using ResultAndOption.ActionCallables;
-using ResultAndOption.CallableGenerators;
-using ResultAndOption.ContextCallables;
-using ResultAndOption.ContextCommands;
-using ResultAndOption.ContextResultExtensions;
+using Context.ActionCallables;
+using Context.CallableGenerators;
+using Context.ContextCallables;
+using Context.ContextCommands;
+using ResultAndOption;
 using ResultAndOption.Options;
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextResults.ContextResultExtensions;
+namespace Context.ContextResults.ContextResultExtensions;
 
 public static class Running {
     public static IContextResult RunAndGetContext(this Func<Result> action) {

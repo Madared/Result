@@ -1,8 +1,8 @@
+using Context.ContextResults.ContextResultExtensions;
 using ResultAndOption.ContextCallables;
-using ResultAndOption.ContextResults.ContextResultExtensions;
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextResultExtensions;
+namespace Context.ContextCallables;
 
 public static class CallableExtensions {
     public static ICallable EmptyCallable() {

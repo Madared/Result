@@ -1,6 +1,6 @@
 using ResultAndOption.Results;
 
-namespace ResultAndOption.ContextResults.ContextResultExtensions;
+namespace Context.ContextResults.ContextResultExtensions;
 
 public static class Wrapping {
     public static Func<Result> WrapInResult(this Action action) {

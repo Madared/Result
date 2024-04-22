@@ -1,6 +1,7 @@
+using ResultAndOption;
 using ResultAndOption.Results;
 
-namespace ResultAndOption;
+namespace Context.ContextResults;
 
 public sealed class ResultEmitter<T> where T : notnull {
     private readonly List<ResultSubscriber<T>> _subscribers;
