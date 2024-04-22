@@ -4,7 +4,7 @@
 ///     Represents a result of an operation that can either succeed or fail, carrying either data or an error.
 /// </summary>
 /// <typeparam name="T">The type of data carried by the result.</typeparam>
-public readonly struct Result<T> : IResult<T> where T : notnull {
+public readonly struct Result<T> : IResult<T>, IMappable, IMappable<T> where T : notnull {
     private readonly Option<T> _data;
     private readonly IError? _error;
 
@@ -56,6 +56,26 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
             ? Fail(error)
             : Ok(data);
     }
+
+    IMappable<TOut> IMappable<T>.Map<TOut>(IMapper<T, TOut> mapper) => Map(mapper);
+    IMappable<TOut> IMappable.Map<TOut>(IMapper<TOut> mapper) => Map(mapper);
+    
+    public Result<TOut> Map<TOut>(IMapper<T, TOut> mapper) where TOut : notnull => Failed
+        ? Result<TOut>.Fail(Error)
+        : Result<TOut>.Ok(mapper.Map(Data));
+
+    public Result<TOut> Map<TOut>(IMapper<T, Result<TOut>> mapper) where TOut : notnull => Failed
+        ? Result<TOut>.Fail(Error)
+        : mapper.Map(Data);
+
+    public Result<TOut> Map<TOut>(IMapper<TOut> mapper) where TOut : notnull => Failed
+        ? Result<TOut>.Fail(Error)
+        : Result<TOut>.Ok(mapper.Map());
+
+    public Result<TOut> Map<TOut>(IMapper<Result<TOut>> mapper) where TOut : notnull => Failed
+        ? Result<TOut>.Fail(Error)
+        : mapper.Map();
+    
 
     /// <summary>
     ///     Maps the data of the result using the specified mapper function and wrapps it into a result of the new type.

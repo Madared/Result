@@ -1,6 +1,6 @@
 ﻿namespace Results;
 
-public readonly struct Result : IResult {
+public readonly struct Result : IResult, IMappable {
     private readonly IError? _error;
 
     public bool Succeeded { get; }
@@ -31,6 +31,16 @@ public readonly struct Result : IResult {
     public static Result Fail(IError error) {
         return new Result(true, error);
     }
+
+    IMappable<TOut> IMappable.Map<TOut>(IMapper<TOut> mapper) => Map(mapper);
+
+    public Result<TOut> Map<TOut>(IMapper<TOut> mapper) where TOut : notnull => Failed
+        ? Result<TOut>.Fail(Error)
+        : Result<TOut>.Ok(mapper.Map());
+
+    public Result<TOut> Map<TOut>(IMapper<Result<TOut>> mapper) where TOut : notnull => Failed 
+        ? Result<TOut>.Fail(Error) 
+        : mapper.Map();
 
     /// <summary>
     ///     Runs an action if the result represents a failure state and returns the same result.
