@@ -11,7 +11,7 @@ internal class InputCallableGeneratorOfResult<TIn, TOut> : ICallableGenerator<TO
         _func = func;
     }
 
-    public IResultCallable<TOut> Generate() {
-        return new ResultCallableOfResult<TIn, TOut>(_subscriber.Result, _func);
+    public ICallable<TOut> Generate() {
+        return new CallableOf<TIn, TOut>(_subscriber.Result, _func);
     }
 }

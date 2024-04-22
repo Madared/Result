@@ -1,6 +1,6 @@
 namespace Results.ContextResultExtensions;
 
-public interface ICommand : IResultCallable {
+public interface ICommand : ICallable {
     void Undo();
 }
 

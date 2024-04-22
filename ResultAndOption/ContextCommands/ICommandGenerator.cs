@@ -3,7 +3,7 @@ using Results.CallableGenerators;
 namespace Results.ContextResultExtensions;
 
 public interface ICommandGenerator : ICallableGenerator {
-    IResultCallable ICallableGenerator.Generate() {
+    ICallable ICallableGenerator.Generate() {
         return Generate();
     }
 

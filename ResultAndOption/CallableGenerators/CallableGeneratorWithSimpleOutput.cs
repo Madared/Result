@@ -11,10 +11,10 @@ internal sealed class CallableGeneratorWithSimpleOutput<TIn> : ICallableGenerato
         _subscriber = subscriber;
     }
 
-    public IResultCallable Generate() {
+    public ICallable Generate() {
         Result<TIn> result = _subscriber.Result;
         return result.Failed
-            ? new NoInputSimpleResultCallable(() => Result.Fail(result.Error))
-            : new NoOutputResultCallable<TIn>(result.Data, _action);
+            ? new NoInputSimpleCallable(() => Result.Fail(result.Error))
+            : new NoOutputCallable<TIn>(result.Data, _action);
     }
 }
