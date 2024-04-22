@@ -1,8 +1,11 @@
 namespace ResultAndOption.Options.Extensions;
 
+/// <summary>
+/// Contains all methods to call Actions on an Option
+/// </summary>
 public static class Doing {
     /// <summary>
-    ///     Performs the action in case the option is not empty, and returns this option
+    /// Performs the action in case the option is not empty, and returns this option
     /// </summary>
     /// <param name="option"></param>
     /// <param name="action">Action to perform</param>

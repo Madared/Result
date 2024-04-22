@@ -1,5 +1,10 @@
+using ResultAndOption.Errors;
+
 namespace ResultAndOption.Results.SimpleResultExtensions;
 
+/// <summary>
+/// Contains methods to call actions on simple results
+/// </summary>
 public static class Doing {
     /// <summary>
     ///     Maps the result using the specified function.
@@ -24,5 +29,27 @@ public static class Doing {
         if (result.Failed) return result;
         action();
         return Result.Ok();
+    }
+
+    /// <summary>
+    ///     Runs an action if the result represents a failure state and returns the same result.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="action">The action to run, accepting the current result as a parameter.</param>
+    /// <returns>The same result after running the action.</returns>
+    public static Result IfFailed(this Result result, Action<IError> action) {
+        if (result.Failed) action(result.Error);
+        return result;
+    }
+
+    /// <summary>
+    /// If the result is a failure calls the specified action
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    public static Result IfFailed(this Result result, Action action) {
+        if (result.Failed) action();
+        return result;
     }
 }

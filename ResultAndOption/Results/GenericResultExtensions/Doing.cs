@@ -2,6 +2,9 @@ using ResultAndOption.Errors;
 
 namespace ResultAndOption.Results.GenericResultExtensions;
 
+/// <summary>
+/// Contains methods to call actions on results
+/// </summary>
 public static class Doing {
     /// <summary>
     ///     Maps the data of the result using the specified function that returns a simple result.
@@ -32,6 +35,7 @@ public static class Doing {
     /// <summary>
     ///     Applies the specified action to the data of the result if it represents a success.
     /// </summary>
+    /// <param name="result"></param>
     /// <param name="function">The action to apply.</param>
     /// <returns>The same result after applying the action.</returns>
     public static Result<T> Do<T>(this Result<T> result, Action<T> function) where T : notnull {

@@ -1,12 +1,28 @@
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
 
 public static class Mapping {
+    /// <summary>
+    /// If the result failed returns a new Result wrapping the error, otherwise awaits for the asyncFunction and wraps it in a Result.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="asyncFunction"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Result<T> result, Func<T, Task<TOut>> asyncFunction) where T : notnull where TOut : notnull {
         if (result.Failed) return Result<TOut>.Fail(result.Error);
         TOut functionData = await asyncFunction(result.Data);
         return Result<TOut>.Ok(functionData);
     }
 
+    /// <summary>
+    /// if The result failed returns a new Result wrapping the error, otherwise awaits the asyncMapper and returns its result
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="asyncMapper"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Result<T> result, Func<T, Task<Result<TOut>>> asyncMapper) where T : notnull where TOut : notnull => result.Failed 
         ? Result<TOut>.Fail(result.Error) 
         : await asyncMapper(result.Data);

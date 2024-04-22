@@ -1,5 +1,8 @@
 namespace ResultAndOption.Results.SimpleResultExtensions;
 
+/// <summary>
+/// Contains methods to map simple results
+/// </summary>
 public static class Mapping {
     /// <summary>
     ///     Maps the result using the specified function.

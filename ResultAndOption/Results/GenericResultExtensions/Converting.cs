@@ -3,6 +3,9 @@ using ResultAndOption.Options;
 
 namespace ResultAndOption.Results.GenericResultExtensions;
 
+/// <summary>
+/// Contains Conversion methods for Generic Results
+/// </summary>
 public static class Converting {
     /// <summary>
     ///     Converts the result to a simple result without carrying any data.
@@ -38,7 +41,6 @@ public static class Converting {
         : result;
 
 
-
     /// <summary>
     ///     Converts a nullable reference to a result, representing a success or failure state.
     /// </summary>
@@ -61,6 +63,13 @@ public static class Converting {
         return resultList;
     }
 
+    /// <summary>
+    /// Turns an option to a result, an empty option returns a failed result with the specified IError
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="error"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public static Result<T> ToResult<T>(this Option<T> data, IError error) where T : notnull => data.IsNone()
         ? Result<T>.Fail(error)
         : Result<T>.Ok(data.Data);
