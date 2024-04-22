@@ -2,7 +2,7 @@ using ResultAndOption.Errors;
 
 namespace ResultAndOption.Results.GenericResultExtensions;
 
-public static class Conversion {
+public static class Converting {
     /// <summary>
     ///     Converts the result to a simple result without carrying any data.
     /// </summary>
@@ -27,6 +27,7 @@ public static class Conversion {
     ///     Wraps the existing error if it is a failed result and the error is of the specified type otherwise returns the
     ///     existing result object
     /// </summary>
+    /// <param name="result"></param>
     /// <param name="errorWrapper">function to wrap the error</param>
     /// <typeparam name="TError">expected error type to wrap</typeparam>
     /// <typeparam name="T"></typeparam>
@@ -44,9 +45,7 @@ public static class Conversion {
     /// <param name="i">The nullable input reference.</param>
     /// <param name="error">The error to use if the input reference is null.</param>
     /// <returns>A result representing the input reference if it is not null, or a failed result with the specified error.</returns>
-    public static Result<TIn> ToResult<TIn>(this TIn? i, IError error) where TIn : notnull {
-        return Result<TIn>.Unknown(i, error);
-    }
+    public static Result<TIn> ToResult<TIn>(this TIn? i, IError error) where TIn : notnull => Result<TIn>.Unknown(i, error);
 
     /// <summary>
     ///     Converts a simple list of results to the more specific ResultList.
@@ -61,15 +60,7 @@ public static class Conversion {
         return resultList;
     }
 
-    public static Result<T> ToResult<T>(this Option<T> data, IError error) where T : notnull {
-        return data.IsNone()
-            ? Result<T>.Fail(error)
-            : Result<T>.Ok(data.Data);
-    }
-
-    public static Result ConditionResult(this bool condition, IError error) {
-        return condition
-            ? Result.Ok()
-            : Result.Fail(error);
-    }
+    public static Result<T> ToResult<T>(this Option<T> data, IError error) where T : notnull => data.IsNone()
+        ? Result<T>.Fail(error)
+        : Result<T>.Ok(data.Data);
 }

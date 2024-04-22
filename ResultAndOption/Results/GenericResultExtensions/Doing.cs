@@ -35,8 +35,7 @@ public static class Doing {
     /// <param name="function">The action to apply.</param>
     /// <returns>The same result after applying the action.</returns>
     public static Result<T> Do<T>(this Result<T> result, Action<T> function) where T : notnull {
-        if (result.Succeeded)
-            function(result.Data);
+        if (result.Succeeded) function(result.Data);
         return result;
     }
 

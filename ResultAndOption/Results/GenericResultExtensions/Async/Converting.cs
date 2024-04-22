@@ -2,7 +2,7 @@ using ResultAndOption.Errors;
 
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
 
-public static class Conversion {
+public static class Converting {
     public static async Task<Result<T>> ToResultAsync<T>(this Task<Option<T>> option, IError error) where T : notnull {
         Option<T> data = await option;
         return data.ToResult(error);

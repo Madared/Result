@@ -2,6 +2,7 @@ using ResultAndOption.Errors;
 using ResultAndOption.Results;
 using ResultAndOption.Results.GenericResultExtensions;
 using ResultAndOption.Results.GenericResultExtensions.Async;
+using ResultAndOption.Results.SimpleResultExtensions;
 
 namespace Results.Tests;
 
