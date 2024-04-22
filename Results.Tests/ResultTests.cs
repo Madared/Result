@@ -37,7 +37,7 @@ public class ResultTests {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //Then
-        Assert.Throws<ErrorWrapperException>(() => stringResult.Data);
+        Assert.Throws<ErrorWrapper>(() => stringResult.Data);
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class ResultTests {
         //Given
         Result<int> intResult = Result<int>.Fail(new UnknownError());
         //Then
-        Assert.Throws<ErrorWrapperException>(() => intResult.Data);
+        Assert.Throws<ErrorWrapper>(() => intResult.Data);
     }
 
 
