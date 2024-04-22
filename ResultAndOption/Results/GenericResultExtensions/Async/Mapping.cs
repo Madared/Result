@@ -3,7 +3,7 @@ namespace ResultAndOption.Results.GenericResultExtensions.Async;
 public static class Mapping {
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Result<T> result, Func<T, Task<TOut>> asyncFunction) where T : notnull where TOut : notnull {
         if (result.Failed) return Result<TOut>.Fail(result.Error);
-        var functionData = await asyncFunction(result.Data);
+        TOut functionData = await asyncFunction(result.Data);
         return Result<TOut>.Ok(functionData);
     }
 
@@ -27,7 +27,7 @@ public static class Mapping {
         Result<T> originalResult = await result;
         if (originalResult.Failed) return Result<TOut>.Fail(originalResult.Error);
 
-        var asyncResult = await asyncMapper(originalResult.Data);
+        TOut asyncResult = await asyncMapper(originalResult.Data);
         return Result<TOut>.Ok(asyncResult);
     }
 

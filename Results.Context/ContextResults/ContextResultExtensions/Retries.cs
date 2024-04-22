@@ -8,7 +8,7 @@ public static class Retries {
         if (context.Succeeded) return context;
         int timesRetried = 0;
         while (timesRetried < timesToRetry) {
-            var retried = context.Retry();
+            IContextResult retried = context.Retry();
             if (retried.Succeeded) return retried;
             timesRetried++;
         }

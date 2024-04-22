@@ -38,7 +38,7 @@ internal class SimpleContextResult : IContextResult {
     }
 
     public IContextResult Do(ICommandGenerator commandGenerator) {
-        var command = commandGenerator.Generate();
+        ICommand command = commandGenerator.Generate();
         return Failed
             ? new SimpleContextResult(this.ToOption<IContextResult>(), command, commandGenerator, Result.Fail(Error))
             : new SimpleContextResult(this.ToOption<IContextResult>(), command, commandGenerator, command.Call());
@@ -54,8 +54,8 @@ internal class SimpleContextResult : IContextResult {
     public IContextResult Retry() {
         if (Succeeded) return this;
         if (_previousContext.IsNone()) return new SimpleContextResult(Option<IContextResult>.None(), _command, _commandGenerator, _command.Call());
-        var retried = _previousContext.Data.Retry();
-        var command = _commandGenerator.Generate();
+        IContextResult retried = _previousContext.Data.Retry();
+        ICommand command = _commandGenerator.Generate();
         return retried.Failed
             ? new SimpleContextResult(_previousContext, command, _commandGenerator, Result.Fail(retried.Error))
             : new SimpleContextResult(_previousContext, command, _commandGenerator, _command.Call());

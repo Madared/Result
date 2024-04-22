@@ -10,7 +10,7 @@ public static class Converting {
     }
 
     public static async Task<Result<T>> ToResultAsync<T>(this Task<T?> nullable, IError error) where T : notnull {
-        var data = await nullable;
+        T? data = await nullable;
         return data.ToResult(error);
     }
 }

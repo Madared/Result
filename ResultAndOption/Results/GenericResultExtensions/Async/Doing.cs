@@ -23,7 +23,7 @@ public static class Doing {
     public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<T, Task<Result>> action) where T : notnull {
         Result<T> originalResult = await result;
         if (originalResult.Failed) return originalResult;
-        var actionResult = await action(originalResult.Data);
+        Result actionResult = await action(originalResult.Data);
         return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : originalResult;
     }
 
@@ -40,12 +40,12 @@ public static class Doing {
     public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<Task<Result>> mapper) where T : notnull {
         Result<T> originalResult = await result;
         if (originalResult.Failed) return originalResult;
-        var mappingResult = await mapper();
+        Result mappingResult = await mapper();
         return mappingResult.Failed ? Result<T>.Fail(mappingResult.Error) : originalResult;
     }
 
     public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<IError, Task> action) {
-        var original = await result;
+        Result original = await result;
         if (original.Failed) await action(original.Error);
         return original;
     }

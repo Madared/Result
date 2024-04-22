@@ -43,7 +43,7 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
     }
 
     public IContextResult<TOut> Do(ICommandGenerator commandGenerator) {
-        var command = commandGenerator.Generate();
+        ICommand command = commandGenerator.Generate();
         ResultSubscriber<TOut> subscriber = new(_result);
         Emitter.Subscribe(subscriber);
         ICallableGenerator<TOut> callableGenerator = new ResultGetterCallableGenerator<TOut>(subscriber);
@@ -64,7 +64,7 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
         if (Succeeded) return this;
         if (_previousContext.IsNone()) return new ContextResult<TOut>(_called, Option<IContextResult>.None(), _called.Call(), _callableGenerator, new ResultEmitter<TOut>());
 
-        var retried = _previousContext.Data.Retry();
+        IContextResult retried = _previousContext.Data.Retry();
         ICallable<TOut> updatedCalled = _callableGenerator.Generate();
         if (retried.Failed) return new ContextResult<TOut>(updatedCalled, retried.ToOption(), Result<TOut>.Fail(retried.Error), _callableGenerator, new ResultEmitter<TOut>());
 

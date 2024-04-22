@@ -15,7 +15,7 @@ public class FromFailedSimpleResult {
 
     [Fact]
     public void Mapping_With_Successful_Result_Function_Gives_Failed_Context_With_Same_Error() {
-        var mapped = Context.Do(Result.Ok);
+        IContextResult mapped = Context.Do(Result.Ok);
         Assert.True(mapped.Failed);
         Assert.Equal(Context.Error, mapped.Error);
     }
@@ -45,7 +45,7 @@ public class FromFailedSimpleResult {
 
     [Fact]
     public void Stripping_Context_Gives_Same_Result() {
-        var stripped = Context.StripContext();
+        Result stripped = Context.StripContext();
         Assert.Equal(ResultFunc(), stripped);
     }
 }

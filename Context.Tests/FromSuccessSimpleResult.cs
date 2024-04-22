@@ -14,7 +14,7 @@ public class FromSuccessSimpleResult {
 
     [Fact]
     public void Mapping_With_Successful_Simple_Result_Function_Gives_Successful_Context() {
-        var mapped = context.Do(Result.Ok);
+        IContextResult mapped = context.Do(Result.Ok);
         Assert.True(mapped.Succeeded);
     }
 
@@ -26,7 +26,7 @@ public class FromSuccessSimpleResult {
 
     [Fact]
     public void Mapping_With_Action_Gives_Successful_Context() {
-        var mapped = context.Do(() => Console.WriteLine("hello"));
+        IContextResult mapped = context.Do(() => Console.WriteLine("hello"));
         Assert.True(mapped.Succeeded);
     }
 
@@ -38,7 +38,7 @@ public class FromSuccessSimpleResult {
 
     [Fact]
     public void Mapping_With_Failed_Simple_Result_Function_Gives_Failed_Context() {
-        var mapped = context.Do(() => Result.Fail(new UnknownError()));
+        IContextResult mapped = context.Do(() => Result.Fail(new UnknownError()));
         Assert.True(mapped.Failed);
     }
 
@@ -50,13 +50,13 @@ public class FromSuccessSimpleResult {
 
     [Fact]
     public void Stripping_Context_Gives_Same_Result() {
-        var stripped = context.StripContext();
+        Result stripped = context.StripContext();
         Assert.Equal(resultFunc(), stripped);
     }
 
     [Fact]
     public void Retry_Returns_Same_Context() {
-        var retried = context.Retry();
+        IContextResult retried = context.Retry();
         Assert.Equal(context, retried);
     }
 }

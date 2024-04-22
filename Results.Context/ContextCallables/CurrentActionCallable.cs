@@ -15,7 +15,7 @@ internal sealed class CurrentActionCallable<TOut> : ICallable<TOut> where TOut :
     }
 
     public Result<TOut> Call() {
-        var called = _callable.Call();
+        Result called = _callable.Call();
         return called.Failed ? Result<TOut>.Fail(called.Error) : _result;
     }
 }

@@ -11,7 +11,7 @@ public static class Doing {
     /// <returns>A new result.</returns>
     public static Result<T> Do<T>(this Result<T> result, Func<T, Result> action) where T : notnull {
         if (result.Failed) return result;
-        var actionResult = action(result.Data);
+        Result actionResult = action(result.Data);
         return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
     }
 
@@ -24,7 +24,7 @@ public static class Doing {
     /// <returns>A new simple result</returns>
     public static Result<T> Do<T>(this Result<T> result, Func<Result> function) where T : notnull {
         if (result.Failed) return result;
-        var actionResult = function();
+        Result actionResult = function();
         return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
     }
 

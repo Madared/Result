@@ -13,7 +13,7 @@ public static class Running {
         ICallableGenerator doGenerator = new SimpleCallableGenerator(action);
         IActionCallableGenerator undoGenerator = new ActionCallableGenerator(Nothing.DoNothing);
         ICommandGenerator commandGenerator = new CallableCommandGenerator(doGenerator, undoGenerator);
-        var command = commandGenerator.Generate();
+        ICommand command = commandGenerator.Generate();
         return new SimpleContextResult(Option<IContextResult>.None(), command, commandGenerator, command.Call());
     }
 

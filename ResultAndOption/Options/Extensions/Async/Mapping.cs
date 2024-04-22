@@ -11,7 +11,7 @@ public static class Mapping {
     public static async Task<Option<TOut>> MapAsync<T, TOut>(this Option<T> option, Func<T, Task<TOut?>> asyncMapper) where T : notnull where TOut : notnull {
         if (option.IsNone()) return Option<TOut>.None();
 
-        var mapResult = await asyncMapper(option.Data);
+        TOut? mapResult = await asyncMapper(option.Data);
         return mapResult is null ? Option<TOut>.None() : Option<TOut>.Some(mapResult);
     }
 

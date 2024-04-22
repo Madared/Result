@@ -61,7 +61,7 @@ public class MapChainFromSuccessContext {
 
         Assert.Equal(0, sideEffecter.TimesMutated);
 
-        var retried = mapped.Retry();
+        IContextResult retried = mapped.Retry();
         Assert.Equal(1, sideEffecter.TimesMutated);
     }
 }
