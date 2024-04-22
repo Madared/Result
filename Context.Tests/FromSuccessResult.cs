@@ -1,7 +1,7 @@
 using ResultAndOption.Errors;
 using ResultAndOption.Results;
 
-namespace Results.Tests.ContextResultTests;
+namespace Context.Tests;
 
 public class FromSuccessResult {
     private static readonly Func<Result<string>> ResultFunc = () => Result<string>.Ok("hello");

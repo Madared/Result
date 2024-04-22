@@ -1,7 +1,7 @@
 using ResultAndOption.Errors;
 using ResultAndOption.Results;
 
-namespace Results.Tests;
+namespace Context.Tests;
 
 public class Retryable {
     private bool _called;

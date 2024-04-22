@@ -1,7 +1,6 @@
 using ResultAndOption.Results;
-using ResultTests;
 
-namespace Results.Tests.ContextResultTests;
+namespace Context.Tests;
 
 public class MultipleRetries {
     private static readonly Func<Result<string>> ResultFunc = () => Result<string>.Ok("hello");

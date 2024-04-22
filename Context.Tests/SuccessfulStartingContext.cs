@@ -1,7 +1,7 @@
 using ResultAndOption.Errors;
 using ResultAndOption.Results;
 
-namespace Results.Tests.ContextResultTests;
+namespace Context.Tests;
 
 public static class SuccessfulContext {
     public static Func<Result<string>> ResultFunc = () => Result<string>.Ok("hello");

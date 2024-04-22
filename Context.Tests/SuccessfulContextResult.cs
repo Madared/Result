@@ -1,8 +1,7 @@
 using ResultAndOption.Errors;
 using ResultAndOption.Results;
-using ResultTests;
 
-namespace Results.Tests.ContextResultTests;
+namespace Context.Tests;
 
 public class SuccessfulContextResult {
     private static readonly IContextResult<string> Context = SuccessfulContext.Context.Map(str => str);

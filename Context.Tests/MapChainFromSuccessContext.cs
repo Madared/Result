@@ -1,9 +1,6 @@
-using ResultAndOption.ContextCommands;
-using ResultAndOption.ContextResults.ContextResultExtensions;
 using ResultAndOption.Results;
-using Results.Tests;
 
-namespace ResultTests;
+namespace Context.Tests;
 
 public class MapChainFromSuccessContext {
     private static readonly Func<Result<string>> ResultFunc = () => Result<string>.Ok("Start");
