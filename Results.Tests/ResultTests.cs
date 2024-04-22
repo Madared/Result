@@ -186,8 +186,8 @@ public class ResultTests {
         Result<string> stringResult = Result<string>.Ok("hello");
         Task<Result<string>> taskResult = Task.FromResult(stringResult);
 
-        async Task<int> SomeAsyncFunc(string f) {
-            return f.Length;
+        Task<int> SomeAsyncFunc(string f) {
+            return Task.FromResult(f.Length);
         }
 
         Task<Result<int>> intResultTask = taskResult.MapAsync(SomeAsyncFunc);
@@ -211,8 +211,8 @@ public class ResultTests {
         string hello = "hello";
         Result<string> helloResult = Result<string>.Ok(hello);
 
-        async Task<int> SomeAsyncFunction(string s) {
-            return s.Length;
+        Task<int> SomeAsyncFunction(string s) {
+            return Task.FromResult(s.Length);
         }
 
         Task<Result<int>> intTaskResult = helloResult.MapAsync(SomeAsyncFunction);
@@ -226,8 +226,8 @@ public class ResultTests {
         string hello = "hello";
         Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
 
-        async Task<Result<int>> SomeAsyncFunction(string s) {
-            return Result<int>.Ok(s.Length);
+        Task<Result<int>> SomeAsyncFunction(string s) {
+            return Task.FromResult(Result<int>.Ok(s.Length));
         }
 
         Task<Result<int>> intTaskResult = taskResult.MapAsync(SomeAsyncFunction);

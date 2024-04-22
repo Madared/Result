@@ -19,8 +19,8 @@ public class AsyncOptionTests {
         const string hello = "hello";
         Task<Option<string>> taskOption = Task.FromResult(Option<string>.Some(hello));
 
-        async Task<int> SomeAsyncFunction(string s) {
-            return s.Length;
+        Task<int> SomeAsyncFunction(string s) {
+            return Task.FromResult(s.Length);
         }
 
         Task<Option<int>> intTaskOption = taskOption.MapAsync(SomeAsyncFunction);
@@ -44,8 +44,8 @@ public class AsyncOptionTests {
         string hello = "hello";
         Task<Option<string>> taskOption = Task.FromResult(Option<string>.Some(hello));
 
-        async Task<Option<int>> SomeAsyncFunction(string s) {
-            return Option<int>.Some(s.Length);
+        Task<Option<int>> SomeAsyncFunction(string s) {
+            return Task.FromResult(Option<int>.Some(s.Length));
         }
 
         Task<Option<int>> intTaskOption = taskOption.MapAsync(SomeAsyncFunction);
