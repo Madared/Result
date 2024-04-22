@@ -3,10 +3,7 @@ using ResultAndOption.Results;
 
 namespace ResultAndOption;
 
-/// <summary>
-///     Provides extension methods for working with reference types and results.
-/// </summary>
-public static class ReferenceExtensions {
+public static class Piping {
     /// <summary>
     ///     Invokes a function on a non-null reference and returns the result.
     /// </summary>
@@ -17,15 +14,5 @@ public static class ReferenceExtensions {
     /// <returns>The result of type <typeparamref name="TOut" /> produced by the function.</returns>
     public static TOut Pipe<TIn, TOut>(this TIn i, Func<TIn, TOut> function) where TIn : notnull {
         return function(i);
-    }
-    
-    /// <summary>
-    ///     Generates an option type based on a null reference type
-    /// </summary>
-    /// <param name="data"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public static Option<T> ToOption<T>(this T? data) where T : notnull {
-        return Option<T>.Maybe(data);
     }
 }

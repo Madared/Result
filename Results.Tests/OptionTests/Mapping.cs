@@ -1,3 +1,5 @@
+using ResultAndOption.Options.Extensions;
+
 namespace ResultTests.OptionTests;
 
 public class Mapping {

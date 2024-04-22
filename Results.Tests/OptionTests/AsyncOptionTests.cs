@@ -1,3 +1,5 @@
+using ResultAndOption.Options.Extensions.Async;
+
 namespace ResultTests;
 
 public class AsyncOptionTests {
