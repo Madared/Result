@@ -15,7 +15,7 @@ internal sealed class ContextResult<TOut> : IContextResult<TOut> where TOut : no
     private readonly Option<IContextResult> _previousContext;
     private readonly Result<TOut> _result;
     private bool _undone;
-    private Result<TOut> ActiveResult => _undone ? Result<TOut>.Fail(new UnknownError()) : _result;
+    private Result<TOut> ActiveResult => _undone ? Result<TOut>.Fail(new ContextHasBeenUndone()) : _result;
 
     public ContextResult(ICallable<TOut> called, Option<IContextResult> previousContext, Result<TOut> result, ICallableGenerator<TOut> callableGenerator, ResultEmitter<TOut> emitter) {
         _called = called;
