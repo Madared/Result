@@ -326,4 +326,5 @@ public class ResultTests {
         Assert.True(sResult.Succeeded);
         Assert.Equal("hello", sResult.Data);
     }
+    
 }
