@@ -29,7 +29,7 @@ public static class Mapping {
     }
 
     /// <summary>
-    /// 
+    /// Awaits option and calls Map method
     /// </summary>
     /// <param name="option"></param>
     /// <param name="mapper"></param>
