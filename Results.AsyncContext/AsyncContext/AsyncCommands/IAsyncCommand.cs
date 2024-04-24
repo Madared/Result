@@ -1,6 +1,6 @@
 using ResultAndOption.Results;
 
-namespace Results.AsyncContext.AsyncContext;
+namespace Results.AsyncContext.AsyncContext.AsyncCommands;
 
 public interface IAsyncCommand {
     Task<Result> Do();
