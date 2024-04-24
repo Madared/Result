@@ -35,4 +35,16 @@ public static class Mapping {
     public static async Task<Result> MapAsync(this Result result, Func<Task<Result>> mapper) => result.Failed
         ? Result.Fail(result.Error)
         : await mapper();
+
+    public static async Task<Result<T>> MapAsync<T>(this Result result, Func<Task<Result<T>>> mapper)
+        where T : notnull => result.Failed
+        ? Result<T>.Fail(result.Error)
+        : await mapper();
+
+    public static async Task<Result<T>> MapAsync<T>(this Task<Result> result, Func<Task<Result<T>>> mapper)
+        where T : notnull {
+        Result originalResult = await result;
+        if (originalResult.Failed) return Result<T>.Fail(originalResult.Error);
+        return await mapper();
+    }
 }
