@@ -17,17 +17,11 @@ public interface IContextResult : IResult {
 public interface IContextResult<TOut> : IContextResult, IResult<TOut> where TOut : notnull {
     ResultEmitter<TOut> Emitter { get; }
 
-    IContextResult IContextResult.Retry() {
-        return Retry();
-    }
+    IContextResult IContextResult.Retry() => Retry();
 
-    Result IContextResult.StripContext() {
-        return StripContext().ToSimpleResult();
-    }
+    Result IContextResult.StripContext() => StripContext().ToSimpleResult();
 
-    IContextResult IContextResult.Do(ICommandGenerator commandGenerator) {
-        return Do(commandGenerator);
-    }
+    IContextResult IContextResult.Do(ICommandGenerator commandGenerator) => Do(commandGenerator);
 
     new IContextResult<TOut> Retry();
     new Result<TOut> StripContext();

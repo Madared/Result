@@ -326,5 +326,12 @@ public class ResultTests {
         Assert.True(sResult.Succeeded);
         Assert.Equal("hello", sResult.Data);
     }
-    
+
+    [Fact]
+    public void MapWrap_Wraps_Results() {
+        Result<string> stringResult = Result<string>.Ok("hello");
+        Result<Result<string>> mapWrapResult = stringResult.Wrap(str => Result<string>.Ok(str + "boom"));
+        Assert.True(mapWrapResult.Succeeded);
+        Assert.True(mapWrapResult.Data.Succeeded);
+    }
 }
