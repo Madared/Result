@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ResultAndOption\ResultAndOption.csproj" />
+      <ProjectReference Include="..\Results.Context\Results.Context.csproj" />
+    </ItemGroup>
+
 </Project>

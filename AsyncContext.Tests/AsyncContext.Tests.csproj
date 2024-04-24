@@ -22,4 +22,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Results.AsyncContext\Results.AsyncContext.csproj" />
+    </ItemGroup>
+
 </Project>
