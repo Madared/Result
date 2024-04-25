@@ -13,5 +13,16 @@ public static class Doing {
     public static Option<T> Do<T>(this Option<T> option, Action<T> action) where T : notnull {
         if (option.IsSome()) action(option.Data);
         return option;
-    } 
+    }
+
+    /// <summary>
+    /// Performs action in case option is not empty and returns this option
+    /// </summary>
+    /// <param name="option"></param>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    public static Option<T> Do<T>(this Option<T> option, Action action) where T : notnull {
+        if (option.IsSome()) action();
+        return option;
+    }
 }
