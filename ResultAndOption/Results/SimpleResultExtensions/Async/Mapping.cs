@@ -1,5 +1,11 @@
 namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 
+public delegate Task<Result<TOut>> AsyncMapperWithInput<in T, TOut>(T data, CancellationToken? token = null)
+    where T : notnull
+    where TOut : notnull;
+
+public delegate Task<Result<TOut>> AsyncMapper<TOut>(CancellationToken? token = null) where TOut : notnull;
+
 /// <summary>
 /// Contains methods for mapping Tasks of Simple results or map them with Async methods
 /// </summary>
@@ -11,10 +17,13 @@ public static class Mapping
     /// <param name="result"></param>
     /// <param name="asyncMapper"></param>
     /// <returns></returns>
-    public static async Task<Result> MapAsync(this Task<Result> result, Func<Task<Result>> asyncMapper)
+    public static async Task<Result> MapAsync(
+        this Task<Result> result,
+        Doing.AsyncAction asyncMapper,
+        CancellationToken? token)
     {
         Result originalResult = await result;
-        return originalResult.Failed ? originalResult : await asyncMapper();
+        return originalResult.Failed ? originalResult : await asyncMapper(token);
     }
 
     /// <summary>
@@ -35,20 +44,34 @@ public static class Mapping
     /// <param name="result"></param>
     /// <param name="mapper"></param>
     /// <returns></returns>
-    public static async Task<Result> MapAsync(this Result result, Func<Task<Result>> mapper) => result.Failed
-        ? Result.Fail(result.Error)
-        : await mapper();
+    public static async Task<Result> MapAsync(
+        this Result result,
+        Doing.AsyncAction mapper,
+        CancellationToken? token = null)
+    {
+        return result.Failed
+            ? Result.Fail(result.Error)
+            : await mapper();
+    }
 
-    public static async Task<Result<T>> MapAsync<T>(this Result result, Func<Task<Result<T>>> mapper)
-        where T : notnull => result.Failed
-        ? Result<T>.Fail(result.Error)
-        : await mapper();
+    public static async Task<Result<T>> MapAsync<T>(
+        this Result result,
+        AsyncMapper<T> mapper,
+        CancellationToken? token = null)
+        where T : notnull
+    {
+        return result.Failed
+            ? Result<T>.Fail(result.Error)
+            : await mapper(token);
+    }
 
-    public static async Task<Result<T>> MapAsync<T>(this Task<Result> result, Func<Task<Result<T>>> mapper)
+    public static async Task<Result<T>> MapAsync<T>(
+        this Task<Result> result,
+        AsyncMapper<T> mapper,
+        CancellationToken? token = null)
         where T : notnull
     {
         Result originalResult = await result;
-        if (originalResult.Failed) return Result<T>.Fail(originalResult.Error);
-        return await mapper();
+        return originalResult.Failed ? Result<T>.Fail(originalResult.Error) : await mapper(token);
     }
 }
