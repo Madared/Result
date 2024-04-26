@@ -3,16 +3,19 @@ using ResultAndOption.Results;
 
 namespace Context.Tests;
 
-public class SuccessfulContextResult {
+public class SuccessfulContextResult
+{
     private static readonly IContextResult<string> Context = SuccessfulContext.Context.Map(str => str);
 
     [Fact]
-    public void Is_Success() {
+    public void Is_Success()
+    {
         Assert.True(Context.Succeeded);
     }
 
     [Fact]
-    public void Do_Mutates() {
+    public void Do_Mutates()
+    {
         string? other = null;
         IContextResult<string> afterDo = Context
             .Do(str => other = str);
@@ -22,10 +25,12 @@ public class SuccessfulContextResult {
     }
 
     [Fact]
-    public void Do_Of_Success_Result_Mutates() {
+    public void Do_Of_Success_Result_Mutates()
+    {
         string? other = null;
         IContextResult<string> afterDo = Context
-            .Do(str => {
+            .Do(str =>
+            {
                 other = str;
                 return Result.Ok();
             });
@@ -35,7 +40,8 @@ public class SuccessfulContextResult {
     }
 
     [Fact]
-    public void Successful_Dos_Dont_Rerun_On_Retry() {
+    public void Successful_Dos_Dont_Rerun_On_Retry()
+    {
         int changed = 0;
         IContextResult<string> retried = Context
             .Do(() => changed++)
@@ -47,7 +53,8 @@ public class SuccessfulContextResult {
     }
 
     [Fact]
-    public void Multiple_Retries_Go_To_Success_Or_Times_Asked() {
+    public void Multiple_Retries_Go_To_Success_Or_Times_Asked()
+    {
         int timesToSuccess = 3;
         MultipleRetryable retryable = new(timesToSuccess);
         IContextResult<string> retried = Context
@@ -59,7 +66,8 @@ public class SuccessfulContextResult {
     }
 
     [Fact]
-    public void False_Error_Predicate_Does_Not_Retry() {
+    public void False_Error_Predicate_Does_Not_Retry()
+    {
         int timesToSuccess = 3;
         MultipleRetryable retryable = new(timesToSuccess);
         IContextResult<string> retried = Context

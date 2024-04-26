@@ -5,14 +5,16 @@ namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 /// <summary>
 /// Contains methods for async actions on Simple Results or actions on Tasks of Simple Results
 /// </summary>
-public static class Doing {
+public static class Doing
+{
     /// <summary>
     /// Awaits the Result and calls the IfFailed method
     /// </summary>
     /// <param name="result"></param>
     /// <param name="action"></param>
     /// <returns></returns>
-    public static async Task<Result> IfFailedAsync(this Task<Result> result, Action action) {
+    public static async Task<Result> IfFailedAsync(this Task<Result> result, Action action)
+    {
         Result original = await result;
         return original.IfFailed(action);
     }
@@ -23,7 +25,8 @@ public static class Doing {
     /// <param name="result"></param>
     /// <param name="action"></param>
     /// <returns>The same result</returns>
-    public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<Task> action) {
+    public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<Task> action)
+    {
         Result original = await result;
         if (original.Failed) await action();
         return original;
@@ -35,7 +38,8 @@ public static class Doing {
     /// <param name="result"></param>
     /// <param name="action"></param>
     /// <returns></returns>
-    public static async Task<Result> IfFailedAsync(this Task<Result> result, Action<IError> action) {
+    public static async Task<Result> IfFailedAsync(this Task<Result> result, Action<IError> action)
+    {
         Result original = await result;
         return original.IfFailed(action);
     }

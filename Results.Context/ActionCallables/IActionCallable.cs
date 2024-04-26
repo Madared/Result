@@ -1,5 +1,6 @@
 namespace Results.Context.ActionCallables;
 
-public interface IActionCallable {
+public interface IActionCallable
+{
     void Call();
 }

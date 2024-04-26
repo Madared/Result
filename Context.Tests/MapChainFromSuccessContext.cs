@@ -2,12 +2,14 @@ using ResultAndOption.Results;
 
 namespace Context.Tests;
 
-public class MapChainFromSuccessContext {
+public class MapChainFromSuccessContext
+{
     private static readonly Func<Result<string>> ResultFunc = () => Result<string>.Ok("Start");
     private static readonly IContextResult<string> Context = ResultFunc.RunAndGetContext();
 
     [Fact]
-    public void Mapping_With_Only_Successes_Gives_Success() {
+    public void Mapping_With_Only_Successes_Gives_Success()
+    {
         IContextResult<int> mapped = Context
             .Map(str => str.Length)
             .Map(i => Result<int>.Ok(i * i))
@@ -19,7 +21,8 @@ public class MapChainFromSuccessContext {
     }
 
     [Fact]
-    public void Retrying_Retryable_Will_Give_Success_Context() {
+    public void Retrying_Retryable_Will_Give_Success_Context()
+    {
         string name = "Name";
         Retryable retryable = new();
         IContextResult<string> mapped = Context
@@ -34,7 +37,8 @@ public class MapChainFromSuccessContext {
     }
 
     [Fact]
-    public void Successful_Side_Effects_Dont_Rerun_On_Retry() {
+    public void Successful_Side_Effects_Dont_Rerun_On_Retry()
+    {
         const string name = "Name";
         SideEffector sideEffector = new();
         Retryable retryable = new();
@@ -51,7 +55,8 @@ public class MapChainFromSuccessContext {
     }
 
     [Fact]
-    public void Failed_Side_Effects_Rerun_On_Retry() {
+    public void Failed_Side_Effects_Rerun_On_Retry()
+    {
         SideEffector2 sideEffecter = new();
         Retryable retryable = new();
 
@@ -66,27 +71,33 @@ public class MapChainFromSuccessContext {
     }
 }
 
-public class SideEffector2 : ICommand {
+public class SideEffector2 : ICommand
+{
     public int TimesMutated { get; private set; }
 
-    public Result Call() {
+    public Result Call()
+    {
         Mutate();
         return Result.Ok();
     }
 
-    public void Undo() {
+    public void Undo()
+    {
         TimesMutated--;
     }
 
-    public void Mutate() {
+    public void Mutate()
+    {
         TimesMutated++;
     }
 }
 
-public class SideEffector {
+public class SideEffector
+{
     public int TimesMutated { get; private set; }
 
-    public void Mutate() {
+    public void Mutate()
+    {
         TimesMutated++;
     }
 }

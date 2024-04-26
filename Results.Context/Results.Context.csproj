@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ResultAndOption\ResultAndOption.csproj" />
+        <ProjectReference Include="..\ResultAndOption\ResultAndOption.csproj"/>
     </ItemGroup>
 
 </Project>

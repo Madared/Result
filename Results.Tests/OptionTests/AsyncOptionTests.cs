@@ -3,9 +3,11 @@ using ResultAndOption.Options.Extensions.Async;
 
 namespace Results.Tests.OptionTests;
 
-public class AsyncOptionTests {
+public class AsyncOptionTests
+{
     [Fact]
-    public void Async_Option_Map_Returns_Correct_Value() {
+    public void Async_Option_Map_Returns_Correct_Value()
+    {
         const string hello = "hello";
         Task<Option<string>> taskOption = Task.FromResult(Option<string>.Some(hello));
         Task<Option<int>> intTaskOption = taskOption.MapAsync(s => s.Length);
@@ -15,11 +17,13 @@ public class AsyncOptionTests {
     }
 
     [Fact]
-    public void Async_Option_Map_With_Async_Mapper_Returns_Correct_Value() {
+    public void Async_Option_Map_With_Async_Mapper_Returns_Correct_Value()
+    {
         const string hello = "hello";
         Task<Option<string>> taskOption = Task.FromResult(Option<string>.Some(hello));
 
-        Task<int> SomeAsyncFunction(string s) {
+        Task<int> SomeAsyncFunction(string s)
+        {
             return Task.FromResult(s.Length);
         }
 
@@ -30,7 +34,8 @@ public class AsyncOptionTests {
     }
 
     [Fact]
-    public void Async_Option_Map_Unwraps_Nested_Option_Result() {
+    public void Async_Option_Map_Unwraps_Nested_Option_Result()
+    {
         const string hello = "hello";
         Task<Option<string>> taskOption = Task.FromResult(Option<string>.Some(hello));
         Task<Option<int>> intTaskOption = taskOption.MapAsync(s => Option<int>.Some(s.Length));
@@ -40,11 +45,13 @@ public class AsyncOptionTests {
     }
 
     [Fact]
-    public void Async_Option_Map_Unwraps_Nested_Async_Option_Result() {
+    public void Async_Option_Map_Unwraps_Nested_Async_Option_Result()
+    {
         string hello = "hello";
         Task<Option<string>> taskOption = Task.FromResult(Option<string>.Some(hello));
 
-        Task<Option<int>> SomeAsyncFunction(string s) {
+        Task<Option<int>> SomeAsyncFunction(string s)
+        {
             return Task.FromResult(Option<int>.Some(s.Length));
         }
 

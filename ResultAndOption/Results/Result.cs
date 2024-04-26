@@ -2,15 +2,18 @@
 
 namespace ResultAndOption.Results;
 
-public readonly struct Result : IResult {
+public readonly struct Result : IResult
+{
     private readonly IError? _error;
     public bool Succeeded { get; }
     public bool Failed => !Succeeded;
+
     public IError Error => Succeeded
         ? throw new InvalidOperationException()
         : _error ?? new UnknownError();
 
-    private Result(bool failed, IError? error) {
+    private Result(bool failed, IError? error)
+    {
         Succeeded = !failed;
         _error = error;
     }

@@ -5,7 +5,8 @@ namespace ResultAndOption.Results.SimpleResultExtensions;
 /// <summary>
 /// Contains methods to call actions on simple results
 /// </summary>
-public static class Doing {
+public static class Doing
+{
     /// <summary>
     ///     Maps the result using the specified function.
     /// </summary>
@@ -25,7 +26,8 @@ public static class Doing {
     /// <param name="result"></param>
     /// <param name="action">Action to invoke</param>
     /// <returns></returns>
-    public static Result Do(this Result result, Action action) {
+    public static Result Do(this Result result, Action action)
+    {
         if (result.Failed) return result;
         action();
         return Result.Ok();
@@ -37,7 +39,8 @@ public static class Doing {
     /// <param name="result"></param>
     /// <param name="action">The action to run, accepting the current result as a parameter.</param>
     /// <returns>The same result after running the action.</returns>
-    public static Result IfFailed(this Result result, Action<IError> action) {
+    public static Result IfFailed(this Result result, Action<IError> action)
+    {
         if (result.Failed) action(result.Error);
         return result;
     }
@@ -48,7 +51,8 @@ public static class Doing {
     /// <param name="result"></param>
     /// <param name="action"></param>
     /// <returns></returns>
-    public static Result IfFailed(this Result result, Action action) {
+    public static Result IfFailed(this Result result, Action action)
+    {
         if (result.Failed) action();
         return result;
     }

@@ -3,8 +3,10 @@ namespace ResultAndOption.Errors;
 /// <summary>
 /// Wraps an exception to be used as an Error
 /// </summary>
-public record ExceptionWrapper : IError {
-    public ExceptionWrapper(Exception exception) {
+public record ExceptionWrapper : IError
+{
+    public ExceptionWrapper(Exception exception)
+    {
         Exception = exception;
     }
 
@@ -12,6 +14,7 @@ public record ExceptionWrapper : IError {
     /// Wrapped exception
     /// </summary>
     public Exception Exception { get; }
+
     /// <summary>
     /// Internal exception message
     /// </summary>

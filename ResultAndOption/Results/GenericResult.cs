@@ -7,7 +7,8 @@ namespace ResultAndOption.Results;
 ///     Represents a result of an operation that can either succeed or fail, carrying either data or an error.
 /// </summary>
 /// <typeparam name="T">The type of data carried by the result.</typeparam>
-public readonly struct Result<T> : IResult<T> where T : notnull {
+public readonly struct Result<T> : IResult<T> where T : notnull
+{
     private readonly Option<T> _data;
     private readonly IError? _error;
 
@@ -18,7 +19,8 @@ public readonly struct Result<T> : IResult<T> where T : notnull {
     public bool Failed => !Succeeded;
     public bool Succeeded { get; }
 
-    private Result(bool failed, IError? error, Option<T> data) {
+    private Result(bool failed, IError? error, Option<T> data)
+    {
         Succeeded = !failed;
         _error = error;
         _data = data;

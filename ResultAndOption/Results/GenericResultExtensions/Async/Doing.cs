@@ -5,7 +5,8 @@ namespace ResultAndOption.Results.GenericResultExtensions.Async;
 /// <summary>
 /// Contains all the methods to invoke either Task of action on a result or an action on a Task of result
 /// </summary>
-public static class Doing {
+public static class Doing
+{
     /// <summary>
     /// If the result is a failure returns it otherwise awaits the action and returns either the existing result or
     /// a new result with the error of the failed action
@@ -14,7 +15,8 @@ public static class Doing {
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(Result<T> result, Func<T, Task<Result>> action) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(Result<T> result, Func<T, Task<Result>> action) where T : notnull
+    {
         if (result.Failed) return result;
         Result actionResult = await action(result.Data);
         return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
@@ -28,7 +30,8 @@ public static class Doing {
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Result<T> result, Func<Task<Result>> action) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Result<T> result, Func<Task<Result>> action) where T : notnull
+    {
         if (result.Failed) return result;
         Result actionResult = await action();
         return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
@@ -41,7 +44,9 @@ public static class Doing {
     /// <param name="mapper"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<T, Result> mapper) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<T, Result> mapper)
+        where T : notnull
+    {
         Result<T> originalResult = await result;
         return originalResult.Do(mapper);
     }
@@ -53,7 +58,9 @@ public static class Doing {
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<T, Task<Result>> action) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<T, Task<Result>> action)
+        where T : notnull
+    {
         Result<T> originalResult = await result;
         if (originalResult.Failed) return originalResult;
         Result actionResult = await action(originalResult.Data);
@@ -67,7 +74,8 @@ public static class Doing {
     /// <param name="function"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Action<T> function) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Action<T> function) where T : notnull
+    {
         Result<T> originalResult = await result;
         return originalResult.Do(function);
     }
@@ -79,7 +87,8 @@ public static class Doing {
     /// <param name="mapper"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<Result> mapper) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<Result> mapper) where T : notnull
+    {
         Result<T> originalResult = await result;
         return originalResult.Do(mapper);
     }
@@ -92,7 +101,9 @@ public static class Doing {
     /// <param name="mapper"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<Task<Result>> mapper) where T : notnull {
+    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<Task<Result>> mapper)
+        where T : notnull
+    {
         Result<T> originalResult = await result;
         if (originalResult.Failed) return originalResult;
         Result mappingResult = await mapper();
@@ -106,7 +117,8 @@ public static class Doing {
     /// <param name="result"></param>
     /// <param name="action"></param>
     /// <returns>The same result</returns>
-    public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<IError, Task> action) {
+    public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<IError, Task> action)
+    {
         Result original = await result;
         if (original.Failed) await action(original.Error);
         return original;
@@ -119,7 +131,8 @@ public static class Doing {
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Action action) where T : notnull {
+    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Action action) where T : notnull
+    {
         Result<T> original = await result;
         return original.IfFailed(action);
     }
@@ -131,7 +144,9 @@ public static class Doing {
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Action<IError> action) where T : notnull {
+    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Action<IError> action)
+        where T : notnull
+    {
         Result<T> original = await result;
         return original.IfFailed(action);
     }
@@ -143,7 +158,9 @@ public static class Doing {
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns>The same result</returns>
-    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Func<Task> action) where T : notnull {
+    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Func<Task> action)
+        where T : notnull
+    {
         Result<T> original = await result;
         if (original.Failed) await action();
 
@@ -157,7 +174,9 @@ public static class Doing {
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns>The same result</returns>
-    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Func<IError, Task> action) where T : notnull {
+    public static async Task<Result<T>> IfFailedAsync<T>(this Task<Result<T>> result, Func<IError, Task> action)
+        where T : notnull
+    {
         Result<T> original = await result;
         if (original.Failed) await action(original.Error);
 

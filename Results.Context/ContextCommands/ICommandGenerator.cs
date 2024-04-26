@@ -3,8 +3,10 @@ using Results.Context.ContextCallables;
 
 namespace Results.Context.ContextCommands;
 
-public interface ICommandGenerator : ICallableGenerator {
-    ICallable ICallableGenerator.Generate() {
+public interface ICommandGenerator : ICallableGenerator
+{
+    ICallable ICallableGenerator.Generate()
+    {
         return Generate();
     }
 

@@ -6,7 +6,8 @@ using Results.Context.ContextCommands;
 
 namespace Results.Context.ContextResults;
 
-public interface IContextResult : IResult {
+public interface IContextResult : IResult
+{
     IContextResult Retry();
     Result StripContext();
     void Undo();
@@ -14,7 +15,8 @@ public interface IContextResult : IResult {
     internal IContextResult<TOut> Map<TOut>(ICallableGenerator<TOut> callableGenerator) where TOut : notnull;
 }
 
-public interface IContextResult<TOut> : IContextResult, IResult<TOut> where TOut : notnull {
+public interface IContextResult<TOut> : IContextResult, IResult<TOut> where TOut : notnull
+{
     ResultEmitter<TOut> Emitter { get; }
 
     IContextResult IContextResult.Retry() => Retry();

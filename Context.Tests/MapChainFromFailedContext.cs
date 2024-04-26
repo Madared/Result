@@ -3,17 +3,20 @@ using ResultAndOption.Results;
 
 namespace Context.Tests;
 
-public static class FailureContext {
+public static class FailureContext
+{
     public static readonly Func<Result<string>> ResultFunc = () => Result<string>.Fail(new UnknownError());
     public static readonly IContextResult<string> Context = ResultFunc.RunAndGetContext();
 }
 
-public class MapChainFromFailedContext {
+public class MapChainFromFailedContext
+{
     private static readonly Func<Result<string>> ResultFunc = () => Result<string>.Fail(new UnknownError());
     private static readonly IContextResult<string> Context = ResultFunc.RunAndGetContext();
 
     [Fact]
-    public void Retry_Does_Not_Change_Final_Result() {
+    public void Retry_Does_Not_Change_Final_Result()
+    {
         IContextResult<string> mapped = Context
             .Map(str => str.Length)
             .Map(length => length.ToString())
@@ -27,7 +30,8 @@ public class MapChainFromFailedContext {
     }
 
     [Fact]
-    public void Error_Gets_Passed_Down_The_Context() {
+    public void Error_Gets_Passed_Down_The_Context()
+    {
         IContextResult<string> mapped = Context
             .Map(str => str.Length)
             .Map(length => length.ToString())

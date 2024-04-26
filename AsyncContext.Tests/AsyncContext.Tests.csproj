@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Results.AsyncContext\Results.AsyncContext.csproj" />
+        <ProjectReference Include="..\Results.AsyncContext\Results.AsyncContext.csproj"/>
     </ItemGroup>
 
 </Project>

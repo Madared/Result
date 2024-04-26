@@ -3,14 +3,16 @@ namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 /// <summary>
 /// Contains methods for mapping Tasks of Simple results or map them with Async methods
 /// </summary>
-public static class Mapping {
+public static class Mapping
+{
     /// <summary>
     /// Awaits the result and if its a success awaits the asyncMapper otherwise returns the same result
     /// </summary>
     /// <param name="result"></param>
     /// <param name="asyncMapper"></param>
     /// <returns></returns>
-    public static async Task<Result> MapAsync(this Task<Result> result, Func<Task<Result>> asyncMapper) {
+    public static async Task<Result> MapAsync(this Task<Result> result, Func<Task<Result>> asyncMapper)
+    {
         Result originalResult = await result;
         return originalResult.Failed ? originalResult : await asyncMapper();
     }
@@ -21,7 +23,8 @@ public static class Mapping {
     /// <param name="result"></param>
     /// <param name="mapper"></param>
     /// <returns></returns>
-    public static async Task<Result> MapAsync(this Task<Result> result, Func<Result> mapper) {
+    public static async Task<Result> MapAsync(this Task<Result> result, Func<Result> mapper)
+    {
         Result originalResult = await result;
         return originalResult.Do(mapper);
     }
@@ -42,7 +45,8 @@ public static class Mapping {
         : await mapper();
 
     public static async Task<Result<T>> MapAsync<T>(this Task<Result> result, Func<Task<Result<T>>> mapper)
-        where T : notnull {
+        where T : notnull
+    {
         Result originalResult = await result;
         if (originalResult.Failed) return Result<T>.Fail(originalResult.Error);
         return await mapper();

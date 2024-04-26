@@ -3,19 +3,23 @@ using ResultAndOption.Results;
 
 namespace Context.Tests;
 
-public static class SuccessfulContext {
+public static class SuccessfulContext
+{
     public static Func<Result<string>> ResultFunc = () => Result<string>.Ok("hello");
     public static IContextResult<string> Context = ResultFunc.RunAndGetContext();
 }
 
-public class SuccessfulStartingContext {
+public class SuccessfulStartingContext
+{
     [Fact]
-    public void Is_Success() {
+    public void Is_Success()
+    {
         Assert.True(SuccessfulContext.Context.Succeeded);
     }
 
     [Fact]
-    public void Do_Mutates() {
+    public void Do_Mutates()
+    {
         string? other = null;
         IContextResult<string> afterDo = SuccessfulContext.Context
             .Do(() => other = "new");
@@ -24,7 +28,8 @@ public class SuccessfulStartingContext {
     }
 
     [Fact]
-    public void Do_With_Input_Mutates() {
+    public void Do_With_Input_Mutates()
+    {
         string? other = null;
         IContextResult<string> afterDo = SuccessfulContext.Context
             .Do(str => other = str);
@@ -34,10 +39,12 @@ public class SuccessfulStartingContext {
     }
 
     [Fact]
-    public void Do_Of_Result_Mutates() {
+    public void Do_Of_Result_Mutates()
+    {
         string? other = null;
         IContextResult<string> afterDo = SuccessfulContext.Context
-            .Do(() => {
+            .Do(() =>
+            {
                 other = "new";
                 return Result.Ok();
             });
@@ -46,10 +53,12 @@ public class SuccessfulStartingContext {
     }
 
     [Fact]
-    public void Do_Of_Result_With_Input_Mutates() {
+    public void Do_Of_Result_With_Input_Mutates()
+    {
         string? other = null;
         IContextResult<string> afterDo = SuccessfulContext.Context
-            .Do(str => {
+            .Do(str =>
+            {
                 other = str;
                 return Result.Ok();
             });
@@ -59,7 +68,8 @@ public class SuccessfulStartingContext {
     }
 
     [Fact]
-    public void Map_Of_Success_Gives_Success_Context() {
+    public void Map_Of_Success_Gives_Success_Context()
+    {
         IContextResult<int> mapped = SuccessfulContext.Context
             .Map(str => Result<int>.Ok(str.Length));
 
@@ -67,7 +77,8 @@ public class SuccessfulStartingContext {
     }
 
     [Fact]
-    public void Map_Of_Failure_Gives_Failed_Context() {
+    public void Map_Of_Failure_Gives_Failed_Context()
+    {
         IContextResult<int> mapped = SuccessfulContext.Context
             .Map(str => Result<int>.Fail(new UnknownError()));
 
@@ -75,14 +86,16 @@ public class SuccessfulStartingContext {
     }
 
     [Fact]
-    public void Map_Of_Func_Gives_Success_Context() {
+    public void Map_Of_Func_Gives_Success_Context()
+    {
         IContextResult<int> mapped = SuccessfulContext.Context
             .Map(str => str.Length);
         Assert.True(mapped.Succeeded);
     }
 
     [Fact]
-    public void Retry_Returns_Same_Context() {
+    public void Retry_Returns_Same_Context()
+    {
         IContextResult<string> retried = SuccessfulContext.Context.Retry();
         Assert.Equal(retried, SuccessfulContext.Context);
     }

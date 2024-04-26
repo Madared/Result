@@ -1,13 +1,16 @@
 namespace Results.Context.ActionCallables;
 
-internal sealed class ActionCallable : IActionCallable {
+internal sealed class ActionCallable : IActionCallable
+{
     private readonly Action _action;
 
-    public ActionCallable(Action action) {
+    public ActionCallable(Action action)
+    {
         _action = action;
     }
 
-    public void Call() {
+    public void Call()
+    {
         _action();
     }
 }

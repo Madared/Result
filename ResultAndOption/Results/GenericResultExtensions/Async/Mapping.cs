@@ -1,6 +1,7 @@
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
 
-public static class Mapping {
+public static class Mapping
+{
     /// <summary>
     /// If the result failed returns a new Result wrapping the error, otherwise awaits for the asyncFunction and wraps it in a Result.
     /// </summary>
@@ -9,7 +10,9 @@ public static class Mapping {
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TOut"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Result<T> result, Func<T, Task<TOut>> asyncFunction) where T : notnull where TOut : notnull {
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Result<T> result, Func<T, Task<TOut>> asyncFunction)
+        where T : notnull where TOut : notnull
+    {
         if (result.Failed) return Result<TOut>.Fail(result.Error);
         TOut functionData = await asyncFunction(result.Data);
         return Result<TOut>.Ok(functionData);
@@ -23,11 +26,12 @@ public static class Mapping {
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TOut"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Result<T> result, Func<T, Task<Result<TOut>>> asyncMapper) where T : notnull where TOut : notnull => result.Failed 
-        ? Result<TOut>.Fail(result.Error) 
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Result<T> result,
+        Func<T, Task<Result<TOut>>> asyncMapper) where T : notnull where TOut : notnull => result.Failed
+        ? Result<TOut>.Fail(result.Error)
         : await asyncMapper(result.Data);
-    
-        /// <summary>
+
+    /// <summary>
     ///     implicitly awaits the original result and if the result is a success will also implicitly await the
     ///     async function passed in and maps it;
     /// </summary>
@@ -39,7 +43,8 @@ public static class Mapping {
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result,
         Func<T, Task<TOut>> asyncMapper)
         where TOut : notnull
-        where T : notnull {
+        where T : notnull
+    {
         Result<T> originalResult = await result;
         if (originalResult.Failed) return Result<TOut>.Fail(originalResult.Error);
 
@@ -55,7 +60,9 @@ public static class Mapping {
     /// <typeparam name="T">The Original result type</typeparam>
     /// <typeparam name="TOut">The mapper output type</typeparam>
     /// <returns></returns>
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, TOut> mapper) where T : notnull where TOut : notnull {
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, TOut> mapper)
+        where T : notnull where TOut : notnull
+    {
         Result<T> originalResult = await result;
         return originalResult.Map(mapper);
     }
@@ -70,7 +77,9 @@ public static class Mapping {
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TOut"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, Result<TOut>> mapper) where T : notnull where TOut : notnull {
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, Result<TOut>> mapper)
+        where T : notnull where TOut : notnull
+    {
         Result<T> originalResult = await result;
         return originalResult.Map(mapper);
     }
@@ -84,7 +93,9 @@ public static class Mapping {
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TOut"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, Task<Result<TOut>>> asyncMapper) where T : notnull where TOut : notnull {
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result,
+        Func<T, Task<Result<TOut>>> asyncMapper) where T : notnull where TOut : notnull
+    {
         Result<T> originalResult = await result;
         if (originalResult.Failed) return Result<TOut>.Fail(originalResult.Error);
 

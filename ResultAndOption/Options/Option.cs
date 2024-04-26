@@ -3,11 +3,13 @@ namespace ResultAndOption.Options;
 /// <summary>
 /// Representation for an optional value
 /// </summary>
-public readonly struct Option<T> where T : notnull {
+public readonly struct Option<T> where T : notnull
+{
     private readonly T? _data;
     private readonly bool _isNone;
 
-    private Option(T? data, bool isNone) {
+    private Option(T? data, bool isNone)
+    {
         _data = data;
         _isNone = isNone;
     }

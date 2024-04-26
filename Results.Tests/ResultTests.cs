@@ -6,9 +6,11 @@ using ResultAndOption.Results.SimpleResultExtensions;
 
 namespace Results.Tests;
 
-public class ResultTests {
+public class ResultTests
+{
     [Fact]
-    public void Failure_Checking_Returns_Correct_Value() {
+    public void Failure_Checking_Returns_Correct_Value()
+    {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
 
@@ -21,7 +23,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Success_Checking_Returns_Correct_Values() {
+    public void Success_Checking_Returns_Correct_Values()
+    {
         //Given
         Result<string> stringResult = Result<string>.Ok("hello");
         //When
@@ -33,7 +36,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Accessing_Data_In_Failed_Result_Throws_InvalidOperationException() {
+    public void Accessing_Data_In_Failed_Result_Throws_InvalidOperationException()
+    {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //Then
@@ -41,7 +45,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Accessing_Data_In_Failed_Result_Of_Non_Nullable_Value_Type_Throws() {
+    public void Accessing_Data_In_Failed_Result_Of_Non_Nullable_Value_Type_Throws()
+    {
         //Given
         Result<int> intResult = Result<int>.Fail(new UnknownError());
         //Then
@@ -50,7 +55,8 @@ public class ResultTests {
 
 
     [Fact]
-    public void Failure_Result_IfFailed_Completes_Action_And_Returns_Self() {
+    public void Failure_Result_IfFailed_Completes_Action_And_Returns_Self()
+    {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //When
@@ -63,7 +69,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void ErrorConversion_On_Failed_Transfers_Correctly() {
+    public void ErrorConversion_On_Failed_Transfers_Correctly()
+    {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //When
@@ -74,7 +81,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void ErrorConversion_On_Success_Throws_InvalidOperationException() {
+    public void ErrorConversion_On_Success_Throws_InvalidOperationException()
+    {
         //Given
         Result<string> stringResult = Result<string>.Ok("hello");
         //Then
@@ -82,16 +90,19 @@ public class ResultTests {
     }
 
     [Fact]
-    public void UseData_On_Result_Returning_Functions_Returns_Correct_Response() {
+    public void UseData_On_Result_Returning_Functions_Returns_Correct_Response()
+    {
         //Given
         string helloWorld = "hello";
 
-        Result GetSuccess(string world) {
+        Result GetSuccess(string world)
+        {
             helloWorld += $" {world}";
             return Result.Ok();
         }
 
-        Result GetFailure() {
+        Result GetFailure()
+        {
             return Result.Fail(new UnknownError());
         }
 
@@ -106,7 +117,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Mapping_Failed_Result_Returns_A_Failed_Result_And_Passes_The_Error() {
+    public void Mapping_Failed_Result_Returns_A_Failed_Result_And_Passes_The_Error()
+    {
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //When
@@ -118,7 +130,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Mapping_Successful_Result_Returns_Correct_Data_In_Result_Object() {
+    public void Mapping_Successful_Result_Returns_Correct_Data_In_Result_Object()
+    {
         //Given
         Result<string> stringResult = Result<string>.Ok("hello");
         //When
@@ -129,7 +142,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void ToSimpleResult_Correctly_Maps() {
+    public void ToSimpleResult_Correctly_Maps()
+    {
         //Given
         Result<string> okStringResult = Result<string>.Ok("hello");
         Result<string> failedStringResult = Result<string>.Fail(new UnknownError());
@@ -143,7 +157,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Aggregation_With_Tuples() {
+    public void Aggregation_With_Tuples()
+    {
         Result<(string str, int number, string str2)> tupleResult = Result<string>.Ok("hello")
             .Map(str => (str, number: 10))
             .Map(data => (data.str, data.number, str2: "hello"));
@@ -154,9 +169,11 @@ public class ResultTests {
     }
 
     [Fact]
-    public void ToResult_Works_ToCreate_ResultList() {
+    public void ToResult_Works_ToCreate_ResultList()
+    {
         //Given
-        List<Result<string>> stringResults = new() {
+        List<Result<string>> stringResults = new()
+        {
             Result<string>.Ok("hello"),
             Result<string>.Ok("world")
         };
@@ -168,25 +185,29 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Or_On_Failed_Result_Returns_Passed_In_Value() {
+    public void Or_On_Failed_Result_Returns_Passed_In_Value()
+    {
         Result<int> failed = Result<int>.Fail(new UnknownError());
         int fromOr = failed.Or(5);
         Assert.Equal(5, fromOr);
     }
 
     [Fact]
-    public void Or_On_Successful_Result_Returns_Internal_Value() {
+    public void Or_On_Successful_Result_Returns_Internal_Value()
+    {
         Result<int> successful = Result<int>.Ok(100);
         int fromOr = successful.Or(5);
         Assert.Equal(100, fromOr);
     }
 
     [Fact]
-    public void MapAsync_Maps_Internal_Result_Extracting_Task() {
+    public void MapAsync_Maps_Internal_Result_Extracting_Task()
+    {
         Result<string> stringResult = Result<string>.Ok("hello");
         Task<Result<string>> taskResult = Task.FromResult(stringResult);
 
-        Task<int> SomeAsyncFunc(string f) {
+        Task<int> SomeAsyncFunc(string f)
+        {
             return Task.FromResult(f.Length);
         }
 
@@ -197,7 +218,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void MapAsync_Maps_Non_Async_Function_While_Extracting_Task() {
+    public void MapAsync_Maps_Non_Async_Function_While_Extracting_Task()
+    {
         string hello = "hello";
         Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
         Task<Result<int>> intTaskResult = taskResult.MapAsync(s => s.Length);
@@ -207,11 +229,13 @@ public class ResultTests {
     }
 
     [Fact]
-    public void MapAsync_Turns_Sync_Result_To_TaskResult() {
+    public void MapAsync_Turns_Sync_Result_To_TaskResult()
+    {
         string hello = "hello";
         Result<string> helloResult = Result<string>.Ok(hello);
 
-        Task<int> SomeAsyncFunction(string s) {
+        Task<int> SomeAsyncFunction(string s)
+        {
             return Task.FromResult(s.Length);
         }
 
@@ -222,11 +246,13 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Result_Async_Map_On_Async_Result_Works() {
+    public void Result_Async_Map_On_Async_Result_Works()
+    {
         string hello = "hello";
         Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
 
-        Task<Result<int>> SomeAsyncFunction(string s) {
+        Task<Result<int>> SomeAsyncFunction(string s)
+        {
             return Task.FromResult(Result<int>.Ok(s.Length));
         }
 
@@ -237,7 +263,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Result_Map_On_Async_Result_Works() {
+    public void Result_Map_On_Async_Result_Works()
+    {
         string hello = "hello";
         Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
         Task<Result<int>> intTaskResult = taskResult.MapAsync(s => s.Length);
@@ -247,7 +274,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Result_Map_On_Async_Result_Does_Not_Wrap_Simple_Result() {
+    public void Result_Map_On_Async_Result_Does_Not_Wrap_Simple_Result()
+    {
         string hello = "hello";
         Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
         Task<Result<string>> simpleResult = taskResult.DoAsync(() => Result.Ok());
@@ -256,7 +284,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Result_Map_With_Async_Mapper_Does_Not_Wrap_Simple_Result() {
+    public void Result_Map_With_Async_Mapper_Does_Not_Wrap_Simple_Result()
+    {
         string hello = "hello";
         Result<string> stringResult = Result<string>.Ok(hello);
         Task<Result<string>> simpleResult = stringResult.DoAsync(() => Task.FromResult(Result.Ok()));
@@ -265,23 +294,28 @@ public class ResultTests {
     }
 
     [Fact]
-    public void ErrorWrap_Doesnt_Change_Success_Result() {
+    public void ErrorWrap_Doesnt_Change_Success_Result()
+    {
         Result<string> helloResult = Result<string>.Ok("hello");
-        Result<string> wrappedResult = helloResult.WrapError<string, UnknownError>(error => new MultipleErrors(new List<IError>()));
+        Result<string> wrappedResult =
+            helloResult.WrapError<string, UnknownError>(error => new MultipleErrors(new List<IError>()));
         Assert.True(wrappedResult.Succeeded);
         Assert.Throws<InvalidOperationException>(() => wrappedResult.Error);
     }
 
     [Fact]
-    public void ErrorWrap_Converts_Failed_Result_Error() {
+    public void ErrorWrap_Converts_Failed_Result_Error()
+    {
         Result<string> helloResult = Result<string>.Fail(new UnknownError());
-        Result<string> wrapped = helloResult.WrapError<string, UnknownError>(error => new MultipleErrors(new List<IError>()));
+        Result<string> wrapped =
+            helloResult.WrapError<string, UnknownError>(error => new MultipleErrors(new List<IError>()));
         Assert.True(wrapped.Failed);
         Assert.True(wrapped.Error is MultipleErrors);
     }
 
     [Fact]
-    public void ErrorWrap_Doesnt_Change_Success_On_SimpleResult() {
+    public void ErrorWrap_Doesnt_Change_Success_On_SimpleResult()
+    {
         Result success = Result.Ok();
         Result wrapped = success.WrapError<UnknownError>(error => new ExceptionWrapper(new Exception()));
         Assert.True(wrapped.Succeeded);
@@ -289,7 +323,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void ErrorWrap_Converts_Failed_Simple_Result() {
+    public void ErrorWrap_Converts_Failed_Simple_Result()
+    {
         Result failure = Result.Fail(new UnknownError());
         Result wrapped = failure.WrapError<UnknownError>(error => new ExceptionWrapper(new Exception()));
         Assert.True(wrapped.Failed);
@@ -297,19 +332,22 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Default_Generic_Result_Constructor_Builds_Failed_Result() {
+    public void Default_Generic_Result_Constructor_Builds_Failed_Result()
+    {
         Result<string> stringResult = new();
         Assert.True(stringResult.Failed);
     }
 
     [Fact]
-    public void Default_SimpleResult_Constructor_Builds_Failed_Result() {
+    public void Default_SimpleResult_Constructor_Builds_Failed_Result()
+    {
         Result result = new();
         Assert.True(result.Failed);
     }
 
     [Fact]
-    public void Default_Constructor() {
+    public void Default_Constructor()
+    {
         Result result = default;
         Result<string> resultString = default;
         Assert.True(result.Failed);
@@ -319,7 +357,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void Setting_Data_Reference_To_Null_Doesnt_Change_Result_Data() {
+    public void Setting_Data_Reference_To_Null_Doesnt_Change_Result_Data()
+    {
         string? s = "hello";
         Result<string> sResult = s.ToResult(new UnknownError());
         s = null;
@@ -328,7 +367,8 @@ public class ResultTests {
     }
 
     [Fact]
-    public void MapWrap_Wraps_Results() {
+    public void MapWrap_Wraps_Results()
+    {
         Result<string> stringResult = Result<string>.Ok("hello");
         Result<Result<string>> mapWrapResult = stringResult.Wrap(str => Result<string>.Ok(str + "boom"));
         Assert.True(mapWrapResult.Succeeded);

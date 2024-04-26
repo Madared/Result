@@ -1,5 +1,6 @@
 namespace Results.Context.ActionCallables;
 
-public interface IActionCallableGenerator {
+public interface IActionCallableGenerator
+{
     IActionCallable Generate();
 }

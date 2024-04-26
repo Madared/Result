@@ -5,9 +5,11 @@ using ResultAndOption.Results.GenericResultExtensions;
 
 namespace Results.Tests;
 
-public class ExtensionTests {
+public class ExtensionTests
+{
     [Fact]
-    public void ToResult_Returns_Failed_In_null_object() {
+    public void ToResult_Returns_Failed_In_null_object()
+    {
         //Given
         string? nullString = null;
         //When
@@ -17,7 +19,8 @@ public class ExtensionTests {
     }
 
     [Fact]
-    public void ToResult_Returns_ResultList_With_Correctly_Mapped_Values() {
+    public void ToResult_Returns_ResultList_With_Correctly_Mapped_Values()
+    {
         //Given
         Result<string> okResult = Result<string>.Ok("hello");
         Result<string> failedResult = Result<string>.Fail(new UnknownError());
@@ -33,7 +36,8 @@ public class ExtensionTests {
     }
 
     [Fact]
-    public void ToResult_On_Option_Maps_Correctly() {
+    public void ToResult_On_Option_Maps_Correctly()
+    {
         IError error = new UnknownError();
         string hello = "hello";
         Option<string> none = Option<string>.None();

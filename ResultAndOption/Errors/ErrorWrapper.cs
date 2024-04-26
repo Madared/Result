@@ -3,12 +3,14 @@ namespace ResultAndOption.Errors;
 /// <summary>
 /// Exception wrapping an Error
 /// </summary>
-public class ErrorWrapper : Exception {
+public class ErrorWrapper : Exception
+{
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="error"></param>
-    public ErrorWrapper(IError error) : base(error.Message) {
+    public ErrorWrapper(IError error) : base(error.Message)
+    {
         Error = error;
     }
 
@@ -22,7 +24,8 @@ public class ErrorWrapper : Exception {
     /// </summary>
     /// <param name="error"></param>
     /// <returns></returns>
-    public static Exception Create(IError error) {
+    public static Exception Create(IError error)
+    {
         if (error is ExceptionWrapper ex) return ex.Exception;
         return new ErrorWrapper(error);
     }

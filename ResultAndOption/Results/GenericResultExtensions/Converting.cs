@@ -6,7 +6,8 @@ namespace ResultAndOption.Results.GenericResultExtensions;
 /// <summary>
 /// Contains Conversion methods for Generic Results
 /// </summary>
-public static class Converting {
+public static class Converting
+{
     /// <summary>
     ///     Converts the result to a simple result without carrying any data.
     /// </summary>
@@ -22,7 +23,8 @@ public static class Converting {
     /// <typeparam name="T"></typeparam>
     /// <returns>A result with the specified data type if the original result represents a success.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the original result represents a failure.</exception>
-    public static Result<TResult> ConvertErrorResult<T, TResult>(this Result<T> result) where T : notnull where TResult : notnull => result.Failed
+    public static Result<TResult> ConvertErrorResult<T, TResult>(this Result<T> result)
+        where T : notnull where TResult : notnull => result.Failed
         ? Result<TResult>.Fail(result.Error)
         : throw new InvalidOperationException(
             "Cannot convert error result when the original result represents a success.");
@@ -36,7 +38,8 @@ public static class Converting {
     /// <typeparam name="TError">expected error type to wrap</typeparam>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static Result<T> WrapError<T, TError>(this Result<T> result, Func<TError, IError> errorWrapper) where T : notnull where TError : IError => result is { Failed: true, Error: TError error }
+    public static Result<T> WrapError<T, TError>(this Result<T> result, Func<TError, IError> errorWrapper)
+        where T : notnull where TError : IError => result is { Failed: true, Error: TError error }
         ? Result<T>.Fail(errorWrapper(error))
         : result;
 
@@ -48,7 +51,8 @@ public static class Converting {
     /// <param name="i">The nullable input reference.</param>
     /// <param name="error">The error to use if the input reference is null.</param>
     /// <returns>A result representing the input reference if it is not null, or a failed result with the specified error.</returns>
-    public static Result<TIn> ToResult<TIn>(this TIn? i, IError error) where TIn : notnull => Result<TIn>.Unknown(i, error);
+    public static Result<TIn> ToResult<TIn>(this TIn? i, IError error) where TIn : notnull =>
+        Result<TIn>.Unknown(i, error);
 
     /// <summary>
     ///     Converts a simple list of results to the more specific ResultList.
@@ -57,7 +61,8 @@ public static class Converting {
     /// <typeparam name="TIn">The type of data carried by the result</typeparam>
     /// <returns>A ResultList</returns>
     public static ResultList<TIn> ToResultList<TIn>(this IEnumerable<Result<TIn>> results)
-        where TIn : notnull {
+        where TIn : notnull
+    {
         ResultList<TIn> resultList = new();
         resultList.AddResults(results);
         return resultList;

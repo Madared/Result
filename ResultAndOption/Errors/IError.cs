@@ -3,7 +3,8 @@
 /// <summary>
 /// Error interface
 /// </summary>
-public interface IError {
+public interface IError
+{
     /// <summary>
     /// Internal error message
     /// </summary>

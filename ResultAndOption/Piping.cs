@@ -3,7 +3,8 @@ namespace ResultAndOption;
 /// <summary>
 /// Contains Pipe method
 /// </summary>
-public static class Piping {
+public static class Piping
+{
     /// <summary>
     ///     Invokes a function on a non-null reference and returns the result.
     /// </summary>

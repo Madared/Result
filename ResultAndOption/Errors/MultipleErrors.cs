@@ -3,10 +3,12 @@ namespace ResultAndOption.Errors;
 /// <summary>
 /// Allows for wrapping multiple errors into one formatting their messages
 /// </summary>
-public class MultipleErrors : IError {
+public class MultipleErrors : IError
+{
     private readonly IEnumerable<IError> _errors;
 
-    public MultipleErrors(IEnumerable<IError> errors) {
+    public MultipleErrors(IEnumerable<IError> errors)
+    {
         _errors = errors;
     }
 
