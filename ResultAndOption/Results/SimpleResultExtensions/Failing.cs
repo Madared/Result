@@ -10,7 +10,7 @@ public static class Failing
     /// <param name="result"></param>
     /// <param name="action">The action to run, accepting the current result as a parameter.</param>
     /// <returns>The same result after running the action.</returns>
-    public static Result IfFailed(this Result result, Action<IError> action)
+    public static Result OnError(this Result result, Action<IError> action)
     {
         if (result.Failed) action(result.Error);
         return result;
@@ -22,7 +22,7 @@ public static class Failing
     /// <param name="result"></param>
     /// <param name="action"></param>
     /// <returns></returns>
-    public static Result IfFailed(this Result result, Action action)
+    public static Result OnError(this Result result, Action action)
     {
         if (result.Failed) action();
         return result;

@@ -20,7 +20,7 @@ public static class Failing
     public static async Task<Result> OnErrorAsync(this Task<Result> result, Action action)
     {
         Result original = await result;
-        return original.IfFailed(action);
+        return original.OnError(action);
     }
 
     /// <summary>
