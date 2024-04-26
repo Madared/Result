@@ -2,9 +2,6 @@ namespace ResultAndOption.Options.Extensions.Async;
 
 public static class Doing
 {
-    public delegate Task<Option<T>> OptionAsyncActionWithInput<T>(T data, CancellationToken? token = null) where T : notnull;
-    public delegate Task<Option<T>> OptionAsyncAction<T>(CancellationToken? token = null) where T : notnull;
-
     /// <summary>
     /// Awaits for the option and invokes the action if the option is not empty
     /// </summary>
@@ -26,7 +23,7 @@ public static class Doing
 
     public static async Task<Option<T>> DoAsync<T>(
         this Option<T> option,
-        OptionAsyncActionWithInput<T> actionWithInput,
+        Func<T, CancellationToken?, Task> actionWithInput,
         CancellationToken? token = null) where T : notnull
     {
         if (option.IsSome())
@@ -39,7 +36,7 @@ public static class Doing
 
     public static async Task<Option<T>> DoAsync<T>(
         this Task<Option<T>> option,
-        OptionAsyncActionWithInput<T> actionWithInput,
+        Func<T, CancellationToken?, Task> actionWithInput,
         CancellationToken? token = null) where T : notnull
     {
         Option<T> originalOption = await option;
@@ -54,7 +51,7 @@ public static class Doing
 
     public static async Task<Option<T>> DoAsync<T>(
         this Option<T> option,
-        OptionAsyncAction<T> action,
+        Func<CancellationToken?, Task> action,
         CancellationToken? token = null) where T : notnull
     {
         if (option.IsSome())
@@ -67,7 +64,7 @@ public static class Doing
 
     public static async Task<Option<T>> DoAsync<T>(
         this Task<Option<T>> option,
-        OptionAsyncAction<T> action,
+        Func<CancellationToken?, Task> action,
         CancellationToken? token = null) where T : notnull
     {
         Option<T> originalOption = await option;
