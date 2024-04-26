@@ -1,4 +1,5 @@
 using ResultAndOption.Errors;
+
 namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 
 /// <summary>
@@ -14,6 +15,33 @@ public static class Doing
 
     public delegate Task ErrorAsyncActionVoid(IError error, CancellationToken? token = null);
 
+    /// <summary>
+    /// Awaits the result, if its a failure, awaits the action with its error as a param and returns the result,
+    /// otherwise just returns the result 
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="action"></param>
+    /// <returns>The same result</returns>
+    public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<IError, Task> action)
+    {
+        Result original = await result;
+        if (original.Failed) await action(original.Error);
+        return original;
+    }
+
+    public static async Task<Result> IfFailedAsync(
+        this Task<Result> result,
+        Func<IError, CancellationToken?, Task> action,
+        CancellationToken? token = null)
+    {
+        Result original = await result;
+        if (original.Failed)
+        {
+            await action(original.Error, token);
+        }
+
+        return original;
+    }
 
     /// <summary>
     /// Awaits the Result and calls the IfFailed method

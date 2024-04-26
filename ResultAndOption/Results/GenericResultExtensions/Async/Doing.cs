@@ -22,6 +22,21 @@ public static class Doing
         return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
     }
 
+    public static async Task<Result<T>> DoAsync<T>(
+        Result<T> result,
+        Func<T, CancellationToken?, Task<Result>> action,
+        CancellationToken? token = null)
+        where T : notnull
+    {
+        if (result.Failed)
+        {
+            return result;
+        }
+
+        Result actionResult = await action(result.Data, token);
+        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
+    }
+
     /// <summary>
     /// If the result is a failure returns it otherwise awaits the action and returns either the existing result or
     /// a new result with the error of the failed action
@@ -34,6 +49,20 @@ public static class Doing
     {
         if (result.Failed) return result;
         Result actionResult = await action();
+        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
+    }
+
+    public static async Task<Result<T>> DoAsync<T>(
+        this Result<T> result,
+        Func<CancellationToken?, Task<Result>> action,
+        CancellationToken? token = null) where T : notnull
+    {
+        if (result.Failed)
+        {
+            return result;
+        }
+
+        Result actionResult = await action(token);
         return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
     }
 
@@ -65,6 +94,21 @@ public static class Doing
         if (originalResult.Failed) return originalResult;
         Result actionResult = await action(originalResult.Data);
         return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : originalResult;
+    }
+
+    public static async Task<Result<T>> DoAsync<T>(
+        this Task<Result<T>> result,
+        Func<T, CancellationToken?, Task<Result>> action,
+        CancellationToken? token = null) where T : notnull
+    {
+        Result<T> original = await result;
+        if (original.Failed)
+        {
+            return original;
+        }
+
+        Result actionResult = await action(original.Data, token);
+        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : original;
     }
 
     /// <summary>
@@ -110,18 +154,19 @@ public static class Doing
         return mappingResult.Failed ? Result<T>.Fail(mappingResult.Error) : originalResult;
     }
 
-    /// <summary>
-    /// Awaits the result, if its a failure, awaits the action with its error as a param and returns the result,
-    /// otherwise just returns the result 
-    /// </summary>
-    /// <param name="result"></param>
-    /// <param name="action"></param>
-    /// <returns>The same result</returns>
-    public static async Task<Result> IfFailedAsync(this Task<Result> result, Func<IError, Task> action)
+    public static async Task<Result<T>> DoAsync<T>(
+        this Task<Result<T>> result,
+        Func<CancellationToken?, Task<Result>> action,
+        CancellationToken? token = null) where T : notnull
     {
-        Result original = await result;
-        if (original.Failed) await action(original.Error);
-        return original;
+        Result<T> original = await result;
+        if (original.Failed)
+        {
+            return original;
+        }
+
+        Result actionResult = await action(token);
+        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : original;
     }
 
     /// <summary>
@@ -167,6 +212,20 @@ public static class Doing
         return original;
     }
 
+    public static async Task<Result<T>> IfFailedAsync<T>(
+        this Task<Result<T>> result,
+        Func<CancellationToken?, Task> action,
+        CancellationToken? token = null) where T : notnull
+    {
+        Result<T> original = await result;
+        if (original.Failed)
+        {
+            await action(token);
+        }
+
+        return original;
+    }
+
     /// <summary>
     /// awaits the result, and if its a failure awaits the specified action with the results error
     /// </summary>
@@ -179,6 +238,20 @@ public static class Doing
     {
         Result<T> original = await result;
         if (original.Failed) await action(original.Error);
+
+        return original;
+    }
+
+    public static async Task<Result<T>> IfFailedAsync<T>(
+        this Task<Result<T>> result,
+        Func<IError, CancellationToken?, Task> action,
+        CancellationToken? token = null)
+    {
+        Result<T> original = await result;
+        if (original.Failed)
+        {
+            await action(original.Error, token);
+        }
 
         return original;
     }

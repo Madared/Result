@@ -1,8 +1,6 @@
 namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 
-public delegate Task<Result<TOut>> AsyncMapperWithInput<in T, TOut>(T data, CancellationToken? token = null)
-    where T : notnull
-    where TOut : notnull;
+
 
 public delegate Task<Result<TOut>> AsyncMapper<TOut>(CancellationToken? token = null) where TOut : notnull;
 
@@ -74,4 +72,6 @@ public static class Mapping
         Result originalResult = await result;
         return originalResult.Failed ? Result<T>.Fail(originalResult.Error) : await mapper(token);
     }
+
+  
 }

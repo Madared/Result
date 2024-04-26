@@ -206,15 +206,16 @@ public class ResultTests
         Result<string> stringResult = Result<string>.Ok("hello");
         Task<Result<string>> taskResult = Task.FromResult(stringResult);
 
-        Task<int> SomeAsyncFunc(string f)
-        {
-            return Task.FromResult(f.Length);
-        }
-
         Task<Result<int>> intResultTask = taskResult.MapAsync(SomeAsyncFunc);
         Result<int> intResult = intResultTask.Result;
         Assert.True(intResult.Succeeded);
         Assert.Equal(stringResult.Data.Length, intResult.Data);
+        return;
+
+        Task<int> SomeAsyncFunc(string f)
+        {
+            return Task.FromResult(f.Length);
+        }
     }
 
     [Fact]
@@ -234,15 +235,16 @@ public class ResultTests
         string hello = "hello";
         Result<string> helloResult = Result<string>.Ok(hello);
 
-        Task<int> SomeAsyncFunction(string s)
-        {
-            return Task.FromResult(s.Length);
-        }
-
         Task<Result<int>> intTaskResult = helloResult.MapAsync(SomeAsyncFunction);
         Result<int> intResult = intTaskResult.Result;
         Assert.True(intResult.Succeeded);
         Assert.Equal(hello.Length, intResult.Data);
+        return;
+
+        Task<int> SomeAsyncFunction(string s)
+        {
+            return Task.FromResult(s.Length);
+        }
     }
 
     [Fact]
@@ -251,15 +253,16 @@ public class ResultTests
         string hello = "hello";
         Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
 
-        Task<Result<int>> SomeAsyncFunction(string s)
-        {
-            return Task.FromResult(Result<int>.Ok(s.Length));
-        }
-
         Task<Result<int>> intTaskResult = taskResult.MapAsync(SomeAsyncFunction);
         Result<int> intResult = intTaskResult.Result;
         Assert.True(intResult.Succeeded);
         Assert.Equal(hello.Length, intResult.Data);
+        return;
+
+        Task<Result<int>> SomeAsyncFunction(string s)
+        {
+            return Task.FromResult(Result<int>.Ok(s.Length));
+        }
     }
 
     [Fact]

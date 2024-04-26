@@ -7,6 +7,9 @@ namespace ResultAndOption.Results.SimpleResultExtensions;
 /// </summary>
 public static class Doing
 {
+
+
+
     /// <summary>
     ///     Maps the result using the specified function.
     /// </summary>
