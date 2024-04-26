@@ -1,14 +1,5 @@
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
 
-public delegate Task<Result<TOut>> AsyncMapperWithInput<in T, TOut>(T data, CancellationToken? token = null)
-    where T : notnull
-    where TOut : notnull;
-
-public delegate Task<TOut> ValueAsyncMapperWithInput<in T, TOut>(T data, CancellationToken? token = null)
-    where T : notnull where TOut : notnull;
-
-public delegate Task<TOut> ValueAsyncMapper<TOut>(CancellationToken? token = null) where TOut : notnull;
-
 public static class Mapping
 {
     /// <summary>
@@ -21,11 +12,11 @@ public static class Mapping
     /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(
         this Result<T> result,
-        ValueAsyncMapperWithInput<T, TOut> asyncFunction,
+        Func<T, CancellationToken?, Task<TOut>> asyncFunction,
         CancellationToken? token = null) where T : notnull where TOut : notnull
     {
         if (result.Failed) return Result<TOut>.Fail(result.Error);
-        TOut functionData = await asyncFunction(result.Data);
+        TOut functionData = await asyncFunction(result.Data, token);
         return Result<TOut>.Ok(functionData);
     }
 
@@ -39,7 +30,7 @@ public static class Mapping
     /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(
         this Result<T> result,
-        AsyncMapperWithInput<T, TOut> asyncMapper,
+        Func<T, CancellationToken?, Task<Result<TOut>>> asyncMapper,
         CancellationToken? token = null) where T : notnull where TOut : notnull
     {
         return result.Failed
@@ -58,7 +49,7 @@ public static class Mapping
     /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(
         this Task<Result<T>> result,
-        ValueAsyncMapperWithInput<T, TOut> asyncMapper,
+        Func<T, CancellationToken?, Task<TOut>> asyncMapper,
         CancellationToken? token = null) where TOut : notnull where T : notnull
     {
         Result<T> originalResult = await result;
@@ -147,7 +138,7 @@ public static class Mapping
 
     public static async Task<Result<TOut>> MapAsync<T, TOut>(
         this Task<Result<T>> result,
-        AsyncMapperWithInput<T, TOut> asyncMapper,
+        Func<T, CancellationToken?, Task<Result<TOut>>> asyncMapper,
         CancellationToken? token = null) where T : notnull where TOut : notnull
     {
         Result<T> original = await result;
@@ -161,7 +152,7 @@ public static class Mapping
 
     public static async Task<Result<TOut>> MapAsync<T, TOut>(
         this Result<T> result,
-        ValueAsyncMapper<TOut> asyncMapper,
+        Func<CancellationToken?, Task<TOut>> asyncMapper,
         CancellationToken? token = null) where T : notnull where TOut : notnull
     {
         if (result.Failed)

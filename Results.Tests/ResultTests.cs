@@ -62,7 +62,7 @@ public class ResultTests
         //When
         string errorMessage = "";
         Result<string> afterActionResult = stringResult
-            .IfFailed(error => errorMessage = error.Message);
+            .OnError(error => errorMessage = error.Message);
         //Then
         Assert.Equal(stringResult, afterActionResult);
         Assert.Equal(errorMessage, stringResult.Error.Message);
