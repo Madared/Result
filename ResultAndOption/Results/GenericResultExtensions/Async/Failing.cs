@@ -80,7 +80,7 @@ public static class Failing
     public static async Task<Result<T>> OnErrorAsync<T>(
         this Task<Result<T>> result,
         Func<IError, CancellationToken?, Task> action,
-        CancellationToken? token = null)
+        CancellationToken? token = null) where T : notnull
     {
         Result<T> original = await result;
         if (original.Failed)
