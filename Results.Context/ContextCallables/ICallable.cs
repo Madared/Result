@@ -15,5 +15,5 @@ public interface ICallable<TOut> : ICallable where TOut : notnull
         return Call().ToSimpleResult();
     }
 
-    Result<TOut> Call();
+    new Result<TOut> Call();
 }
