@@ -13,8 +13,7 @@ internal class CallableOf<TIn, TOut> : ICallable<TOut> where TOut : notnull wher
         _func = func;
     }
 
-    public Result<TOut> Call()
-    {
-        return _result.Failed ? Result<TOut>.Fail(_result.Error) : _func(_result.Data);
-    }
+    public Result<TOut> Call() => _result.Failed
+        ? Result<TOut>.Fail(_result.Error)
+        : _func(_result.Data);
 }
