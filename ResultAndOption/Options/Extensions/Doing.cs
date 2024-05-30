@@ -1,3 +1,5 @@
+using ResultAndOption.Results;
+
 namespace ResultAndOption.Options.Extensions;
 
 /// <summary>
