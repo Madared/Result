@@ -119,4 +119,17 @@ public static class Failing
         Result originalResult = await result;
         return originalResult.Failed ? await action(originalResult.Error, token) : originalResult;
     }
+
+    public static async Task<Result> OnErrorAsync(
+        this Task<Result> result,
+        Action<IError> action)
+    {
+        Result originalResult = await result;
+        if (originalResult.Failed)
+        {
+            action(originalResult.Error);
+        }
+
+        return originalResult;
+    }
 }

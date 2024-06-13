@@ -30,23 +30,7 @@ public static class Failing
         Result<T> original = await result;
         return original.OnError(action);
     }
-
-    /// <summary>
-    /// Awaits the result, and if its a failure awaits the specified action
-    /// </summary>
-    /// <param name="result"></param>
-    /// <param name="action"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns>The same result</returns>
-    public static async Task<Result<T>> OnErrorAsync<T>(this Task<Result<T>> result, Func<Task> action)
-        where T : notnull
-    {
-        Result<T> original = await result;
-        if (original.Failed) await action();
-
-        return original;
-    }
-
+    
     public static async Task<Result<T>> OnErrorAsync<T>(
         this Task<Result<T>> result,
         Func<CancellationToken?, Task> action,
@@ -57,22 +41,6 @@ public static class Failing
         {
             await action(token);
         }
-
-        return original;
-    }
-
-    /// <summary>
-    /// awaits the result, and if its a failure awaits the specified action with the results error
-    /// </summary>
-    /// <param name="result"></param>
-    /// <param name="action"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns>The same result</returns>
-    public static async Task<Result<T>> OnErrorAsync<T>(this Task<Result<T>> result, Func<IError, Task> action)
-        where T : notnull
-    {
-        Result<T> original = await result;
-        if (original.Failed) await action(original.Error);
 
         return original;
     }
