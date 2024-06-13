@@ -15,13 +15,6 @@ public static class Doing
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Result<T> result, Func<T, Task<Result>> action) where T : notnull
-    {
-        if (result.Failed) return result;
-        Result actionResult = await action(result.Data);
-        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
-    }
-
     public static async Task<Result<T>> DoAsync<T>(
         this Result<T> result,
         Func<T, CancellationToken?, Task<Result>> action,
@@ -45,13 +38,6 @@ public static class Doing
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Result<T> result, Func<Task<Result>> action) where T : notnull
-    {
-        if (result.Failed) return result;
-        Result actionResult = await action();
-        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
-    }
-
     public static async Task<Result<T>> DoAsync<T>(
         this Result<T> result,
         Func<CancellationToken?, Task<Result>> action,
@@ -87,15 +73,6 @@ public static class Doing
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<T, Task<Result>> action)
-        where T : notnull
-    {
-        Result<T> originalResult = await result;
-        if (originalResult.Failed) return originalResult;
-        Result actionResult = await action(originalResult.Data);
-        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : originalResult;
-    }
-
     public static async Task<Result<T>> DoAsync<T>(
         this Task<Result<T>> result,
         Func<T, CancellationToken?, Task<Result>> action,
@@ -145,15 +122,6 @@ public static class Doing
     /// <param name="mapper"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<Task<Result>> mapper)
-        where T : notnull
-    {
-        Result<T> originalResult = await result;
-        if (originalResult.Failed) return originalResult;
-        Result mappingResult = await mapper();
-        return mappingResult.Failed ? Result<T>.Fail(mappingResult.Error) : originalResult;
-    }
-
     public static async Task<Result<T>> DoAsync<T>(
         this Task<Result<T>> result,
         Func<CancellationToken?, Task<Result>> action,
