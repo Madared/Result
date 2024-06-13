@@ -15,7 +15,7 @@ public static class Doing
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(Result<T> result, Func<T, Task<Result>> action) where T : notnull
+    public static async Task<Result<T>> DoAsync<T>(this Result<T> result, Func<T, Task<Result>> action) where T : notnull
     {
         if (result.Failed) return result;
         Result actionResult = await action(result.Data);
@@ -23,7 +23,7 @@ public static class Doing
     }
 
     public static async Task<Result<T>> DoAsync<T>(
-        Result<T> result,
+        this Result<T> result,
         Func<T, CancellationToken?, Task<Result>> action,
         CancellationToken? token = null)
         where T : notnull
