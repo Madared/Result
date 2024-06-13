@@ -14,4 +14,18 @@ public static class Piping
     /// <param name="function">The function to invoke on the input reference.</param>
     /// <returns>The result of type <typeparamref name="TOut" /> produced by the function.</returns>
     public static TOut Pipe<TIn, TOut>(this TIn i, Func<TIn, TOut> function) where TIn : notnull => function(i);
+
+    /// <summary>
+    ///     Awaits the Task and passes it into the mapper function.
+    /// </summary>
+    /// <param name="i"></param>
+    /// <param name="mapper"></param>
+    /// <typeparam name="TIn"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
+    public static async Task<TOut> PipeAsync<TIn, TOut>(this Task<TIn> i, Func<TIn, TOut> mapper) where TIn : notnull
+    {
+        TIn original = await i;
+        return mapper(original);
+    }
 }

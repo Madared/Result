@@ -33,4 +33,16 @@ public static class Converting
         T? data = await nullable;
         return data.ToResult(error);
     }
+
+    /// <summary>
+    /// Turns a task of a generic result into a task of a simple result
+    /// </summary>
+    /// <param name="result"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static async Task<Result> ToSimpleResultAsync<T>(this Task<Result<T>> result) where T : notnull
+    {
+        Result<T> originalResult = await result;
+        return originalResult.Failed ? Result.Fail(originalResult.Error) : Result.Ok();
+    }
 }

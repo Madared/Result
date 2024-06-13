@@ -30,6 +30,4 @@ public static class Mapping
         Result originalResult = await result;
         return originalResult.Failed ? Result<T>.Fail(originalResult.Error) : await mapper(token);
     }
-
-  
 }
