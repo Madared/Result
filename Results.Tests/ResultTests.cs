@@ -291,7 +291,7 @@ public class ResultTests
     {
         string hello = "hello";
         Result<string> stringResult = Result<string>.Ok(hello);
-        Task<Result<string>> simpleResult = stringResult.DoAsync(() => Task.FromResult(Result.Ok()));
+        Task<Result<string>> simpleResult = stringResult.DoAsync(_ => Task.FromResult(Result.Ok()));
         Result<string> awaitedResult = simpleResult.Result;
         Assert.True(awaitedResult.Succeeded);
     }
