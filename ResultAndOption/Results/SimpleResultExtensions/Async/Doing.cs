@@ -8,17 +8,11 @@ namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 public static class Doing
 {
     /// <summary>
-    /// Awaits the result, if its a failure, awaits the action with its error as a param and returns the result,
-    /// otherwise just returns the result 
-    /// </summary>
-    /// <param name="result"></param>
-    /// <param name="action"></param>
-    /// <returns>The same result</returns>
-    /// <summary>
     /// If the result is a failure awaits the specified action and returns its result, otherwise returns the same result
     /// </summary>
     /// <param name="result"></param>
     /// <param name="mapper"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async Task<Result> DoAsync(
         this Result result,
@@ -28,10 +22,11 @@ public static class Doing
         : await mapper(cancellationToken);
 
     /// <summary>
-    /// Awaits the result and if its a success awaits the asyncMapper otherwise returns the same result
+    /// Awaits the result and if it's a success awaits the asyncMapper otherwise returns the same result
     /// </summary>
     /// <param name="result"></param>
     /// <param name="asyncMapper"></param>
+    /// <param name="token"></param>
     /// <returns></returns>
     public static async Task<Result> DoAsync(
         this Task<Result> result,
