@@ -1,6 +1,4 @@
-using ResultAndOption.Results;
-
-namespace ResultAndOption.Commands;
+namespace ResultAndOption.Results.Commands;
 
 public interface ICommand
 {

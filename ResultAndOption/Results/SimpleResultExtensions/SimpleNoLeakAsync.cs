@@ -1,8 +1,8 @@
-using ResultAndOption.Commands;
 using ResultAndOption.Errors;
-using ResultAndOption.Mappers;
+using ResultAndOption.Results.Commands;
+using ResultAndOption.Results.Mappers;
 
-namespace ResultAndOption.Results.GenericResultExtensions;
+namespace ResultAndOption.Results.SimpleResultExtensions;
 
 public static class SimpleNoLeakAsync
 {

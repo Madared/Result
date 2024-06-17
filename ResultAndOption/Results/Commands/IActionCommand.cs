@@ -1,4 +1,4 @@
-namespace ResultAndOption.Commands;
+namespace ResultAndOption.Results.Commands;
 
 public interface IActionCommand
 {

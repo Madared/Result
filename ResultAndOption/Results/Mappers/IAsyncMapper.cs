@@ -1,6 +1,4 @@
-using ResultAndOption.Results;
-
-namespace ResultAndOption.Mappers;
+namespace ResultAndOption.Results.Mappers;
 
 public interface IAsyncMapper<T> where T : notnull
 {

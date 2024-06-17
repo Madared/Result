@@ -1,6 +1,4 @@
-using ResultAndOption.Results;
-
-namespace ResultAndOption.Mappers;
+namespace ResultAndOption.Results.Mappers;
 
 public interface IMapper<in TIn, TOut> where TIn : notnull where TOut : notnull
 {
