@@ -1,4 +1,6 @@
-﻿using ResultAndOption.Errors;
+﻿using ResultAndOption.Commands;
+using ResultAndOption.Errors;
+using ResultAndOption.Mappers;
 
 namespace ResultAndOption.Results;
 
@@ -16,6 +18,62 @@ public readonly struct Result : IResult
     {
         Succeeded = !failed;
         _error = error;
+    }
+
+    public Result<TOut> Map<TOut>(IMapper<TOut> mapper) where TOut : notnull => Failed
+        ? Result<TOut>.Fail(Error)
+        : mapper.Map();
+
+    public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<TOut> mapper) where TOut : notnull => Failed
+        ? Task.FromResult(Result<TOut>.Fail(Error))
+        : mapper.Map();
+
+    public Result Do(ICommand command) => Failed
+        ? this
+        : command.Do();
+
+    public Task<Result> DoAsync(IAsyncCommand command) => Failed
+        ? Task.FromResult(this)
+        : command.Do();
+
+    public Result OnError(IActionCommand command)
+    {
+        if (Failed)
+        {
+            command.Do();
+        }
+
+        return this;
+    }
+
+    public Result OnError(IActionCommand<IError> command)
+    {
+        if (Failed)
+        {
+            command.Do(Error);
+        }
+
+        return this;
+    }
+
+    public async Task<Result> OnErrorAsync(IAsyncActionCommand command)
+    {
+        if (Failed)
+        {
+            await command.Do();
+        }
+
+        return this;
+    }
+
+    public async Task<Result> OnErrorAsync(IAsyncActionCommand<IError> command)
+    {
+        if (Failed)
+        {
+            await command.Do(Error);
+        }
+
+        return this;
     }
 
     /// <summary>

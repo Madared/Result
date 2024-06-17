@@ -1,5 +1,8 @@
-﻿using ResultAndOption.Errors;
+﻿using ResultAndOption.Commands;
+using ResultAndOption.Errors;
+using ResultAndOption.Mappers;
 using ResultAndOption.Options;
+using ResultAndOption.Results.GenericResultExtensions;
 
 namespace ResultAndOption.Results;
 
@@ -29,6 +32,79 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     public IError Error => Succeeded
         ? throw new InvalidOperationException("Cannot access Error on success Result!")
         : _error ?? new UnknownError();
+
+    public Result<TOut> Map<TOut>(IMapper<T, TOut> mapper) where TOut : notnull => Failed
+        ? Result<TOut>.Fail(Error)
+        : mapper.Map(Data);
+
+    public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<T, TOut> mapper) where TOut : notnull => Failed
+        ? Task.FromResult(Result<TOut>.Fail(Error))
+        : mapper.Map(Data);
+
+    public Result<TOut> Map<TOut>(IMapper<TOut> mapper) where TOut : notnull => Failed
+        ? Result<TOut>.Fail(Error)
+        : mapper.Map();
+
+    public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<TOut> mapper) where TOut : notnull => Failed
+        ? Task.FromResult(Result<TOut>.Fail(Error))
+        : mapper.Map();
+
+    public Result Do(ICommand command) => Failed
+        ? Result.Fail(Error)
+        : command.Do();
+
+    public Task<Result> DoAsync(IAsyncCommand command) => Failed
+        ? Task.FromResult(Result.Fail(Error))
+        : command.Do();
+
+    public Result Do(ICommand<T> command) => Failed
+        ? Result.Fail(Error)
+        : command.Do(Data);
+
+    public Task<Result> DoAsync(IAsyncCommand<T> command) => Failed
+        ? Task.FromResult(Result.Fail(Error))
+        : command.Do(Data);
+
+    public Result<T> OnError(IActionCommand command)
+    {
+        if (Failed)
+        {
+            command.Do();
+        }
+
+        return this;
+    }
+
+    public async Task<Result<T>> OnErrorAsync(IAsyncActionCommand command)
+    {
+        if (Failed)
+        {
+            await command.Do();
+        }
+
+        return this;
+    }
+
+    public Result<T> OnError(IActionCommand<IError> command)
+    {
+        if (Failed)
+        {
+            command.Do(Error);
+        }
+
+        return this;
+    }
+
+    public async Task<Result<T>> OnErrorAsync(IAsyncActionCommand<IError> command)
+    {
+        if (Failed)
+        {
+            await command.Do(Error);
+        }
+
+        return this;
+    }
+
 
     /// <summary>
     ///     Creates a successful result with the specified data.

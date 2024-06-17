@@ -28,4 +28,9 @@ public static class Failing
         if (result.Failed) action();
         return result;
     }
+
+    public static List<IError> AggregateErrors(params IResult[] results) => results
+        .Where(r => r.Failed)
+        .Select(failed => failed.Error)
+        .ToList();
 }
