@@ -1,6 +1,6 @@
 using ResultAndOption.Results.Commands;
 
-namespace ResultAndOption.Results.SimpleResultExtensions;
+namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 
 public static class ObjectDoing
 {

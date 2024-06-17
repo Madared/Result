@@ -1,6 +1,6 @@
 using ResultAndOption.Results.Mappers;
 
-namespace ResultAndOption.Results.SimpleResultExtensions;
+namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 
 public static class ObjectMapping
 {
