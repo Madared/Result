@@ -1,7 +1,6 @@
 ﻿using ResultAndOption.Errors;
 using ResultAndOption.Options;
 using ResultAndOption.Results.Commands;
-using ResultAndOption.Results.GenericResultExtensions;
 using ResultAndOption.Results.Mappers;
 
 namespace ResultAndOption.Results;
