@@ -1,27 +1,25 @@
 namespace ResultAndOption.Results.Commands;
 
 /// <summary>
-/// A synchronous Result Command
+/// A synchronous void command
 /// </summary>
 public interface ICommand
 {
     /// <summary>
-    /// Result Command call
+    /// Command call
     /// </summary>
-    /// <returns></returns>
-    public Result Do();
+    public void Do();
 }
 
 /// <summary>
-/// A synchronous Result Command with input
+/// A synchronous void command that takes an input on call
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public interface ICommand<in T> where T : notnull
 {
     /// <summary>
-    /// Synchronous Result Command call with input
+    /// Command call with input
     /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public Result Do(T data);
+    /// <param name="data">Input</param>
+    public void Do(T data);
 }

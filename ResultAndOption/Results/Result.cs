@@ -4,12 +4,27 @@ using ResultAndOption.Results.Mappers;
 
 namespace ResultAndOption.Results;
 
+/// <summary>
+/// A representation of the result of an action without internal data.
+/// </summary>
 public readonly struct Result : IResult
 {
     private readonly IError? _error;
+    
+    /// <summary>
+    /// Shows if the result has succeeded.
+    /// </summary>
     public bool Succeeded { get; }
+    
+    /// <summary>
+    /// Shows if the result has failed.
+    /// </summary>
     public bool Failed => !Succeeded;
 
+    /// <summary>
+    /// Returns the error if the result has failed otherwise throws an exception.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
     public IError Error => Succeeded
         ? throw new InvalidOperationException()
         : _error ?? new UnknownError();
@@ -28,15 +43,15 @@ public readonly struct Result : IResult
         ? Task.FromResult(Result<TOut>.Fail(Error))
         : mapper.Map();
 
-    public Result Do(ICommand command) => Failed
+    public Result Do(ISimpleMapper simpleMapper) => Failed
         ? this
-        : command.Do();
+        : simpleMapper.Map();
 
-    public Task<Result> DoAsync(IAsyncCommand command) => Failed
+    public Task<Result> DoAsync(IAsyncSimpleMapper simpleMapper) => Failed
         ? Task.FromResult(this)
-        : command.Do();
+        : simpleMapper.Map();
 
-    public Result OnError(IActionCommand command)
+    public Result OnError(ICommand command)
     {
         if (Failed)
         {
@@ -46,7 +61,7 @@ public readonly struct Result : IResult
         return this;
     }
 
-    public Result OnError(IActionCommand<IError> command)
+    public Result OnError(ICommand<IError> command)
     {
         if (Failed)
         {
@@ -56,7 +71,7 @@ public readonly struct Result : IResult
         return this;
     }
 
-    public async Task<Result> OnErrorAsync(IAsyncActionCommand command)
+    public async Task<Result> OnErrorAsync(IAsyncCommand command)
     {
         if (Failed)
         {
@@ -66,7 +81,7 @@ public readonly struct Result : IResult
         return this;
     }
 
-    public async Task<Result> OnErrorAsync(IAsyncActionCommand<IError> command)
+    public async Task<Result> OnErrorAsync(IAsyncCommand<IError> command)
     {
         if (Failed)
         {

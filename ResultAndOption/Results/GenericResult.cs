@@ -14,11 +14,22 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     private readonly Option<T> _data;
     private readonly IError? _error;
 
+    /// <summary>
+    /// Returns the data from a successful result or throws the present error wrapped in an exception if failed.
+    /// </summary>
+    /// <exception cref="Exception"></exception>
     public T Data => _data.IsNone()
         ? throw ErrorToExceptionMapper.Map(_error)
         : _data.Data;
 
+    /// <summary>
+    /// Shows if result has failed
+    /// </summary>
     public bool Failed => !Succeeded;
+
+    /// <summary>
+    /// Shows if result has succeeded
+    /// </summary>
     public bool Succeeded { get; }
 
     private Result(bool failed, IError? error, Option<T> data)
@@ -28,43 +39,64 @@ public readonly struct Result<T> : IResult<T> where T : notnull
         _data = data;
     }
 
+    /// <summary>
+    /// Returns the error from a failed result or throws an exception in a successful result.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
     public IError Error => Succeeded
         ? throw new InvalidOperationException("Cannot access Error on success Result!")
         : _error ?? new UnknownError();
 
+    /// <summary>
+    /// Uses an IMapper to map a successful result data through its transformation by taking the data as the only parameter
+    /// or into a new failed result with the existing error.
+    /// </summary>
+    /// <param name="mapper"></param>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns>A new result</returns>
     public Result<TOut> Map<TOut>(IMapper<T, TOut> mapper) where TOut : notnull => Failed
         ? Result<TOut>.Fail(Error)
         : mapper.Map(Data);
 
+    /// <summary>
+    /// Uses an IAsyncMapper to map a successful result data through its transformation by taking the data as the only parameter
+    /// or into a new failed result with the existing error asynchronously.
+    /// </summary>
+    /// <param name="mapper"></param>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns>A Task of the new result</returns>
     public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<T, TOut> mapper) where TOut : notnull => Failed
         ? Task.FromResult(Result<TOut>.Fail(Error))
         : mapper.Map(Data);
 
+    /// <summary>
+    /// Uses an IMapper to map a successful result data through its transformation without parameters
+    /// or into a new failed result with the existing error.
+    /// </summary>
+    /// <param name="mapper"></param>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns>A new result</returns>
     public Result<TOut> Map<TOut>(IMapper<TOut> mapper) where TOut : notnull => Failed
         ? Result<TOut>.Fail(Error)
         : mapper.Map();
 
+    /// <summary>
+    /// Uses an IMapper to map a successful result data through its transformation without parameters
+    /// /// or into a new failed result with the existing error.
+    /// </summary>
+    /// <param name="mapper"></param>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns>A Task of the new result</returns>
     public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<TOut> mapper) where TOut : notnull => Failed
         ? Task.FromResult(Result<TOut>.Fail(Error))
         : mapper.Map();
 
-    public Result Do(ICommand command) => Failed
-        ? Result.Fail(Error)
-        : command.Do();
-
-    public Task<Result> DoAsync(IAsyncCommand command) => Failed
-        ? Task.FromResult(Result.Fail(Error))
-        : command.Do();
-
-    public Result Do(ICommand<T> command) => Failed
-        ? Result.Fail(Error)
-        : command.Do(Data);
-
-    public Task<Result> DoAsync(IAsyncCommand<T> command) => Failed
-        ? Task.FromResult(Result.Fail(Error))
-        : command.Do(Data);
-
-    public Result<T> OnError(IActionCommand command)
+    /// <summary>
+    /// Executes the action in case the result is in a failed state.
+    /// </summary>
+    /// <param name="command">The action to execute</param>
+    /// <returns>The same result</returns>
+    public Result<T> OnError(ICommand command)
     {
         if (Failed)
         {
@@ -74,7 +106,12 @@ public readonly struct Result<T> : IResult<T> where T : notnull
         return this;
     }
 
-    public async Task<Result<T>> OnErrorAsync(IAsyncActionCommand command)
+    /// <summary>
+    /// Executes an action asynchronously in case the result is in a failed state.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns>A task of the same result.</returns>
+    public async Task<Result<T>> OnErrorAsync(IAsyncCommand command)
     {
         if (Failed)
         {
@@ -84,7 +121,12 @@ public readonly struct Result<T> : IResult<T> where T : notnull
         return this;
     }
 
-    public Result<T> OnError(IActionCommand<IError> command)
+    /// <summary>
+    /// Executes an action in case the result is in a failed state by taking the error as the only parameter.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns>The same result.</returns>
+    public Result<T> OnError(ICommand<IError> command)
     {
         if (Failed)
         {
@@ -94,7 +136,12 @@ public readonly struct Result<T> : IResult<T> where T : notnull
         return this;
     }
 
-    public async Task<Result<T>> OnErrorAsync(IAsyncActionCommand<IError> command)
+    /// <summary>
+    /// Executes an action asynchronously in case the result is in a failed state by taking the error as the only parameter.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns>A Task of the same result.</returns>
+    public async Task<Result<T>> OnErrorAsync(IAsyncCommand<IError> command)
     {
         if (Failed)
         {
@@ -103,7 +150,6 @@ public readonly struct Result<T> : IResult<T> where T : notnull
 
         return this;
     }
-
 
     /// <summary>
     ///     Creates a successful result with the specified data.

@@ -1,27 +1,27 @@
 namespace ResultAndOption.Results.Commands;
 
 /// <summary>
-/// An Asynchronous Result Command with input
+/// An Async void command with input
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public interface IAsyncCommand<in T> where T : notnull
 {
     /// <summary>
-    /// Asynchronous Result Command call with input
+    /// Async Command call with input
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public Task<Result> Do(T data);
+    public Task Do(T data);
 }
 
 /// <summary>
-/// An Asynchronous Result Command
+/// An Async void command
 /// </summary>
 public interface IAsyncCommand
 {
     /// <summary>
-    /// Asynchronous Result Command call
+    /// Async Command call
     /// </summary>
     /// <returns></returns>
-    public Task<Result> Do();
+    public Task Do();
 }

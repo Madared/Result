@@ -1,3 +1,5 @@
+using ResultAndOption.Results.Commands;
+
 namespace ResultAndOption.Options;
 
 /// <summary>
@@ -33,6 +35,46 @@ public readonly struct Option<T> where T : notnull
     /// </summary>
     /// <returns></returns>
     public bool IsNone() => _isNone || _data is null;
+
+    public Option<T> Do(ICommand command)
+    {
+        if (IsSome())
+        {
+            command.Do();
+        }
+
+        return this;
+    }
+
+    public async Task<Option<T>> DoAsync(IAsyncCommand command)
+    {
+        if (IsSome())
+        {
+            await command.Do();
+        }
+
+        return this;
+    }
+
+    public Option<T> Do(ICommand<T> command)
+    {
+        if (IsSome())
+        {
+            command.Do(Data);
+        }
+
+        return this;
+    }
+
+    public async Task<Option<T>> DoAsync(IAsyncCommand<T> command)
+    {
+        if (IsSome())
+        {
+            await command.Do(Data);
+        }
+
+        return this;
+    }
 
     /// <summary>
     /// Creates a populated Option

@@ -4,16 +4,16 @@ namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 
 public static class ObjectDoing
 {
-    public static async Task<Result> DoAsync(this Task<Result> result, ICommand command)
+    public static async Task<Result> DoAsync(this Task<Result> result, ISimpleMapper simpleMapper)
     {
         Result awaited = await result;
-        return awaited.Do(command);
+        return awaited.Do(simpleMapper);
     }
 
-    public static async Task<Result> DoAsync(this Task<Result> result, IAsyncCommand command)
+    public static async Task<Result> DoAsync(this Task<Result> result, IAsyncSimpleMapper simpleMapper)
     {
         Result awaited = await result;
-        return await awaited.DoAsync(command);
+        return await awaited.DoAsync(simpleMapper);
     }
 
  
