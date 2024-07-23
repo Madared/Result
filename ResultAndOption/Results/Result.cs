@@ -43,13 +43,33 @@ public readonly struct Result : IResult
         ? Task.FromResult(Result<TOut>.Fail(Error))
         : mapper.Map();
 
-    public Result Do(ISimpleMapper simpleMapper) => Failed
+    public Result Map(ISimpleMapper simpleMapper) => Failed
         ? this
         : simpleMapper.Map();
 
-    public Task<Result> DoAsync(IAsyncSimpleMapper simpleMapper) => Failed
+    public Task<Result> MapAsync(IAsyncSimpleMapper simpleMapper) => Failed
         ? Task.FromResult(this)
         : simpleMapper.Map();
+
+    public Result Do(ICommand command)
+    {
+        if (Succeeded)
+        {
+            command.Do();
+        }
+
+        return this;
+    }
+
+    public async Task<Result> DoAsync(IAsyncCommand command)
+    {
+        if (Succeeded)
+        {
+            await command.Do();
+        }
+
+        return this;
+    }
 
     public Result OnError(ICommand command)
     {
