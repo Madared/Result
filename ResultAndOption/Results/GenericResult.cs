@@ -92,6 +92,36 @@ public readonly struct Result<T> : IResult<T> where T : notnull
         : mapper.Map();
 
     /// <summary>
+    /// Executes an action if the result is successful otherwise does nothing. Returns the same result.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns>The same result.</returns>
+    public Result<T> Do(ICommand<T> command)
+    {
+        if (Succeeded)
+        {
+            command.Do(Data);
+        }
+
+        return this;
+    }
+
+    /// <summary>
+    /// Executes an action asynchronously if the result is successful otherwise does nothing. Returns the same result.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns>A Task of the same result.</returns>
+    public async Task<Result<T>> DoAsync(IAsyncCommand<T> command)
+    {
+        if (Succeeded)
+        {
+            await command.Do(Data);
+        }
+
+        return this;
+    }
+
+    /// <summary>
     /// Executes the action in case the result is in a failed state.
     /// </summary>
     /// <param name="command">The action to execute</param>
