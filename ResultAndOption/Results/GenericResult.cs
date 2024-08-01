@@ -122,6 +122,24 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     }
 
     /// <summary>
+    /// Performs a command if the current result is a success and returns its result otherwise passes the Error into a new SimpleResult
+    /// </summary>
+    /// <param name="command">The command to execute</param>
+    /// <returns></returns>
+    public Result Do(IResultCommand<T> command) => Succeeded
+        ? command.Do(Data)
+        : Result.Fail(Error);
+
+    /// <summary>
+    /// Performs an async command if the current result is a success and returns its result otherwise passes the Error into a new SimpleResult
+    /// </summary>
+    /// <param name="command">the async command to execute</param>
+    /// <returns></returns>
+    public async Task<Result> DoAsync(IAsyncResultCommand<T> command) => Succeeded
+        ? await command.Do(Data)
+        : Result.Fail(Error);
+
+    /// <summary>
     /// Executes the action in case the result is in a failed state.
     /// </summary>
     /// <param name="command">The action to execute</param>

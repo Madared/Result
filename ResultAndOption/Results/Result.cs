@@ -35,21 +35,21 @@ public readonly struct Result : IResult
         _error = error;
     }
 
-    public Result<TOut> Map<TOut>(IMapper<TOut> mapper) where TOut : notnull => Failed
+    public Result<TOut> Do<TOut>(IMapper<TOut> mapper) where TOut : notnull => Failed
         ? Result<TOut>.Fail(Error)
         : mapper.Map();
 
-    public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<TOut> mapper) where TOut : notnull => Failed
+    public Task<Result<TOut>> DoAsync<TOut>(IAsyncMapper<TOut> mapper) where TOut : notnull => Failed
         ? Task.FromResult(Result<TOut>.Fail(Error))
         : mapper.Map();
 
-    public Result Map(ISimpleMapper simpleMapper) => Failed
+    public Result Do(IResultCommand resultCommand) => Failed
         ? this
-        : simpleMapper.Map();
+        : resultCommand.Do();
 
-    public Task<Result> MapAsync(IAsyncSimpleMapper simpleMapper) => Failed
+    public Task<Result> DoAsync(IAsyncResultCommand resultCommand) => Failed
         ? Task.FromResult(this)
-        : simpleMapper.Map();
+        : resultCommand.Do();
 
     public Result Do(ICommand command)
     {
