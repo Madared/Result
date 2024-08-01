@@ -95,4 +95,11 @@ public readonly struct Option<T> where T : notnull
     /// <param name="data">Nullable data to insert into the option</param>
     /// <returns></returns>
     public static Option<T> Maybe(T? data) => data is null ? None() : Some(data);
+
+    /// <summary>
+    /// Implicitly converts non null value into a full option
+    /// </summary>
+    /// <param name="data">Non null value to convert</param>
+    /// <returns>Full option</returns>
+    public static implicit operator Option<T>(T data) => Some(data);
 }

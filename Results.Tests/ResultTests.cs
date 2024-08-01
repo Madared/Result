@@ -1,8 +1,11 @@
 using ResultAndOption.Errors;
+using ResultAndOption.Options;
 using ResultAndOption.Results;
+using ResultAndOption.Results.Commands;
 using ResultAndOption.Results.GenericResultExtensions;
 using ResultAndOption.Results.GenericResultExtensions.Async;
 using ResultAndOption.Results.SimpleResultExtensions;
+using Failing = ResultAndOption.Results.GenericResultExtensions.Async.Failing;
 
 namespace Results.Tests;
 
@@ -376,5 +379,61 @@ public class ResultTests
         Result<Result<string>> mapWrapResult = stringResult.Wrap(str => Result<string>.Ok(str + "boom"));
         Assert.True(mapWrapResult.Succeeded);
         Assert.True(mapWrapResult.Data.Succeeded);
+    }
+    
+    [Fact]
+    public void Result_Do_Triggers_On_Success_Result()
+    {
+        ValueEmitter<bool> emitter = new(false);
+        Result<string> stringResult = Result<string>.Ok("hello");
+        Result triggered = stringResult.Do(new TriggerCommand<string>(emitter));
+        Assert.True(stringResult.Succeeded);
+        Assert.True(emitter.Emmit());
+    }
+
+    [Fact]
+    public void Result_Do_Does_Not_Trigger_On_Failed_Result()
+    {
+        ValueEmitter<bool> emitter = new(false);
+        Result<string> stringResult = Result<string>.Fail(new UnknownError());
+        Result triggered = stringResult.Do(new TriggerCommand<string>(emitter));
+        Assert.True(stringResult.Failed);
+        Assert.False(emitter.Emmit());
+    }
+    
+    [Fact]
+    public void Aggregate_Results_Only_Selects_From_Failed_Results()
+    {
+        Result<string> failedResult = Result<string>.Fail(new UnknownError());
+        Result<string> successresult = Result<string>.Ok("hello");
+        List<IError> errors = ResultAndOption.Results.GenericResultExtensions.Failing.AggregateErrors(failedResult, successresult).ToList();
+        Assert.Single(errors);
+    }
+}
+
+public sealed class ValueEmitter<T> where T : notnull
+{
+    private T _value;
+
+    public ValueEmitter(T value)
+    {
+        _value = value;
+    }
+    public T Emmit() => _value;
+    public void Set(T value) => _value = value;
+}
+
+public sealed class TriggerCommand<T> : IResultCommand<T> where T : notnull
+{
+    private readonly ValueEmitter<bool> _trigger;
+    public TriggerCommand(ValueEmitter<bool> trigger)
+    {
+        _trigger = trigger;
+    }
+
+    public Result Do(T data)
+    {
+        _trigger.Set(true);
+        return Result.Ok();
     }
 }
