@@ -52,5 +52,33 @@ public static class Piping
     /// <typeparam name="TOut"></typeparam>
     /// <returns>A task of the transformed value</returns>
     public static Task<TOut> PipeAsync<TIn, TOut>(this TIn value, IAsyncTransformer<TIn, TOut> transformer) =>
-        transformer.Transform(value);
+        transformer.TransformAsync(value);
+
+    /// <summary>
+    /// Performs a Transform asynchronously on a task of a value by awaiting it.
+    /// </summary>
+    /// <param name="value">The task of the value to transform</param>
+    /// <param name="transformer">The transformer</param>
+    /// <typeparam name="TIn"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns>A Task of the transformed value</returns>
+    public static async Task<TOut> PipeAsync<TIn, TOut>(this Task<TIn> value, ITransformer<TIn, TOut> transformer)
+    {
+        TIn original = await value;
+        return transformer.Transform(original);
+    }
+
+    /// <summary>
+    /// Performs an async Transform on a task of a value by awaiting it
+    /// </summary>
+    /// <param name="value">The task of the value to tranform</param>
+    /// <param name="transformer">The transformer</param>
+    /// <typeparam name="TIn"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns>A task of the transformed value</returns>
+    public static async Task<TOut> PipeAsync<TIn, TOut>(this Task<TIn> value, IAsyncTransformer<TIn, TOut> transformer)
+    {
+        TIn original = await value;
+        return await transformer.TransformAsync(original);
+    }
 }

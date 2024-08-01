@@ -12,5 +12,5 @@ public interface IAsyncTransformer<in TIn, TOut>
     /// </summary>
     /// <param name="value">The value to transform.</param>
     /// <returns>A task of the transformed value.</returns>
-    Task<TOut> Transform(TIn value);
+    Task<TOut> TransformAsync(TIn value);
 }
