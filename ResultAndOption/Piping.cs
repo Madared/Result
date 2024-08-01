@@ -1,3 +1,6 @@
+using ResultAndOption.Results.Mappers;
+using ResultAndOption.Transformers;
+
 namespace ResultAndOption;
 
 /// <summary>
@@ -28,4 +31,26 @@ public static class Piping
         TIn original = await i;
         return mapper(original);
     }
+
+    /// <summary>
+    /// Pipes a value into a transformer
+    /// </summary>
+    /// <param name="value">The value to be transformed</param>
+    /// <param name="transformer">The transformer to be used</param>
+    /// <typeparam name="TIn"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns>The transformed value</returns>
+    public static TOut Pipe<TIn, TOut>(this TIn value, ITransformer<TIn, TOut> transformer) =>
+        transformer.Transform(value);
+
+    /// <summary>
+    /// Pipes a value into an async transformer
+    /// </summary>
+    /// <param name="value">the value to be transformed</param>
+    /// <param name="transformer">the async transformer</param>
+    /// <typeparam name="TIn"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns>A task of the transformed value</returns>
+    public static Task<TOut> PipeAsync<TIn, TOut>(this TIn value, IAsyncTransformer<TIn, TOut> transformer) =>
+        transformer.Transform(value);
 }
