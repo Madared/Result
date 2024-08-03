@@ -3,13 +3,14 @@ namespace ResultAndOption.Errors;
 /// <summary>
 /// Exception wrapping an Error
 /// </summary>
+[Serializable]
 public class ErrorWrapper : Exception
 {
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="error"></param>
-    public ErrorWrapper(IError error) : base(error.Message)
+    private ErrorWrapper(IError error) : base(error.Message)
     {
         Error = error;
     }

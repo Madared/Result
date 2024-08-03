@@ -1,3 +1,4 @@
+using ResultAndOption.Results;
 namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 
 public delegate Task<Result<TOut>> AsyncMapper<TOut>(CancellationToken? token = null) where TOut : notnull;

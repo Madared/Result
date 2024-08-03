@@ -10,15 +10,12 @@ public static class ErrorToExceptionMapper
     /// </summary>
     /// <param name="error"></param>
     /// <returns></returns>
-    public static Exception Map(IError? error)
+    public static Exception Map(IError? error) => error switch
     {
-        return error switch
-        {
-            null => new InvalidOperationException(),
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            Exception e => e,
-            ExceptionWrapper e => e.Exception,
-            _ => new ErrorWrapper(error)
-        };
-    }
+        null => new InvalidOperationException(),
+        // ReSharper disable once SuspiciousTypeConversion.Global
+        Exception e => e,
+        ExceptionWrapper e => e.Exception,
+        _ => ErrorWrapper.Create(error)
+    };
 }

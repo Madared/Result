@@ -5,15 +5,15 @@ namespace ResultAndOption.Errors;
 /// </summary>
 public record ExceptionWrapper : IError
 {
-    public ExceptionWrapper(Exception exception)
-    {
-        Exception = exception;
-    }
-
     /// <summary>
     /// Wrapped exception
     /// </summary>
     public Exception Exception { get; }
+    
+    public ExceptionWrapper(Exception exception)
+    {
+        Exception = exception;
+    }
 
     /// <summary>
     /// Internal exception message

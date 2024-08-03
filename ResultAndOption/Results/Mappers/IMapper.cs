@@ -1,3 +1,5 @@
+using ResultAndOption.Results;
+
 namespace ResultAndOption.Results.Mappers;
 
 /// <summary>

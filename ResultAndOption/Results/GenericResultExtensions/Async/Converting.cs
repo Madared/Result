@@ -1,5 +1,6 @@
 using ResultAndOption.Errors;
 using ResultAndOption.Options;
+using ResultAndOption.Results;
 
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
 

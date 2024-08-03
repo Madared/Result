@@ -1,4 +1,5 @@
 using ResultAndOption.Errors;
+using ResultAndOption.Results;
 
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
 
@@ -15,7 +16,7 @@ public static class Doing
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(
+    public static async Task<Result> DoAsync<T>(
         this Result<T> result,
         Func<T, CancellationToken?, Task<Result>> action,
         CancellationToken? token = null)
@@ -23,11 +24,11 @@ public static class Doing
     {
         if (result.Failed)
         {
-            return result;
+            return result.ToSimpleResult();
         }
 
         Result actionResult = await action(result.Data, token);
-        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
+        return actionResult.Failed ? Result.Fail(actionResult.Error) : result.ToSimpleResult();
     }
 
     /// <summary>
@@ -38,18 +39,18 @@ public static class Doing
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(
+    public static async Task<Result> DoAsync<T>(
         this Result<T> result,
         Func<CancellationToken?, Task<Result>> action,
         CancellationToken? token = null) where T : notnull
     {
         if (result.Failed)
         {
-            return result;
+            return result.ToSimpleResult();
         }
 
         Result actionResult = await action(token);
-        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : result;
+        return actionResult.Failed ? Result.Fail(actionResult.Error) : result.ToSimpleResult();
     }
 
     /// <summary>
@@ -59,7 +60,7 @@ public static class Doing
     /// <param name="mapper"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<T, Result> mapper)
+    public static async Task<Result> DoAsync<T>(this Task<Result<T>> result, Func<T, Result> mapper)
         where T : notnull
     {
         Result<T> originalResult = await result;
@@ -73,7 +74,7 @@ public static class Doing
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(
+    public static async Task<Result> DoAsync<T>(
         this Task<Result<T>> result,
         Func<T, CancellationToken?, Task<Result>> action,
         CancellationToken? token = null) where T : notnull
@@ -81,11 +82,11 @@ public static class Doing
         Result<T> original = await result;
         if (original.Failed)
         {
-            return original;
+            return original.ToSimpleResult();
         }
 
         Result actionResult = await action(original.Data, token);
-        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : original;
+        return actionResult.Failed ? Result.Fail(actionResult.Error) : original.ToSimpleResult();
     }
 
     /// <summary>
@@ -95,7 +96,7 @@ public static class Doing
     /// <param name="function"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Action<T> function) where T : notnull
+    public static async Task<Result> DoAsync<T>(this Task<Result<T>> result, Action<T> function) where T : notnull
     {
         Result<T> originalResult = await result;
         return originalResult.Do(function);
@@ -108,7 +109,7 @@ public static class Doing
     /// <param name="mapper"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> result, Func<Result> mapper) where T : notnull
+    public static async Task<Result> DoAsync<T>(this Task<Result<T>> result, Func<Result> mapper) where T : notnull
     {
         Result<T> originalResult = await result;
         return originalResult.Do(mapper);
@@ -122,7 +123,7 @@ public static class Doing
     /// <param name="mapper"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> DoAsync<T>(
+    public static async Task<Result> DoAsync<T>(
         this Task<Result<T>> result,
         Func<CancellationToken?, Task<Result>> action,
         CancellationToken? token = null) where T : notnull
@@ -130,10 +131,10 @@ public static class Doing
         Result<T> original = await result;
         if (original.Failed)
         {
-            return original;
+            return original.ToSimpleResult();
         }
 
         Result actionResult = await action(token);
-        return actionResult.Failed ? Result<T>.Fail(actionResult.Error) : original;
+        return actionResult.Failed ? Result.Fail(actionResult.Error) : original.ToSimpleResult();
     }
 }

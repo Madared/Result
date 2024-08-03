@@ -1,11 +1,8 @@
 using ResultAndOption.Errors;
-using ResultAndOption.Options;
 using ResultAndOption.Results;
 using ResultAndOption.Results.Commands;
 using ResultAndOption.Results.GenericResultExtensions;
 using ResultAndOption.Results.GenericResultExtensions.Async;
-using ResultAndOption.Results.SimpleResultExtensions;
-using Failing = ResultAndOption.Results.GenericResultExtensions.Async.Failing;
 
 namespace Results.Tests;
 
@@ -77,7 +74,7 @@ public class ResultTests
         //Given
         Result<string> stringResult = Result<string>.Fail(new UnknownError());
         //When
-        Result<int> intResult = stringResult.ConvertErrorResult<string, int>();
+        Result<int> intResult = stringResult.ConvertErrorResult<int>();
         //Then
         Assert.IsType<Result<int>>(intResult);
         Assert.Equal(stringResult.Error, intResult.Error);
@@ -89,7 +86,7 @@ public class ResultTests
         //Given
         Result<string> stringResult = Result<string>.Ok("hello");
         //Then
-        Assert.Throws<InvalidOperationException>(() => stringResult.ConvertErrorResult<string, int>());
+        Assert.Throws<InvalidOperationException>(() => stringResult.ConvertErrorResult<int>());
     }
 
     [Fact]
@@ -111,8 +108,8 @@ public class ResultTests
 
         Result<string> stringResult = Result<string>.Ok("world");
         //When
-        Result<string> postGettingSuccess = stringResult.Do(GetSuccess);
-        Result<string> postGettingFailure = stringResult.Do(GetFailure);
+        Result postGettingSuccess = stringResult.Do(GetSuccess);
+        Result postGettingFailure = stringResult.Do(GetFailure);
         //Then
         Assert.True(postGettingSuccess.Succeeded);
         Assert.True(postGettingFailure.Failed);
@@ -177,8 +174,7 @@ public class ResultTests
         //Given
         List<Result<string>> stringResults = new()
         {
-            Result<string>.Ok("hello"),
-            Result<string>.Ok("world")
+            Result<string>.Ok("hello"), Result<string>.Ok("world")
         };
         //When
         ResultList<string> resultList = stringResults.ToResultList();
@@ -284,8 +280,8 @@ public class ResultTests
     {
         string hello = "hello";
         Task<Result<string>> taskResult = Task.FromResult(Result<string>.Ok(hello));
-        Task<Result<string>> simpleResult = taskResult.DoAsync(() => Result.Ok());
-        Result<string> awaitedResult = simpleResult.Result;
+        Task<Result> simpleResult = taskResult.DoAsync(() => Result.Ok());
+        Result awaitedResult = simpleResult.Result;
         Assert.True(awaitedResult.Succeeded);
     }
 
@@ -294,8 +290,8 @@ public class ResultTests
     {
         string hello = "hello";
         Result<string> stringResult = Result<string>.Ok(hello);
-        Task<Result<string>> simpleResult = stringResult.DoAsync(_ => Task.FromResult(Result.Ok()));
-        Result<string> awaitedResult = simpleResult.Result;
+        Task<Result> simpleResult = stringResult.DoAsync(_ => Task.FromResult(Result.Ok()));
+        Result awaitedResult = simpleResult.Result;
         Assert.True(awaitedResult.Succeeded);
     }
 
@@ -304,7 +300,7 @@ public class ResultTests
     {
         Result<string> helloResult = Result<string>.Ok("hello");
         Result<string> wrappedResult =
-            helloResult.WrapError<string, UnknownError>(error => new MultipleErrors(new List<IError>()));
+            helloResult.WrapError<UnknownError>(error => new MultipleErrors(new List<IError>()));
         Assert.True(wrappedResult.Succeeded);
         Assert.Throws<InvalidOperationException>(() => wrappedResult.Error);
     }
@@ -314,7 +310,7 @@ public class ResultTests
     {
         Result<string> helloResult = Result<string>.Fail(new UnknownError());
         Result<string> wrapped =
-            helloResult.WrapError<string, UnknownError>(error => new MultipleErrors(new List<IError>()));
+            helloResult.WrapError<UnknownError>(error => new MultipleErrors(new List<IError>()));
         Assert.True(wrapped.Failed);
         Assert.True(wrapped.Error is MultipleErrors);
     }

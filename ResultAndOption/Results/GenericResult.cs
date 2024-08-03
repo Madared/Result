@@ -31,7 +31,6 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     /// Shows if result has succeeded
     /// </summary>
     public bool Succeeded { get; }
-
     private Result(bool failed, IError? error, Option<T> data)
     {
         Succeeded = !failed;
@@ -48,62 +47,96 @@ public readonly struct Result<T> : IResult<T> where T : notnull
         : _error ?? new UnknownError();
 
     /// <summary>
-    /// Uses an IMapper to map a successful result data through its transformation by taking the data as the only parameter
-    /// or into a new failed result with the existing error.
+    ///     Returns the internal data in case of success or the replacement value passed in
     /// </summary>
-    /// <param name="mapper"></param>
-    /// <typeparam name="TOut"></typeparam>
-    /// <returns>A new result</returns>
-    public Result<TOut> Map<TOut>(IMapper<T, TOut> mapper) where TOut : notnull => Failed
-        ? Result<TOut>.Fail(Error)
-        : mapper.Map(Data);
-
-    /// <summary>
-    /// Uses an IAsyncMapper to map a successful result data through its transformation by taking the data as the only parameter
-    /// or into a new failed result with the existing error asynchronously.
-    /// </summary>
-    /// <param name="mapper"></param>
-    /// <typeparam name="TOut"></typeparam>
-    /// <returns>A Task of the new result</returns>
-    public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<T, TOut> mapper) where TOut : notnull => Failed
-        ? Task.FromResult(Result<TOut>.Fail(Error))
-        : mapper.Map(Data);
-
-    /// <summary>
-    /// Uses an IMapper to map a successful result data through its transformation without parameters
-    /// or into a new failed result with the existing error.
-    /// </summary>
-    /// <param name="mapper"></param>
-    /// <typeparam name="TOut"></typeparam>
-    /// <returns>A new result</returns>
-    public Result<TOut> Map<TOut>(IMapper<TOut> mapper) where TOut : notnull => Failed
-        ? Result<TOut>.Fail(Error)
-        : mapper.Map();
-
-    /// <summary>
-    /// Uses an IMapper to map a successful result data through its transformation without parameters
-    /// /// or into a new failed result with the existing error.
-    /// </summary>
-    /// <param name="mapper"></param>
-    /// <typeparam name="TOut"></typeparam>
-    /// <returns>A Task of the new result</returns>
-    public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<TOut> mapper) where TOut : notnull => Failed
-        ? Task.FromResult(Result<TOut>.Fail(Error))
-        : mapper.Map();
-
+    /// <param name="data">Replacement value to use in case of failed result</param>
+    /// <returns></returns>
+    public T Or(T data) => Failed ? data : Data;
+    
+    #region MapMethods
+        /// <summary>
+        /// Uses an IMapper to map a successful result data through its transformation by taking the data as the only parameter
+        /// or into a new failed result with the existing error.
+        /// </summary>
+        /// <param name="mapper"></param>
+        /// <typeparam name="TOut"></typeparam>
+        /// <returns>A new result</returns>
+        public Result<TOut> Map<TOut>(IMapper<T, TOut> mapper) where TOut : notnull => Failed
+            ? Result<TOut>.Fail(Error)
+            : mapper.Map(Data);
+    
+        /// <summary>
+        /// Uses an IAsyncMapper to map a successful result data through its transformation by taking the data as the only parameter
+        /// or into a new failed result with the existing error asynchronously.
+        /// </summary>
+        /// <param name="mapper"></param>
+        /// <typeparam name="TOut"></typeparam>
+        /// <returns>A Task of the new result</returns>
+        public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<T, TOut> mapper) where TOut : notnull => Failed
+            ? Task.FromResult<Result<TOut>>(Result<TOut>.Fail(Error))
+            : mapper.Map(Data);
+    
+        /// <summary>
+        /// Uses an IMapper to map a successful result data through its transformation without parameters
+        /// or into a new failed result with the existing error.
+        /// </summary>
+        /// <param name="mapper"></param>
+        /// <typeparam name="TOut"></typeparam>
+        /// <returns>A new result</returns>
+        public Result<TOut> Map<TOut>(IMapper<TOut> mapper) where TOut : notnull => Failed
+            ? Result<TOut>.Fail(Error)
+            : mapper.Map();
+    
+        /// <summary>
+        /// Uses an IMapper to map a successful result data through its transformation without parameters
+        /// /// or into a new failed result with the existing error.
+        /// </summary>
+        /// <param name="mapper"></param>
+        /// <typeparam name="TOut"></typeparam>
+        /// <returns>A Task of the new result</returns>
+        public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<TOut> mapper) where TOut : notnull => Failed
+            ? Task.FromResult<Result<TOut>>(Result<TOut>.Fail(Error))
+            : mapper.Map();
+    
+        /// <summary>
+        /// Maps the data of the result using the specified mapper function and wrapps it into a result of the new type.
+        /// </summary>
+        /// <typeparam name="TResult">The type of data to map to.</typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="mapper">The mapper function.</param>
+        /// <returns>A new result with the mapped data.</returns>
+        public Result<TResult> Map<TResult>(Func<T, TResult> mapper)
+            where TResult : notnull => Failed
+            ? Result<TResult>.Fail(Error)
+            : Result<TResult>.Ok(mapper(Data));
+    
+        /// <summary>
+        ///     Pipes the data into a function that also returns a result or passes the error to the new result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of data to map to.</typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="mapper">The mapper function.</param>
+        /// <returns>A new result with the mapped data.</returns>
+        public Result<TResult> Map<TResult>(Func<T, Result<TResult>> mapper)
+            where TResult : notnull => Failed
+            ? Result<TResult>.Fail(Error)
+            : mapper(Data);
+    
+    #endregion
+    #region DoMethods
+    
     /// <summary>
     /// Executes an action if the result is successful otherwise does nothing. Returns the same result.
     /// </summary>
     /// <param name="command"></param>
     /// <returns>The same result.</returns>
-    public Result<T> Do(ICommand<T> command)
+    public Result Do(ICommand<T> command)
     {
         if (Succeeded)
         {
             command.Do(Data);
         }
-
-        return this;
+        return this.ToSimpleResult();
     }
 
     /// <summary>
@@ -111,14 +144,14 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     /// </summary>
     /// <param name="command"></param>
     /// <returns>A Task of the same result.</returns>
-    public async Task<Result<T>> DoAsync(IAsyncCommand<T> command)
+    public async Task<Result> DoAsync(IAsyncCommand<T> command)
     {
         if (Succeeded)
         {
             await command.Do(Data);
         }
 
-        return this;
+        return this.ToSimpleResult();
     }
 
     /// <summary>
@@ -139,6 +172,59 @@ public readonly struct Result<T> : IResult<T> where T : notnull
         ? await command.Do(Data)
         : Result.Fail(Error);
 
+    /// <summary>
+    /// Maps the data of the result using the specified function that returns a simple result.
+    /// </summary>
+    /// <param name="action">The function.</param>
+    /// <returns>A new result.</returns>
+    public Result Do(Func<T, Result> action)
+    {
+        if (Failed) return Result.Fail(Error);
+        Result actionResult = action(Data);
+        return actionResult.Failed ? Result.Fail(actionResult.Error) : Result.Ok();
+    }
+
+    /// <summary>
+    ///     if the result is successful calls the specified function otherwise returns a simple failed result wrapping the
+    ///     current error
+    /// </summary>
+    /// <param name="function">The function</param>
+    /// <returns>A new simple result</returns>
+    public Result Do(Func<Result> function) => Succeeded ? function() : Result.Fail(Error);
+
+    /// <summary>
+    ///     Applies the specified action to the data of the result if it represents a success.
+    /// </summary>
+    /// <param name="function">The action to apply.</param>
+    /// <returns>The same result after applying the action.</returns>
+    public Result Do(Action<T> function)
+    {
+        if (Succeeded) function(Data);
+        return Result.Fail(Error);
+    }
+    #endregion
+    #region WrapMethods
+    /// <summary>
+    ///     Wraps the existing error if it is a failed result and the error is of the specified type otherwise returns the
+    ///     existing result object
+    /// </summary>
+    /// <param name="errorWrapper">function to wrap the error</param>
+    /// <typeparam name="TError">expected error type to wrap</typeparam>
+    /// <returns></returns>
+    public Result<T> WrapError<TError>(Func<TError, IError> errorWrapper) where TError : IError =>
+        this is { Failed: true, Error: TError error }
+            ? Fail(errorWrapper(error))
+            : this;
+
+    public Result<TOut> Wrap<TOut>(Func<T, TOut> mapper) where TOut : notnull => Failed
+        ? Result<TOut>.Fail(Error)
+        : Result<TOut>.Ok(mapper(Data));
+
+    public Result<TOut> Wrap<TOut>(Func<TOut> mapper) where TOut : notnull => Failed
+        ? Result<TOut>.Fail(Error)
+        : Result<TOut>.Ok(mapper());
+    #endregion
+    #region OnErrorMethods
     /// <summary>
     /// Executes the action in case the result is in a failed state.
     /// </summary>
@@ -199,6 +285,50 @@ public readonly struct Result<T> : IResult<T> where T : notnull
         return this;
     }
 
+    /// <summary>
+    ///     Executes the specified action if the result represents a failure.
+    /// </summary>
+    /// <param name="action">The action to execute.</param>
+    /// <returns>The same result after executing the action.</returns>
+    public Result<T> OnError(Action<IError> action)
+    {
+        if (Failed) action(Error);
+        return this;
+    }
+
+    /// <summary>
+    ///     Executes the specified action if the result represents a failure
+    /// </summary>
+    /// <param name="action">Action to execute</param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>The same result</returns>
+    public Result<T> OnError(Action action)
+    {
+        if (Failed) action();
+        return this;
+    }
+    #endregion
+    #region ConversionMethods
+    /// <summary>
+    ///     Converts the result to a simple result without carrying any data.
+    /// </summary>
+    /// <returns>A simple result representing the success or failure of the original result.</returns>
+    public Result ToSimpleResult() => Failed
+        ? Result.Fail(Error)
+        : Result.Ok();
+
+    /// <summary>
+    ///     Converts the result to a result with a different data type, assuming the original result represents an error.
+    /// </summary>
+    /// <typeparam name="TResult">The type of data carried by the new result.</typeparam>
+    /// <returns>A result with the specified data type if the original result represents a success.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the original result represents a success.</exception>
+    public Result<TResult> ConvertErrorResult<TResult>() where TResult : notnull => Failed
+        ? Result<TResult>.Fail(Error)
+        : throw new InvalidOperationException(
+            "Cannot convert error result when the original result represents a success.");
+    #endregion
+    
     /// <summary>
     ///     Creates a successful result with the specified data.
     /// </summary>

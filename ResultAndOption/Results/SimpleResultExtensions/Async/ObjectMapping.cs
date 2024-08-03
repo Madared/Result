@@ -1,4 +1,5 @@
 using ResultAndOption.Results.Commands;
+using ResultAndOption.Results;
 using ResultAndOption.Results.Mappers;
 
 namespace ResultAndOption.Results.SimpleResultExtensions.Async;

@@ -1,4 +1,5 @@
 using ResultAndOption.Results.Commands;
+using ResultAndOption.Results;
 
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
 

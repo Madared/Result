@@ -1,4 +1,5 @@
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
+using Results;
 
 public static class Mapping
 {

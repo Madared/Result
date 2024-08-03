@@ -1,2 +1,0 @@
-namespace ResultAndOption.Results.GenericResultExtensions;
-
