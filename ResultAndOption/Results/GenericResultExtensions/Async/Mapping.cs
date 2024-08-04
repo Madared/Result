@@ -132,9 +132,6 @@ public static class Mapping
         return await original.MapAsync(asyncMapper, token);
     }
 
-
-
-
     /// <summary>
     /// Awaits the result and runs Map
     /// </summary>

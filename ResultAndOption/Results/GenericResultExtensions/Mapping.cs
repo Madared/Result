@@ -16,9 +16,6 @@ public static class Mapping
         ? Result<TOut>.Fail(result.Error)
         : mapper.Map(result.Data);
 
-
-
-
     /// <summary>
     /// Maps the data of the result using the specified mapper function and wrapps it into a result of the new type.
     /// </summary>
