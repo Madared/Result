@@ -1,4 +1,6 @@
 using ResultAndOption.Results;
+using ResultAndOption.Results.Mappers;
+
 namespace ResultAndOption.Results.SimpleResultExtensions.Async;
 
 public delegate Task<Result<TOut>> AsyncMapper<TOut>(CancellationToken? token = null) where TOut : notnull;
@@ -29,4 +31,16 @@ public static class Mapping
         Result originalResult = await result;
         return originalResult.Failed ? Result<T>.Fail(originalResult.Error) : await mapper(token);
     }
+    
+    public static async Task<Result<T>> MapAsync<T>(this Task<Result> result, IMapper<T> mapper) where T : notnull
+    {
+        Result awaited = await result;
+        return awaited.Do(mapper);
+    }
+
+    public static async Task<Result<T>> MapAsync<T>(this Task<Result> result, IAsyncMapper<T> mapper, CancellationToken? token = null) where T : notnull
+    {
+        Result awaited = await result;
+        return await awaited.DoAsync(mapper, token);
+    } 
 }

@@ -72,9 +72,9 @@ public readonly struct Result<T> : IResult<T> where T : notnull
         /// <param name="mapper"></param>
         /// <typeparam name="TOut"></typeparam>
         /// <returns>A Task of the new result</returns>
-        public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<T, TOut> mapper) where TOut : notnull => Failed
+        public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<T, TOut> mapper, CancellationToken? token = null) where TOut : notnull => Failed
             ? Task.FromResult<Result<TOut>>(Result<TOut>.Fail(Error))
-            : mapper.Map(Data);
+            : mapper.Map(Data, token);
     
         /// <summary>
         /// Uses an IMapper to map a successful result data through its transformation without parameters
@@ -94,9 +94,9 @@ public readonly struct Result<T> : IResult<T> where T : notnull
         /// <param name="mapper"></param>
         /// <typeparam name="TOut"></typeparam>
         /// <returns>A Task of the new result</returns>
-        public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<TOut> mapper) where TOut : notnull => Failed
+        public Task<Result<TOut>> MapAsync<TOut>(IAsyncMapper<TOut> mapper, CancellationToken? token = null) where TOut : notnull => Failed
             ? Task.FromResult<Result<TOut>>(Result<TOut>.Fail(Error))
-            : mapper.Map();
+            : mapper.Map(token);
     
         /// <summary>
         /// Maps the data of the result using the specified mapper function and wrapps it into a result of the new type.
@@ -144,11 +144,11 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     /// </summary>
     /// <param name="command"></param>
     /// <returns>A Task of the same result.</returns>
-    public async Task<Result> DoAsync(IAsyncCommand<T> command)
+    public async Task<Result> DoAsync(IAsyncCommand<T> command, CancellationToken? token = null)
     {
         if (Succeeded)
         {
-            await command.Do(Data);
+            await command.Do(Data, token);
         }
 
         return this.ToSimpleResult();
@@ -168,8 +168,8 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     /// </summary>
     /// <param name="command">the async command to execute</param>
     /// <returns></returns>
-    public async Task<Result> DoAsync(IAsyncResultCommand<T> command) => Succeeded
-        ? await command.Do(Data)
+    public async Task<Result> DoAsync(IAsyncResultCommand<T> command, CancellationToken? token = null) => Succeeded
+        ? await command.Do(Data, token)
         : Result.Fail(Error);
 
     /// <summary>
@@ -245,11 +245,11 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     /// </summary>
     /// <param name="command"></param>
     /// <returns>A task of the same result.</returns>
-    public async Task<Result<T>> OnErrorAsync(IAsyncCommand command)
+    public async Task<Result<T>> OnErrorAsync(IAsyncCommand command, CancellationToken? token = null)
     {
         if (Failed)
         {
-            await command.Do();
+            await command.Do(token);
         }
 
         return this;
@@ -275,11 +275,11 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     /// </summary>
     /// <param name="command"></param>
     /// <returns>A Task of the same result.</returns>
-    public async Task<Result<T>> OnErrorAsync(IAsyncCommand<IError> command)
+    public async Task<Result<T>> OnErrorAsync(IAsyncCommand<IError> command, CancellationToken? token = null)
     {
         if (Failed)
         {
-            await command.Do(Error);
+            await command.Do(Error, token);
         }
 
         return this;

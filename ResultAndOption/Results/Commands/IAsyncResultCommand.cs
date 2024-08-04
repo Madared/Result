@@ -11,7 +11,7 @@ public interface IAsyncResultCommand<in T> where T : notnull
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public Task<Result> Do(T data);
+    public Task<Result> Do(T data, CancellationToken? token = null);
 }
 
 /// <summary>
@@ -23,5 +23,5 @@ public interface IAsyncResultCommand
     /// Asynchronous Result Command call
     /// </summary>
     /// <returns></returns>
-    public Task<Result> Do();
+    public Task<Result> Do(CancellationToken? token = null);
 }

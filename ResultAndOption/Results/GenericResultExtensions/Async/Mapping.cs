@@ -1,3 +1,5 @@
+using ResultAndOption.Results.Mappers;
+
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
 using Results;
 
@@ -75,50 +77,6 @@ public static class Mapping
         return originalResult.Map(mapper);
     }
 
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, Func<T, Task<TOut>> mapper)
-        where T : notnull where TOut : notnull
-    {
-        Result<T> original = await result;
-        if (original.Failed)
-        {
-            return Result<TOut>.Fail(original.Error);
-        }
-
-        TOut value = await mapper(original.Data);
-        return Result<TOut>.Ok(value);
-    }
-
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(
-        this Task<Result<T>> result,
-        Func<T, Task<Result<TOut>>> mapper) where T : notnull where TOut : notnull
-    {
-        Result<T> original = await result;
-        if (original.Failed)
-        {
-            return Result<TOut>.Fail(original.Error);
-        }
-
-        return await mapper(original.Data);
-    }
-
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Result<T> result, Func<T, Task<Result<TOut>>> mapper)
-        where T : notnull where TOut : notnull
-    {
-        return result.Failed ? Result<TOut>.Fail(result.Error) : await mapper(result.Data);
-    }
-
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Result<T> result, Func<T, Task<TOut>> mapper)
-        where T : notnull where TOut : notnull
-    {
-        if (result.Failed)
-        {
-            return Result<TOut>.Fail(result.Error);
-        }
-
-        TOut value = await mapper(result.Data);
-        return Result<TOut>.Ok(value);
-    }
-
     /// <summary>
     ///     Implicitly awaits the original result and if it is successful maps it and unwraps the returned result so there are
     ///     no nested results,
@@ -164,4 +122,32 @@ public static class Mapping
         TOut value = await asyncMapper(token);
         return Result<TOut>.Ok(value);
     }
+    
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, IMapper<TOut> mapper)
+        where T : notnull where TOut : notnull
+    {
+        Result<T> awaited = await result;
+        return awaited.Map(mapper);
+    }
+
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, IAsyncMapper<TOut> mapper, CancellationToken? token = null)
+        where T : notnull where TOut : notnull
+    {
+        Result<T> awaited = await result;
+        return await awaited.MapAsync(mapper, token);
+    }
+
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, IMapper<T, TOut> mapper)
+        where T : notnull where TOut : notnull
+    {
+        Result<T> awaited = await result;
+        return awaited.Map(mapper);
+    }
+
+    public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, IAsyncMapper<T, TOut> mapper, CancellationToken? token)
+        where T : notnull where TOut : notnull
+    {
+        Result<T> awaited = await result;
+        return await awaited.MapAsync(mapper, token);
+    } 
 }

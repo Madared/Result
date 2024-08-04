@@ -211,7 +211,7 @@ public class ResultTests
         Assert.Equal(stringResult.Data.Length, intResult.Data);
         return;
 
-        Task<int> SomeAsyncFunc(string f)
+        Task<int> SomeAsyncFunc(string f, CancellationToken? token = null)
         {
             return Task.FromResult(f.Length);
         }
@@ -240,7 +240,7 @@ public class ResultTests
         Assert.Equal(hello.Length, intResult.Data);
         return;
 
-        Task<int> SomeAsyncFunction(string s)
+        Task<int> SomeAsyncFunction(string s, CancellationToken? token = null)
         {
             return Task.FromResult(s.Length);
         }
@@ -258,7 +258,7 @@ public class ResultTests
         Assert.Equal(hello.Length, intResult.Data);
         return;
 
-        Task<Result<int>> SomeAsyncFunction(string s)
+        Task<Result<int>> SomeAsyncFunction(string s, CancellationToken? token = null)
         {
             return Task.FromResult(Result<int>.Ok(s.Length));
         }

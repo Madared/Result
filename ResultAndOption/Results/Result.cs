@@ -41,17 +41,17 @@ public readonly struct Result : IResult
         ? Result<TOut>.Fail(Error)
         : mapper.Map();
 
-    public Task<Result<TOut>> DoAsync<TOut>(IAsyncMapper<TOut> mapper) where TOut : notnull => Failed
+    public Task<Result<TOut>> DoAsync<TOut>(IAsyncMapper<TOut> mapper, CancellationToken? token = null) where TOut : notnull => Failed
         ? Task.FromResult(Result<TOut>.Fail(Error))
-        : mapper.Map();
+        : mapper.Map(token);
 
     public Result Do(IResultCommand resultCommand) => Failed
         ? this
         : resultCommand.Do();
 
-    public Task<Result> DoAsync(IAsyncResultCommand resultCommand) => Failed
+    public Task<Result> DoAsync(IAsyncResultCommand resultCommand, CancellationToken? token = null) => Failed
         ? Task.FromResult(this)
-        : resultCommand.Do();
+        : resultCommand.Do(token);
 
     public Result Do(ICommand command)
     {

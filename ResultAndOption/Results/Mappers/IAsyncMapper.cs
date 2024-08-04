@@ -12,7 +12,7 @@ public interface IAsyncMapper<T> where T : notnull
     /// Asynchronous Mapper call
     /// </summary>
     /// <returns></returns>
-    public Task<Result<T>> Map();
+    public Task<Result<T>> Map(CancellationToken? token = null);
 }
 
 /// <summary>
@@ -27,5 +27,5 @@ public interface IAsyncMapper<in TIn, TOut> where TIn : notnull where TOut : not
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public Task<Result<TOut>> Map(TIn data);
+    public Task<Result<TOut>> Map(TIn data, CancellationToken? token = null);
 }
