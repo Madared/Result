@@ -39,21 +39,4 @@ public static class Getting
     public static Task<Result<TOut>> GetAsync<TOut>(this in Result result, IAsyncResultGetter<TOut> getter, CancellationToken? token = null) where TOut : notnull => result.Failed
         ? Task.FromResult(Result<TOut>.Fail(result.Error))
         : getter.Get(token);
-
-    public static Result<TOut> Get<TOut>(this in Result result, IGetter<TOut> getter) where TOut : notnull =>
-        result.Failed
-            ? Result<TOut>.Fail(result.Error)
-            : Result<TOut>.Ok(getter.Get());
-
-    public static async Task<Result<TOut>> GetAsync<TOut>(this Result result, IAsyncGetter<TOut> getter, CancellationToken? token = null)
-        where TOut : notnull
-    {
-        if (result.Failed)
-        {
-            return Result<TOut>.Fail(result.Error);
-        }
-
-        TOut value = await getter.Get(token);
-        return Result<TOut>.Ok(value);
-    }
 }

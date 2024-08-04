@@ -25,22 +25,4 @@ public static class Getting
         where TIn : notnull where TOut : notnull => result.Failed
         ? Result<TOut>.Fail(result.Error)
         : await mapper.Get(token);
-
-    public static Result<TOut> Get<TIn, TOut>(this in Result<TIn> result, IGetter<TOut> getter)
-        where TIn : notnull where TOut : notnull => result.Failed
-        ? Result<TOut>.Fail(result.Error)
-        : Result<TOut>.Ok(getter.Get());
-
-    public static async Task<Result<TOut>> GetAsync<TIn, TOut>(this Result<TIn> result, IAsyncGetter<TOut> getter, CancellationToken? token = null)
-        where TIn : notnull where TOut : notnull
-    {
-
-        if (result.Failed)
-        {
-            return Result<TOut>.Fail(result.Error);
-        }
-
-        TOut value = await getter.Get(token);
-        return Result<TOut>.Ok(value);
-    }
 }

@@ -32,16 +32,4 @@ public static class Getting
         Result originalResult = await result;
         return originalResult.Failed ? Result<T>.Fail(originalResult.Error) : await mapper(token);
     }
-    
-    public static async Task<Result<T>> GetAsync<T>(this Task<Result> result, IGetter<T> getter) where T : notnull
-    {
-        Result awaited = await result;
-        return awaited.Get(getter);
-    }
-
-    public static async Task<Result<T>> GetAsync<T>(this Task<Result> result, IAsyncGetter<T> getter, CancellationToken? token = null) where T : notnull
-    {
-        Result awaited = await result;
-        return await awaited.GetAsync(getter, token);
-    } 
 }
