@@ -1,4 +1,5 @@
 using ResultAndOption.Results;
+using ResultAndOption.Results.Getters;
 using ResultAndOption.Results.Mappers;
 
 namespace ResultAndOption.Results.SimpleResultExtensions.Async;
@@ -8,10 +9,10 @@ public delegate Task<Result<TOut>> AsyncMapper<TOut>(CancellationToken? token = 
 /// <summary>
 /// Contains methods for mapping Tasks of Simple results or map them with Async methods
 /// </summary>
-public static class Mapping
+public static class Getting
 {
 
-    public static async Task<Result<T>> MapAsync<T>(
+    public static async Task<Result<T>> GetAsync<T>(
         this Result result,
         Func<CancellationToken?, Task<Result<T>>> mapper,
         CancellationToken? token = null)
@@ -22,7 +23,7 @@ public static class Mapping
             : await mapper(token);
     }
 
-    public static async Task<Result<T>> MapAsync<T>(
+    public static async Task<Result<T>> GetAsync<T>(
         this Task<Result> result,
         Func<CancellationToken?, Task<Result<T>>> mapper,
         CancellationToken? token = null)
@@ -32,15 +33,15 @@ public static class Mapping
         return originalResult.Failed ? Result<T>.Fail(originalResult.Error) : await mapper(token);
     }
     
-    public static async Task<Result<T>> MapAsync<T>(this Task<Result> result, IMapper<T> mapper) where T : notnull
+    public static async Task<Result<T>> GetAsync<T>(this Task<Result> result, IGetter<T> getter) where T : notnull
     {
         Result awaited = await result;
-        return awaited.Do(mapper);
+        return awaited.Get(getter);
     }
 
-    public static async Task<Result<T>> MapAsync<T>(this Task<Result> result, IAsyncMapper<T> mapper, CancellationToken? token = null) where T : notnull
+    public static async Task<Result<T>> GetAsync<T>(this Task<Result> result, IAsyncGetter<T> getter, CancellationToken? token = null) where T : notnull
     {
         Result awaited = await result;
-        return await awaited.DoAsync(mapper, token);
+        return await awaited.GetAsync(getter, token);
     } 
 }

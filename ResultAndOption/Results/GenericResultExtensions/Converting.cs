@@ -9,6 +9,25 @@ namespace ResultAndOption.Results.GenericResultExtensions;
 public static class Converting
 {
     /// <summary>
+    ///     Converts the result to a simple result without carrying any data.
+    /// </summary>
+    /// <returns>A simple result representing the success or failure of the original result.</returns>
+    public static Result ToSimpleResult<T>(this in Result<T> result) where T : notnull => result.Failed
+        ? Result.Fail(result.Error)
+        : Result.Ok();
+
+    /// <summary>
+    ///     Converts the result to a result with a different data type, assuming the original result represents an error.
+    /// </summary>
+    /// <typeparam name="TResult">The type of data carried by the new result.</typeparam>
+    /// <returns>A result with the specified data type if the original result represents a success.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the original result represents a success.</exception>
+    public static Result<TResult> ConvertErrorResult<T, TResult>(this in Result<T> result) where T : notnull where TResult : notnull => result.Failed
+        ? Result<TResult>.Fail(result.Error)
+        : throw new InvalidOperationException(
+            "Cannot convert error result when the original result represents a success.");
+    
+    /// <summary>
     ///     Converts a nullable reference to a result, representing a success or failure state.
     /// </summary>
     /// <typeparam name="TIn">The type of the nullable input reference.</typeparam>
