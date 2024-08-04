@@ -95,34 +95,33 @@ public static class Mapping
     }
 
 
+    /// <summary>
+    /// Awaits the result and runs MapAsync
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="asyncMapper"></param>
+    /// <param name="token"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(
         this Task<Result<T>> result,
         Func<T, CancellationToken?, Task<Result<TOut>>> asyncMapper,
         CancellationToken? token = null) where T : notnull where TOut : notnull
     {
         Result<T> original = await result;
-        if (original.Failed)
-        {
-            return Result<TOut>.Fail(original.Error);
-        }
-
-        return await asyncMapper(original.Data, token);
+        return await original.MapAsync(asyncMapper, token);
     }
 
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(
-        this Result<T> result,
-        Func<CancellationToken?, Task<TOut>> asyncMapper,
-        CancellationToken? token = null) where T : notnull where TOut : notnull
-    {
-        if (result.Failed)
-        {
-            return Result<TOut>.Fail(result.Error);
-        }
-
-        TOut value = await asyncMapper(token);
-        return Result<TOut>.Ok(value);
-    }
     
+    /// <summary>
+    /// Awaits the result and runs Map
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="mapper"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, IMapper<TOut> mapper)
         where T : notnull where TOut : notnull
     {
@@ -130,6 +129,15 @@ public static class Mapping
         return awaited.Map(mapper);
     }
 
+    /// <summary>
+    /// Awaits the result and runs MapAsync
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="mapper"></param>
+    /// <param name="token"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, IAsyncMapper<TOut> mapper, CancellationToken? token = null)
         where T : notnull where TOut : notnull
     {
@@ -137,6 +145,14 @@ public static class Mapping
         return await awaited.MapAsync(mapper, token);
     }
 
+    /// <summary>
+    /// Awaits the result and runs Map
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="mapper"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, IMapper<T, TOut> mapper)
         where T : notnull where TOut : notnull
     {
@@ -144,6 +160,15 @@ public static class Mapping
         return awaited.Map(mapper);
     }
 
+    /// <summary>
+    /// Awaits the result and runs MapAsync.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="mapper"></param>
+    /// <param name="token"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(this Task<Result<T>> result, IAsyncMapper<T, TOut> mapper, CancellationToken? token)
         where T : notnull where TOut : notnull
     {

@@ -50,12 +50,25 @@ public static class Doing
         return originalResult.Do(mapper);
     }
     
+    /// <summary>
+    /// Awaits the result and runs Do
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="resultCommand"></param>
+    /// <returns></returns>
     public static async Task<Result> DoAsync(this Task<Result> result, IResultCommand resultCommand)
     {
         Result awaited = await result;
         return awaited.Do(resultCommand);
     }
 
+    /// <summary>
+    /// Awaits the result and runs DoAsync
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="resultCommand"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public static async Task<Result> DoAsync(this Task<Result> result, IAsyncResultCommand resultCommand, CancellationToken? token = null)
     {
         Result awaited = await result;
