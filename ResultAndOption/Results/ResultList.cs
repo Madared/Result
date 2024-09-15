@@ -3,7 +3,6 @@ using ResultAndOption.Results.GenericResultExtensions;
 using ResultAndOption.Results;
 
 namespace ResultAndOption.Results;
-
 public sealed class ResultList<T> where T : notnull
 {
     public ResultList()
