@@ -36,10 +36,6 @@ public readonly struct Result : IResult
         _error = error;
     }
     
-    #region WrappingMethods
-
-    #endregion
-    
     /// <summary>
     ///     Initializes a new instance of the <see cref="Result" /> struct representing a success.
     /// </summary>
