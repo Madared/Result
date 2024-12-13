@@ -10,6 +10,26 @@ public static class Failing
         .Select(failed => failed.Error);
     
     /// <summary>
+    /// Checks if any of the results in the enumerable are in a failing state, and if not returns an enumerable
+    /// of the internal data of each result wrapped in a result, otherwise will return a failed result
+    /// </summary>
+    /// <param name="results"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static Result<IEnumerable<T>> MapResultListToSingle<T>(this IEnumerable<Result<T>> results) where T : notnull
+    {
+        List<Result<T>> enumeratedResults = results.ToList();
+        IEnumerable<IError> errors = enumeratedResults.Where(r => r.Failed).Select(r => r.Error).ToList();
+        if (errors.Any())
+        {
+            return Result<IEnumerable<T>>.Fail(new MultipleErrors(errors));
+        }
+
+        IEnumerable<T> data = enumeratedResults.Select(r => r.Data);
+        return Result<IEnumerable<T>>.Ok(data);
+    }
+    
+    /// <summary>
     /// Executes the action in case the result is in a failed state.
     /// </summary>
     /// <param name="command">The action to execute</param>
