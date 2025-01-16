@@ -3,10 +3,10 @@
 /// <summary>
 /// Error interface
 /// </summary>
-public interface IError
+public abstract record CustomError
 {
     /// <summary>
     /// Internal error message
     /// </summary>
-    public string Message { get; }
+    public abstract string Message { get; }
 }

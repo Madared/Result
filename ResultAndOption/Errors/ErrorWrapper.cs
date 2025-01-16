@@ -4,30 +4,30 @@ namespace ResultAndOption.Errors;
 /// Exception wrapping an Error
 /// </summary>
 [Serializable]
-public class ErrorWrapper : Exception
+public sealed class ErrorWrapper : Exception
 {
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="error"></param>
-    private ErrorWrapper(IError error) : base(error.Message)
+    /// <param name="customError"></param>
+    private ErrorWrapper(CustomError customError) : base(customError.Message)
     {
-        Error = error;
+        CustomError = customError;
     }
 
     /// <summary>
     /// Wrapped Error
     /// </summary>
-    public IError Error { get; }
+    public CustomError CustomError { get; }
 
     /// <summary>
     /// Factory method to create an ErrorWrapper so it doesnt wrap an Exception Wrapper and just returns the internal exception
     /// </summary>
-    /// <param name="error"></param>
+    /// <param name="customError"></param>
     /// <returns></returns>
-    public static Exception Create(IError error)
+    public static Exception Create(CustomError customError)
     {
-        if (error is ExceptionWrapper ex) return ex.Exception;
-        return new ErrorWrapper(error);
+        if (customError is ExceptionWrapper ex) return ex.Exception;
+        return new ErrorWrapper(customError);
     }
 }

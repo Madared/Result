@@ -5,36 +5,43 @@ namespace ResultAndOption.Results.GenericResultExtensions.Async;
 
 using Results;
 
+/// <summary>
+/// Extension for mapping generic results asynchronously
+/// </summary>
 public static class Mapping
 {
     /// <summary>
     /// Uses an IAsyncMapper to map a successful result data through its transformation by taking the data as the only parameter
     /// or into a new failed result with the existing error asynchronously.
     /// </summary>
-    /// <param name="mapper"></param>
-    /// <typeparam name="TOut"></typeparam>
+    /// <param name="result">The result to check</param>
+    /// <param name="mapper">The mapper to run</param>
+    /// <param name="token">The cancellation token</param>
+    /// <typeparam name="TOut">The type of the output result</typeparam>
+    /// <typeparam name="TIn">The type of the input result</typeparam>
     /// <returns>A Task of the new result</returns>
     public static Task<Result<TOut>> MapAsync<TIn, TOut>(
         this Result<TIn> result,
         IAsyncMapper<TIn, TOut> mapper,
         CancellationToken? token = null) where TIn : notnull where TOut : notnull => result.Failed
-        ? Task.FromResult(Result<TOut>.Fail(result.Error))
+        ? Task.FromResult(Result<TOut>.Fail(result.CustomError))
         : mapper.Map(result.Data, token);
 
     /// <summary>
     /// If the result failed returns a new Result wrapping the error, otherwise awaits for the asyncFunction and wraps it in a Result.
     /// </summary>
-    /// <param name="result"></param>
-    /// <param name="asyncFunction"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TOut"></typeparam>
-    /// <returns></returns>
+    /// <param name="result">The result to check</param>
+    /// <param name="asyncFunction">The mapping function to run</param>
+    /// <param name="token">The cancellation token</param>
+    /// <typeparam name="T">The type of the input result</typeparam>
+    /// <typeparam name="TOut">The type of the output result</typeparam>
+    /// <returns>A task of the new result</returns>
     public static async Task<Result<TOut>> MapAsync<T, TOut>(
         this Result<T> result,
         Func<T, CancellationToken?, Task<TOut>> asyncFunction,
         CancellationToken? token = null) where T : notnull where TOut : notnull
     {
-        if (result.Failed) return Result<TOut>.Fail(result.Error);
+        if (result.Failed) return Result<TOut>.Fail(result.CustomError);
         TOut functionData = await asyncFunction(result.Data, token);
         return Result<TOut>.Ok(functionData);
     }
@@ -42,18 +49,19 @@ public static class Mapping
     /// <summary>
     /// if The result failed returns a new Result wrapping the error, otherwise awaits the asyncMapper and returns its result
     /// </summary>
-    /// <param name="result"></param>
-    /// <param name="asyncMapper"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TOut"></typeparam>
-    /// <returns></returns>
+    /// <param name="result">The result to check</param>
+    /// <param name="asyncMapper">The mapper to run</param>
+    /// <param name="token">The cancellation token</param>
+    /// <typeparam name="T">The type of the input result</typeparam>
+    /// <typeparam name="TOut">The type of the output result</typeparam>
+    /// <returns>A Task of the new result</returns>
     public static Task<Result<TOut>> MapAsync<T, TOut>(
         this Result<T> result,
         Func<T, CancellationToken?, Task<Result<TOut>>> asyncMapper,
         CancellationToken? token = null) where T : notnull where TOut : notnull
     {
         return result.Failed
-            ? Task.FromResult(Result<TOut>.Fail(result.Error))
+            ? Task.FromResult(Result<TOut>.Fail(result.CustomError))
             : asyncMapper(result.Data, token);
     }
 
@@ -63,6 +71,7 @@ public static class Mapping
     /// </summary>
     /// <param name="result">The async result to map</param>
     /// <param name="asyncMapper">The async mapping function</param>
+    /// <param name="token">The cancellation token</param>
     /// <typeparam name="T">The Original result type</typeparam>
     /// <typeparam name="TOut">The mapper output type</typeparam>
     /// <returns></returns>
@@ -74,7 +83,7 @@ public static class Mapping
         Result<T> originalResult = await result;
         if (originalResult.Failed)
         {
-            return Result<TOut>.Fail(originalResult.Error);
+            return Result<TOut>.Fail(originalResult.CustomError);
         }
 
         TOut asyncResult = await asyncMapper(originalResult.Data, token);
@@ -159,10 +168,23 @@ public static class Mapping
     public static async Task<Result<TOut>> MapAsync<T, TOut>(
         this Task<Result<T>> result,
         IAsyncMapper<T, TOut> mapper,
-        CancellationToken? token)
+        CancellationToken? token = null)
         where T : notnull where TOut : notnull
     {
         Result<T> awaited = await result;
         return await awaited.MapAsync(mapper, token);
+    }
+
+    /// <summary>
+    /// Asynchronously checks if the result is a success and returns its data otherwise returns a default value
+    /// </summary>
+    /// <param name="result">the result to check</param>
+    /// <param name="defaultValue">the default value</param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static async Task<T> OrAsync<T>(this Task<Result<T>> result, T defaultValue) where T : notnull
+    {
+        Result<T> awaitedResult = await result;
+        return awaitedResult.Failed ? defaultValue : awaitedResult.Data;
     }
 }

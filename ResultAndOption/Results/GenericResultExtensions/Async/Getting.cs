@@ -2,16 +2,19 @@ using ResultAndOption.Results.Getters;
 
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
 
+/// <summary>
+/// Extensions for getting results asynchronously
+/// </summary>
 public static class Getting
 {
     /// <summary>
-    /// Awaits the result and runs Map
+    /// Gets a new result if the current one is successful or a result of the new type with the current error
     /// </summary>
-    /// <param name="result"></param>
-    /// <param name="getter"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TOut"></typeparam>
-    /// <returns></returns>
+    /// <param name="result">The result to check</param>
+    /// <param name="getter">The result getter</param>
+    /// <typeparam name="T">The type of the input result</typeparam>
+    /// <typeparam name="TOut">The type of the output result</typeparam>
+    /// <returns>A Task of the new result</returns>
     public static async Task<Result<TOut>> GetAsync<T, TOut>(this Task<Result<T>> result, IResultGetter<TOut> getter)
         where T : notnull where TOut : notnull
     {
@@ -20,15 +23,15 @@ public static class Getting
     }
 
     /// <summary>
-    /// Awaits the result and runs MapAsync
+    /// Gets a new result if the current one is successful or a result of the new type with the current error
     /// </summary>
-    /// <param name="result"></param>
-    /// <param name="getter"></param>
-    /// <param name="token"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TOut"></typeparam>
-    /// <returns></returns>
-    public static async Task<Result<TOut>> MapAsync<T, TOut>(
+    /// <param name="result">The result to check</param>
+    /// <param name="getter">The result getter</param>
+    /// <param name="token">The cancellation token</param>
+    /// <typeparam name="T">The type of the input result</typeparam>
+    /// <typeparam name="TOut">The type of the output result</typeparam>
+    /// <returns>A task of the new result</returns>
+    public static async Task<Result<TOut>> GetAsync<T, TOut>(
         this Task<Result<T>> result,
         IAsyncResultGetter<TOut> getter,
         CancellationToken? token = null)

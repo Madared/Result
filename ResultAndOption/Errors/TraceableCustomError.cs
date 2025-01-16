@@ -3,9 +3,13 @@ using System.Runtime.CompilerServices;
 
 namespace ResultAndOption.Errors;
 
-public abstract class TraceableError : IError
+/// <summary>
+/// A traceable custom error with functionality similar to exceptions
+/// </summary>
+public abstract record TraceableCustomError : CustomError
 {
-    public string Message { get; }
+    /// <inheritdoc cref="CustomError.Message"/>
+    public override string Message { get; }
     /// <summary>
     /// The Line number where the Error was created
     /// </summary>
@@ -29,8 +33,9 @@ public abstract class TraceableError : IError
     /// <param name="fileName"></param>
     /// <param name="lineNumber"></param>
     /// <param name="methodName"></param>
-    private TraceableError([CallerFilePath] string fileName = "", [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string methodName = "")
+    private TraceableCustomError([CallerFilePath] string fileName = "", [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string methodName = "")
     {
+        Message = "";
         LineNumber = lineNumber;
         FileName = fileName;
         MethodName = methodName;
@@ -41,7 +46,7 @@ public abstract class TraceableError : IError
     /// Traceable error constructor
     /// </summary>
     /// <param name="message"></param>
-    public TraceableError(string message) : this()
+    public TraceableCustomError(string message) : this()
     {
         Message = message;
     }

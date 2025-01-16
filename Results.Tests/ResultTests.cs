@@ -66,7 +66,7 @@ public class ResultTests
             .OnError(error => errorMessage = error.Message);
         //Then
         Assert.Equal(stringResult, afterActionResult);
-        Assert.Equal(errorMessage, stringResult.Error.Message);
+        Assert.Equal(errorMessage, stringResult.CustomError.Message);
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class ResultTests
         Result<int> intResult = stringResult.ConvertErrorResult<string, int>();
         //Then
         Assert.IsType<Result<int>>(intResult);
-        Assert.Equal(stringResult.Error, intResult.Error);
+        Assert.Equal(stringResult.CustomError, intResult.CustomError);
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public class ResultTests
             .Map(data => data.Count());
         //Then
         Assert.True(mappedResult.Failed);
-        Assert.Equal(stringResult.Error, mappedResult.Error);
+        Assert.Equal(stringResult.CustomError, mappedResult.CustomError);
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public class ResultTests
         //Then
         Assert.True(simpleOkResult.Succeeded);
         Assert.True(simpleFailedResult.Failed);
-        Assert.Equal(failedStringResult.Error, simpleFailedResult.Error);
+        Assert.Equal(failedStringResult.CustomError, simpleFailedResult.CustomError);
     }
 
     [Fact]
@@ -301,9 +301,9 @@ public class ResultTests
     {
         Result<string> helloResult = Result<string>.Ok("hello");
         Result<string> wrappedResult =
-            helloResult.WrapError<string, UnknownError>(error => new MultipleErrors(new List<IError>()));
+            helloResult.WrapError<string, UnknownError>(error => new MultipleCustomErrors(new List<CustomError>()));
         Assert.True(wrappedResult.Succeeded);
-        Assert.Throws<InvalidOperationException>(() => wrappedResult.Error);
+        Assert.Throws<InvalidOperationException>(() => wrappedResult.CustomError);
     }
 
     [Fact]
@@ -311,9 +311,9 @@ public class ResultTests
     {
         Result<string> helloResult = Result<string>.Fail(new UnknownError());
         Result<string> wrapped =
-            helloResult.WrapError<string, UnknownError>(error => new MultipleErrors(new List<IError>()));
+            helloResult.WrapError<string, UnknownError>(error => new MultipleCustomErrors(new List<CustomError>()));
         Assert.True(wrapped.Failed);
-        Assert.True(wrapped.Error is MultipleErrors);
+        Assert.True(wrapped.CustomError is MultipleCustomErrors);
     }
 
     [Fact]
@@ -322,7 +322,7 @@ public class ResultTests
         Result success = Result.Ok();
         Result wrapped = success.WrapError<UnknownError>(error => new ExceptionWrapper(new Exception()));
         Assert.True(wrapped.Succeeded);
-        Assert.Throws<InvalidOperationException>(() => wrapped.Error);
+        Assert.Throws<InvalidOperationException>(() => wrapped.CustomError);
     }
 
     [Fact]
@@ -331,7 +331,7 @@ public class ResultTests
         Result failure = Result.Fail(new UnknownError());
         Result wrapped = failure.WrapError<UnknownError>(error => new ExceptionWrapper(new Exception()));
         Assert.True(wrapped.Failed);
-        Assert.True(wrapped.Error is ExceptionWrapper);
+        Assert.True(wrapped.CustomError is ExceptionWrapper);
     }
 
     [Fact]
@@ -355,8 +355,8 @@ public class ResultTests
         Result<string> resultString = default;
         Assert.True(result.Failed);
         Assert.True(resultString.Failed);
-        Assert.Equal(typeof(UnknownError), result.Error.GetType());
-        Assert.Equal(typeof(UnknownError), resultString.Error.GetType());
+        Assert.Equal(typeof(UnknownError), result.CustomError.GetType());
+        Assert.Equal(typeof(UnknownError), resultString.CustomError.GetType());
     }
 
     [Fact]
@@ -403,7 +403,7 @@ public class ResultTests
     {
         Result<string> failedResult = Result<string>.Fail(new UnknownError());
         Result<string> successresult = Result<string>.Ok("hello");
-        List<IError> errors = ResultAndOption.Results.GenericResultExtensions.Failing.AggregateErrors(failedResult, successresult).ToList();
+        List<CustomError> errors = ResultAndOption.Results.GenericResultExtensions.Failing.AggregateErrors(failedResult, successresult).ToList();
         Assert.Single(errors);
     }
 }

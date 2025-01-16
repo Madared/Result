@@ -38,15 +38,15 @@ public class ExtensionTests
     [Fact]
     public void ToResult_On_Option_Maps_Correctly()
     {
-        IError error = new UnknownError();
+        CustomError customError = new UnknownError();
         string hello = "hello";
         Option<string> none = Option<string>.None();
         Option<string> some = Option<string>.Some(hello);
-        Result<string> noneResult = none.ToResult(error);
-        Result<string> someResult = some.ToResult(error);
+        Result<string> noneResult = none.ToResult(customError);
+        Result<string> someResult = some.ToResult(customError);
         Assert.True(noneResult.Failed);
         Assert.True(someResult.Succeeded);
-        Assert.Equal(error, noneResult.Error);
+        Assert.Equal(customError, noneResult.CustomError);
         Assert.Equal(hello, someResult.Data);
     }
 }

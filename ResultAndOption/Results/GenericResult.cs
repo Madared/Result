@@ -12,7 +12,7 @@ namespace ResultAndOption.Results;
 public readonly struct Result<T> : IResult<T> where T : notnull
 {
     private readonly Option<T> _data;
-    private readonly IError? _error;
+    private readonly CustomError? _error;
 
     /// <summary>
     /// Returns the data from a successful result or throws the present error wrapped in an exception if failed.
@@ -31,7 +31,7 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     /// Shows if result has succeeded
     /// </summary>
     public bool Succeeded { get; }
-    private Result(bool failed, IError? error, Option<T> data)
+    private Result(bool failed, CustomError? error, Option<T> data)
     {
         Succeeded = !failed;
         _error = error;
@@ -42,7 +42,7 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     /// Returns the error from a failed result or throws an exception in a successful result.
     /// </summary>
     /// <exception cref="InvalidOperationException"></exception>
-    public IError Error => Succeeded
+    public CustomError CustomError => Succeeded
         ? throw new InvalidOperationException("Cannot access Error on success Result!")
         : _error ?? new UnknownError();
  
@@ -58,17 +58,17 @@ public readonly struct Result<T> : IResult<T> where T : notnull
     /// <summary>
     ///     Creates a failed result with the specified error.
     /// </summary>
-    /// <param name="error">The error associated with the failure.</param>
+    /// <param name="customError">The error associated with the failure.</param>
     /// <returns>A failed result with the specified error.</returns>
-    public static Result<T> Fail(IError error) => new(true, error, Option<T>.None());
+    public static Result<T> Fail(CustomError customError) => new(true, customError, Option<T>.None());
 
     /// <summary>
     ///     Creates a result with the specified data and error, where the success or failure depends on the provided data.
     /// </summary>
     /// <param name="data">The data associated with the result.</param>
-    /// <param name="error">The error to associate in case of null data</param>
+    /// <param name="customError">The error to associate in case of null data</param>
     /// <returns>A result with either the specified data or error. The success or failure depends on the provided data.</returns>
-    public static Result<T> Unknown(T? data, IError error) => data is null
-        ? Fail(error)
+    public static Result<T> Unknown(T? data, CustomError customError) => data is null
+        ? Fail(customError)
         : Ok(data);
 }

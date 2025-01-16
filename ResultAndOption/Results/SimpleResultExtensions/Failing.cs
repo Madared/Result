@@ -3,6 +3,9 @@ using ResultAndOption.Results.Commands;
 
 namespace ResultAndOption.Results.SimpleResultExtensions;
 
+/// <summary>
+/// Extension methods for handling failure and errors on simple results
+/// </summary>
 public static class Failing
 {
     /// <summary>
@@ -11,11 +14,11 @@ public static class Failing
     /// <param name="result"></param>
     /// <param name="action">The action to run, accepting the current result as a parameter.</param>
     /// <returns>The same result after running the action.</returns>
-    public static Result OnError(this in Result result, Action<IError> action)
+    public static Result OnError(this in Result result, Action<CustomError> action)
     {
         if (result.Failed)
         {
-            action(result.Error);
+            action(result.CustomError);
         }
         return result;
     }
@@ -35,6 +38,12 @@ public static class Failing
         return result;
     } 
 
+    /// <summary>
+    /// Performs a command if the result is in a failed state
+    /// </summary>
+    /// <param name="result">The result to check</param>
+    /// <param name="command">The command to run</param>
+    /// <returns>The same result</returns>
     public static Result OnError(this in Result result, ICommand command)
     {
         if (result.Failed)
@@ -45,34 +54,52 @@ public static class Failing
         return result;
     }
 
-    public static Result OnError(this in Result result, ICommand<IError> command)
+    /// <summary>
+    /// Performs a command if the result is in a failed state
+    /// </summary>
+    /// <param name="result">The result to check</param>
+    /// <param name="command">The command to run</param>
+    /// <returns>The same result</returns>
+    public static Result OnError(this in Result result, ICommand<CustomError> command)
     {
         if (result.Failed)
         {
-            command.Do(result.Error);
+            command.Do(result.CustomError);
         }
 
         return result;
     }
 
-    public static Task<Result> OnErrorAsync(this in Result result, IAsyncCommand command)
+    /// <summary>
+    /// Performs an asynchronous command if the result is in a failed state
+    /// </summary>
+    /// <param name="result">The result to check</param>
+    /// <param name="command">The asynchronous command to run</param>
+    /// <returns>A task of the same result</returns>
+    public static async Task<Result> OnErrorAsync(this Result result, IAsyncCommand command)
     {
         if (result.Failed)
         {
-            command.Do();
+            await command.Do();
         }
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public static Task<Result> OnErrorAsync(this in Result result, IAsyncCommand<IError> command)
+    /// <summary>
+    /// Performs an asynchronous command if the result is in a failed state
+    /// </summary>
+    /// <param name="result">The result to check</param>
+    /// <param name="command">The asynchronous command to run</param>
+    /// <returns>A task of the same result</returns>
+    public static async Task<Result> OnErrorAsync(this Result result, IAsyncCommand<CustomError> command)
     {
         if (result.Failed)
         {
-            command.Do(result.Error);
+            await command.Do(result.CustomError);
         }
 
-        return Task.FromResult(result);
+        return result;
     }
 
 }

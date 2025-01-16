@@ -10,7 +10,7 @@ namespace ResultAndOption.Results;
 /// </summary>
 public readonly struct Result : IResult
 {
-    private readonly IError? _error;
+    private readonly CustomError? _error;
     
     /// <summary>
     /// Shows if the result has succeeded.
@@ -26,11 +26,11 @@ public readonly struct Result : IResult
     /// Returns the error if the result has failed otherwise throws an exception.
     /// </summary>
     /// <exception cref="InvalidOperationException"></exception>
-    public IError Error => Succeeded
+    public CustomError CustomError => Succeeded
         ? throw new InvalidOperationException()
         : _error ?? new UnknownError();
 
-    private Result(bool failed, IError? error)
+    private Result(bool failed, CustomError? error)
     {
         Succeeded = !failed;
         _error = error;
@@ -45,7 +45,7 @@ public readonly struct Result : IResult
     /// <summary>
     ///     Initializes a new instance of the <see cref="Result" /> struct representing a failure with the specified error.
     /// </summary>
-    /// <param name="error">The error associated with the failure.</param>
+    /// <param name="customError">The error associated with the failure.</param>
     /// <returns>A new failed result with the specified error.</returns>
-    public static Result Fail(IError error) => new(true, error);
+    public static Result Fail(CustomError customError) => new(true, customError);
 }

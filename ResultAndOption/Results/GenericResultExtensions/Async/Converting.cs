@@ -13,26 +13,26 @@ public static class Converting
     /// Awaits for the option and calls the ToResult method
     /// </summary>
     /// <param name="option"></param>
-    /// <param name="error"></param>
+    /// <param name="customError"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> ToResultAsync<T>(this Task<Option<T>> option, IError error) where T : notnull
+    public static async Task<Result<T>> ToResultAsync<T>(this Task<Option<T>> option, CustomError customError) where T : notnull
     {
         Option<T> data = await option;
-        return data.ToResult(error);
+        return data.ToResult(customError);
     }
 
     /// <summary>
     /// Awaits for the nullable reference and calls the ToResult method
     /// </summary>
     /// <param name="nullable"></param>
-    /// <param name="error"></param>
+    /// <param name="customError"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> ToResultAsync<T>(this Task<T?> nullable, IError error) where T : notnull
+    public static async Task<Result<T>> ToResultAsync<T>(this Task<T?> nullable, CustomError customError) where T : notnull
     {
         T? data = await nullable;
-        return data.ToResult(error);
+        return data.ToResult(customError);
     }
 
     /// <summary>
@@ -44,6 +44,6 @@ public static class Converting
     public static async Task<Result> ToSimpleResultAsync<T>(this Task<Result<T>> result) where T : notnull
     {
         Result<T> originalResult = await result;
-        return originalResult.Failed ? Result.Fail(originalResult.Error) : Result.Ok();
+        return originalResult.Failed ? Result.Fail(originalResult.CustomError) : Result.Ok();
     }
 }

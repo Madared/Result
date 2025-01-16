@@ -11,11 +11,11 @@ public static class Converting
     /// Converts a boolean condition into a result, a false condition will become a failed result with the specified error
     /// </summary>
     /// <param name="condition"></param>
-    /// <param name="error"></param>
+    /// <param name="customError"></param>
     /// <returns></returns>
-    public static Result ConditionResult(this bool condition, IError error) => condition
+    public static Result ConditionResult(this bool condition, CustomError customError) => condition
         ? Result.Ok()
-        : Result.Fail(error);
+        : Result.Fail(customError);
     
         
     /// <summary>
@@ -25,8 +25,8 @@ public static class Converting
     /// <param name="errorWrapper"></param>
     /// <typeparam name="TError"></typeparam>
     /// <returns></returns>
-    public static Result WrapError<TError>(this in Result result, Func<TError, IError> errorWrapper)
-        where TError : IError => result is { Failed: true, Error: TError error }
+    public static Result WrapError<TError>(this in Result result, Func<TError, CustomError> errorWrapper)
+        where TError : CustomError => result is { Failed: true, CustomError: TError error }
         ? Result.Fail(errorWrapper(error))
         : result;
 }

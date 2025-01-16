@@ -3,6 +3,9 @@ using ResultAndOption.Results.Commands;
 
 namespace ResultAndOption.Results.GenericResultExtensions.Async;
 
+/// <summary>
+/// Extensions for asynchronously handling failures and errors 
+/// </summary>
 public static class Failing
 {
     /// <summary>
@@ -25,7 +28,7 @@ public static class Failing
     /// <param name="action"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> OnErrorAsync<T>(this Task<Result<T>> result, Action<IError> action)
+    public static async Task<Result<T>> OnErrorAsync<T>(this Task<Result<T>> result, Action<CustomError> action)
         where T : notnull
     {
         Result<T> original = await result;
@@ -64,13 +67,13 @@ public static class Failing
     /// <returns></returns>
     public static async Task<Result<T>> OnErrorAsync<T>(
         this Task<Result<T>> result,
-        Func<IError, CancellationToken?, Task> action,
+        Func<CustomError, CancellationToken?, Task> action,
         CancellationToken? token = null) where T : notnull
     {
         Result<T> original = await result;
         if (original.Failed)
         {
-            await action(original.Error, token);
+            await action(original.CustomError, token);
         }
 
         return original;
@@ -91,11 +94,12 @@ public static class Failing
     }
 
     /// <summary>
-    /// Awaits the result and calls the OnErrorAsync method.
+    /// Executes a command if the result is in a failed state
     /// </summary>
-    /// <param name="result"></param>
-    /// <param name="command"></param>
-    /// <typeparam name="T"></typeparam>
+    /// <param name="result">The result to check</param>
+    /// <param name="command">The command to run</param>
+    /// <param name="token">The cancellation token</param>
+    /// <typeparam name="T">The type of the result</typeparam>
     /// <returns></returns>
     public static async Task<Result<T>> OnErrorAsync<T>(this Task<Result<T>> result, IAsyncCommand command, CancellationToken? token = null)
         where T : notnull
@@ -105,13 +109,13 @@ public static class Failing
     }
 
     /// <summary>
-    /// Awaits the result and calls the OnError method
+    /// Executes a command if the result is in a failed state
     /// </summary>
-    /// <param name="result"></param>
-    /// <param name="command"></param>
-    /// <typeparam name="T"></typeparam>
+    /// <param name="result">The result to check</param>
+    /// <param name="command">The command to run</param>
+    /// <typeparam name="T">The result type</typeparam>
     /// <returns></returns>
-    public static async Task<Result<T>> OnErrorAsync<T>(this Task<Result<T>> result, ICommand<IError> command)
+    public static async Task<Result<T>> OnErrorAsync<T>(this Task<Result<T>> result, ICommand<CustomError> command)
         where T : notnull
     {
         Result<T> awaited = await result;
@@ -119,15 +123,16 @@ public static class Failing
     }
 
     /// <summary>
-    /// Awaits the result and calls the OnErrorAsync method
+    /// Executes a command if the result is in a failed state
     /// </summary>
-    /// <param name="result"></param>
-    /// <param name="command"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
+    /// <param name="result">The result to check</param>
+    /// <param name="command">The command to run</param>
+    /// <param name="token">The cancellation token</param>
+    /// <typeparam name="T">The result type</typeparam>
+    /// <returns>The same result</returns>
     public static async Task<Result<T>> OnErrorAsync<T>(
         this Task<Result<T>> result,
-        IAsyncCommand<IError> command,
+        IAsyncCommand<CustomError> command,
         CancellationToken? token = null)
         where T : notnull
     {

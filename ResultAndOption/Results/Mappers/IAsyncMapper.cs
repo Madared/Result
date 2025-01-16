@@ -18,14 +18,15 @@ public interface IAsyncMapper<T> where T : notnull
 /// <summary>
 /// An Asynchronous Mapper with input
 /// </summary>
-/// <typeparam name="TIn"></typeparam>
-/// <typeparam name="TOut"></typeparam>
+/// <typeparam name="TIn">The input type</typeparam>
+/// <typeparam name="TOut">The output type</typeparam>
 public interface IAsyncMapper<in TIn, TOut> where TIn : notnull where TOut : notnull
 {
     /// <summary>
     /// Asynchronous Mapper call with input
     /// </summary>
-    /// <param name="data"></param>
+    /// <param name="data">The data to map</param>
+    /// <param name="token">The cancellation token</param>
     /// <returns></returns>
     public Task<Result<TOut>> Map(TIn data, CancellationToken? token = null);
 }

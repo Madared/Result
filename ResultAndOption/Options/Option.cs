@@ -36,6 +36,11 @@ public readonly struct Option<T> where T : notnull
     /// <returns></returns>
     public bool IsNone() => _isNone || _data is null;
 
+    /// <summary>
+    /// Performs command if option is populated
+    /// </summary>
+    /// <param name="command">Command to perform</param>
+    /// <returns>The same option</returns>
     public Option<T> Do(ICommand command)
     {
         if (IsSome())
@@ -46,6 +51,11 @@ public readonly struct Option<T> where T : notnull
         return this;
     }
 
+    /// <summary>
+    /// Performs asynchronous command if option is poulated
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns>The same option</returns>
     public async Task<Option<T>> DoAsync(IAsyncCommand command)
     {
         if (IsSome())
@@ -56,6 +66,11 @@ public readonly struct Option<T> where T : notnull
         return this;
     }
 
+    /// <summary>
+    /// Performs a command with the option value if it exists
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns>The same option</returns>
     public Option<T> Do(ICommand<T> command)
     {
         if (IsSome())
@@ -66,6 +81,11 @@ public readonly struct Option<T> where T : notnull
         return this;
     }
 
+    /// <summary>
+    /// Performs an asynchronous command with the option value if it exists
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns>The same option</returns>
     public async Task<Option<T>> DoAsync(IAsyncCommand<T> command)
     {
         if (IsSome())
