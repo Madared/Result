@@ -192,29 +192,3 @@ There is support for mapping simple results and complex results with asynchronou
         public Task UndoDeletion(Guid id) => // undoes deletion;
     } 
 ```
-
-The Latest release of this package also contains a context result, meaning it tracks all actions
-taken from the first result to the current one, allowing for simple and seamless retries.
-
-```csharp
-    public class ProductService
-    {
-        private IDatabase _database;
-        
-        public IContextResult Delete(Guid id)) => UniqueResult
-            .RunAndGetContext(id)
-            .Map(product => MangleName(product))
-            .Map(product => Update(product, id))
-            .Retry(3);
-        
-        private Result<Product> UniqueResult(Guid id) => _database.Products
-            .Unique(id)
-            .ToResult(new UnknownError);
-        public Result<Product> MangleName(Product product) => // mangles product name;
-        public Result Update(Product updated, Guid id) => // updates db state;
-        public void UndoDeletion(Guid id) => // undoes deletion;
-    }
-```
-
-Basically any function can be attached to a ContextResult and will be retried along with all failed
-results in the context from top to bottom.
