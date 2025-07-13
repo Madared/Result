@@ -8,7 +8,7 @@ namespace ResultAndOption.Results;
 /// <summary>
 /// A representation of the result of an action without internal data.
 /// </summary>
-public readonly struct Result : IResult
+public readonly record struct Result : IResult
 {
     private readonly CustomError? _error;
     
